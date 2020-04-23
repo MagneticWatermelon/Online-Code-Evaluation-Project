@@ -10,9 +10,9 @@ docker = new Docker({host:hostIP, port:hostPort});
 
 const directories = 
 {
-  'java':'./languages/java-8',
-  'c'     :'./languages/c',
-  'c++'   :'./languages/c++',
+  'java':'/languages/java-8',
+  'c'     :'/languages/c',
+  'c++'   :'/languages/c++',
 }
 
 const extensions =
@@ -54,13 +54,17 @@ function buildImage(userid, lang, src){
   let localDir =  directories[lang];
   let srcFile  = `src${extensions[lang]}`
 
-  fs.writeFileSync(`${localDir}\\${srcFile}`,src)
+  console.log(imageTag)
+  console.log(localDir)
+  console.log(srcFile)
+
+  fs.writeFileSync(`.${localDir}/${srcFile}`,src)
 
   let build = async(callback)=>{
     await docker.buildImage(
-      {context: localDir,src: ['Dockerfile', srcFile]},
+      {context: __dirname.concat(localDir),src: ['Dockerfile', srcFile]},
       {t: imageTag, rm:true, forcerm:true}),
-      (stream)=>{callback(stream)}
+      (err,stream)=>{if(err){console.log(err)} return callback(stream)}
   }
 
   build((stream)=>{
