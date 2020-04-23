@@ -56,10 +56,14 @@ function buildImage(userid, lang, src){
 
   fs.writeFileSync(`${localDir}\\${srcFile}`,src)
 
-  docker.buildImage(
-    {context: localDir,src: ['Dockerfile', srcFile]},
-    {t: imageTag, rm:true, forcerm:true})
-  .then(stream=>{
+  let build = async(callback)=>{
+    await docker.buildImage(
+      {context: localDir,src: ['Dockerfile', srcFile]},
+      {t: imageTag, rm:true, forcerm:true}),
+      (stream)=>{callback(stream)}
+  }
+
+  build((stream)=>{
     new Promise((resolve, reject) => {
       docker.modem.followProgress(stream, (err, res) => err ? reject(err) : resolve(res));
     })
@@ -74,7 +78,7 @@ async function executeCode(userid, lang, src, input, callback){
 let code = `public class test {
 
   public static void main(String[] args) {
-  System.out.println("Hello World");
+  System.out.println("Another text");
 }
 }
 
