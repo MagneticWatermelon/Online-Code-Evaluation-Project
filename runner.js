@@ -22,6 +22,10 @@ const extensions =
   'c++' :'.cpp'
 }
 
+const commands =
+{
+  'java':['java','src.java']
+}
 
 
 function run(lang, code, callback){
@@ -49,7 +53,7 @@ fs.writeFile(__dirname.concat('/java/test.java'),code, ()=>{
 }) 
 }
 
-function buildImage(userid, lang, src){
+function buildImage(userid, lang, code){
   let imageTag = `${userid}${lang}`;
   let localDir =  directories[lang];
   let srcFile  = `src${extensions[lang]}`
@@ -58,28 +62,34 @@ function buildImage(userid, lang, src){
   console.log(localDir)
   console.log(srcFile)
 
-  fs.writeFileSync(`.${localDir}/${srcFile}`,src)
+  fs.writeFileSync(`.${localDir}/${srcFile}`,code)
 
   let build = async(callback)=>{
     await docker.buildImage(
       {context: __dirname.concat(localDir),src: ['Dockerfile', srcFile]},
-      {t: imageTag, rm:true, forcerm:true}),
-      (err,stream)=>{if(err){console.log(err)} return callback(stream)}
+      {t: imageTag, rm:true, forcerm:true},
+      (err,stream)=>{if(err){console.log(err)} return callback(stream)})
   }
 
   build((stream)=>{
     new Promise((resolve, reject) => {
       docker.modem.followProgress(stream, (err, res) => err ? reject(err) : resolve(res));
     })
-  })
+    .then(image=>{console.log(image)})
+    })
+
+    return imageTag;
 }
 
 async function executeCode(userid, lang, src, input, callback){
+    image  = buildImage(userid, lang, src)
 
+    docker.run(image,commands[lang])
+    .then()
 }
 
 
-let code = `public class test {
+let code = `public class src {
 
   public static void main(String[] args) {
   System.out.println("Another text");
@@ -87,7 +97,7 @@ let code = `public class test {
 }
 
 `
-buildImage('nazmiyilmaz12345','java',code)
+buildImage('nyilmaz','java',code)
 
 
 

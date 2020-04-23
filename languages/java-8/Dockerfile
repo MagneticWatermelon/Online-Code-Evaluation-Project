@@ -1,5 +1,6 @@
 FROM openjdk:8
-COPY . ./
-WORKDIR /
-RUN javac src.java
+RUN  mkdir code-dir   
+COPY ./src.java /code-dir
+WORKDIR /code-dir
+RUN javac ./src.java
 CMD ["java", "src"]
