@@ -49,12 +49,7 @@ fs.writeFile(__dirname.concat('/java/test.java'),code, ()=>{
 }) 
 }
 
-function resolveImage(stream){
-  new Promise((resolve, reject) => {
-    docker.modem.followProgress(stream, (err, res) => err ? reject(err) : resolve(res));
-  })
-}
-function buildImage(userid, lang, src, callback){
+function buildImage(userid, lang, src){
   let imageTag = `${userid}${lang}`;
   let localDir =  directories[lang];
   let srcFile  = `src${extensions[lang]}`
@@ -63,15 +58,12 @@ function buildImage(userid, lang, src, callback){
 
   docker.buildImage(
     {context: localDir,src: ['Dockerfile', srcFile]},
-    {t: imageTag},
-    async (stream)=>{
-      callback(stream)
-      /*await docker.modem.followProgress(stream,
-        (err,output)=>{console.log(output)},
-        (data)=>{})*/
+    {t: imageTag, rm:true, forcerm:true})
+  .then(stream=>{
+    new Promise((resolve, reject) => {
+      docker.modem.followProgress(stream, (err, res) => err ? reject(err) : resolve(res));
     })
-
-  console.log(localDir)
+  })
 }
 
 async function executeCode(userid, lang, src, input, callback){
@@ -87,7 +79,7 @@ let code = `public class test {
 }
 
 `
-buildImage('nazmiyilmaz12345','java',code, resolveImage)
+buildImage('nazmiyilmaz12345','java',code)
 
 
 
