@@ -1,18 +1,20 @@
-module.exports.run = run;
-
-const Docker = require('dockerode')
-const fs = require('fs')
+const Docker    = require('dockerode')
+const fs        = require('fs')
+const streamify = require('stream-array')
+const os        = require('os')
+const path      = require('path')
 
 const hostIP = '192.168.99.100'
 const hostPort = 2376
 
 docker = new Docker({host:hostIP, port:hostPort});
 
-const directories = 
+// This is the unix path for conversion problems
+const unixpathToApp = '//c/Users/10bag/Workspaces/ASSIGNMENTS/Comp202Project'
+
+const baseImages =
 {
-  'java':'/languages/java-8',
-  'c'     :'/languages/c',
-  'c++'   :'/languages/c++',
+  'java'  :'openjdk:8'
 }
 
 const extensions =
@@ -22,83 +24,159 @@ const extensions =
   'c++' :'.cpp'
 }
 
-const commands =
+const runCommands =
 {
-  'java':['java','src.java']
+  'java':['java','src']
 }
 
+const compileCommands =
+{
+  'java':['javac','src.java']
+}
 
-function run(lang, code, callback){
-
-fs.writeFile(__dirname.concat('/java/test.java'),code, ()=>{
-
-  build('java-test',(stream)=>{
-    new Promise((resolve, reject) => {
-        docker.modem.followProgress(stream, (err, res) => err ? reject(err) : resolve(res));
-    }).then(image=>{
-
-        var writeOutput = fs.createWriteStream('./java/output')
-
-        docker.run('java-test', ['java','test'], writeOutput).then(function(data) {
-            var container = data[1]
-            container.remove()
-            const output = fs.readFileSync('./java/output')
-            callback(output.toString())
-          }).catch(function(err) {
-            console.log(err);
-          });
+function evaluateAttempt(userid, lang, code, inputs, outputs, callback){
+  initUser(userid,lang,code).then(options=>{
+    executeCode(options).then((message)=>{
+      console.log(message)
+      testCode(options,inputs).then(resultset=>{
+        console.log(resultset.toString())
+      })
     })
   })
-
-}) 
 }
 
-function buildImage(userid, lang, code){
-  let imageTag = `${userid}${lang}`;
-  let localDir =  directories[lang];
-  let srcFile  = `src${extensions[lang]}`
+function initUser(userid,lang,code){
+  return new Promise((resolve,reject)=>{
 
-  console.log(imageTag)
-  console.log(localDir)
-  console.log(srcFile)
+    let userFolder = `temp/${userid}`
 
-  fs.writeFileSync(`.${localDir}/${srcFile}`,code)
+    if(!fs.existsSync(path.resolve(userFolder))){fs.mkdirSync(userFolder)}
 
-  let build = async(callback)=>{
-    await docker.buildImage(
-      {context: __dirname.concat(localDir),src: ['Dockerfile', srcFile]},
-      {t: imageTag, rm:true, forcerm:true},
-      (err,stream)=>{if(err){console.log(err)} return callback(stream)})
-  }
+    let tempFile = `${userFolder}/src${extensions[lang]}`
+    fs.openSync(tempFile,'w')
+    fs.writeFileSync(tempFile,code)
 
-  build((stream)=>{
-    new Promise((resolve, reject) => {
-      docker.modem.followProgress(stream, (err, res) => err ? reject(err) : resolve(res));
+    mountOptions = {
+      Source   :`${unixpathToApp}/${userFolder}`,
+      Target   :'/var/src', Type     :'bind',
+    }
+
+    let options = {
+      'userfolder'    :userFolder,
+      'src'           :tempFile,
+      'containername' :`${userid}${lang}`,
+      'baseimage'     :baseImages[lang],
+      'compilecmd'    :compileCommands[lang],
+      'runcmd'        :runCommands[lang],
+      'workingdir'    :'/var/src',
+      'hostconfig'    : {Mounts: [mountOptions]}
+    }
+    resolve(options)
+  })
+}
+
+/*
+*   isCompiled : determines action of the container  
+*/
+function createContainer(isCompiled, options){
+  return docker.createContainer(
+    {
+      name          : options.containername,
+      Image         : options.baseimage,
+      AttachStdin   : true,
+      AttachStdout  : true,
+      AttachStderr  : true,
+      OpenStdin     : true,
+      StdinOnce     : false,
+      Tty           : false,
+      Cmd           : isCompiled ? options.runcmd : options.compilecmd,
+      HostConfig    : options.hostconfig,
+      WorkingDir    : options.workingdir
     })
-    .then(image=>{console.log(image)})
+}
+
+function executeCode(options){
+
+  return new Promise((resolve,reject)=>{
+    createContainer(false,options).then(container=>{
+        container.start().then(data=>{
+          container.stop().then(data=>{
+            container.remove().then(data=>{resolve('container removed')})
+          })
+        })
     })
-
-    return imageTag;
+  })
 }
 
-async function executeCode(userid, lang, src, input, callback){
-    image  = buildImage(userid, lang, src)
+function testCode(options,inputs){
+  return new Promise((resolve,reject)=>{
+    createContainer(true,options).then(async (container)=>{
+      container.start()
+      var result;
+      for(args of inputs){
+        result = await singleTest(container,args)
+      }
+      container.stop().then(info=>{
+        container.remove().then(info=>{
+          resolve(result)
+        })
+      })
+    })
+  })
+}
 
-    docker.run(image,commands[lang])
-    .then()
+function singleTest(container, inputs){
+
+  let attach_opts = {stream: true, stdin: true, stdout: true, stderr: true};
+
+  return new Promise((resolve,reject)=>{
+    container.attach(attach_opts).then(stream=>{
+      streamify(mapInputs(inputs)).pipe(stream)
+      container.restart().then(info=>{
+        container.logs({stdout:true,stderr:true}).then(data=>{
+          resolve(data)
+        })
+      })
+    })
+  })
+}
+
+function mapInputs(inputs){
+  inputs.push(os.EOL)
+  return inputs.map(item=>`${item}\n`)
 }
 
 
-let code = `public class src {
+function test(){
 
-  public static void main(String[] args) {
-  System.out.println("Another text");
+  let code = `import java.util.Scanner;
+
+  public class src {
+  
+      public static void main(String[] args) {
+  
+        Scanner sc = new Scanner(System.in);
+
+        int a = sc.nextInt();
+        int b = sc.nextInt();
+
+        System.out.println(a/b);
+    }
+    }
+  
+  `
+  let inputs =[['1','9'],['2','4'],['9','7']]
+
+  let outputs = [
+    ['3'],
+    ['7'],
+    ['99']
+  ]
+  evaluateAttempt('nyilmaz','java',code,inputs,outputs)
+
 }
-}
 
-`
-buildImage('nyilmaz','java',code)
-
+test()
 
 
 
