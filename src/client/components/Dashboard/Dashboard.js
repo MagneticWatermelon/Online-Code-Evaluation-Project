@@ -9,7 +9,6 @@ import List from '@material-ui/core/List';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
-import Badge from '@material-ui/core/Badge';
 import Container from '@material-ui/core/Container';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
@@ -18,6 +17,9 @@ import { Avatar } from '@material-ui/core';
 import PersonIcon from '@material-ui/icons/Person';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
+import { MemoryRouter as Router, Switch, Route } from 'react-router';
+import Sandbox from '../Sandbox/Sandbox';
+
 
 
 
@@ -88,8 +90,8 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'auto',
   },
   container: {
-    paddingTop: theme.spacing(4),
-    paddingBottom: theme.spacing(4),
+    paddingTop: theme.spacing(2),
+    paddingBottom: theme.spacing(2),
   },
   paper: {
     padding: theme.spacing(2),
@@ -125,60 +127,66 @@ export default function Dashboard() {
   
 
   return (
-    <div className={classes.root}>
-      <CssBaseline />
-      <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
-        <Toolbar className={classes.toolbar}>
-          <IconButton
-            edge="start"
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            className={clsx(classes.menuButton, open && classes.menuButtonHidden)}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-            {title}
-          </Typography>
-          <IconButton color="inherit" aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
-            <Avatar>
-                <PersonIcon />
-            </Avatar>
-          </IconButton>
-          <Menu
-            id="simple-menu"
-            anchorEl={anchorEl}
-            keepMounted
-            open={Boolean(anchorEl)}
-            onClose={handleClose}
+    <Router>
+        <div className={classes.root}>
+            <CssBaseline />
+            <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
+                <Toolbar className={classes.toolbar}>
+                    <IconButton
+                        edge="start"
+                        color="inherit"
+                        aria-label="open drawer"
+                        onClick={handleDrawerOpen}
+                        className={clsx(classes.menuButton, open && classes.menuButtonHidden)}
+                    >
+                        <MenuIcon />
+                    </IconButton>
+                    <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
+                        {title}
+                    </Typography>
+                    <IconButton color="inherit" aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
+                        <Avatar>
+                            <PersonIcon />
+                        </Avatar>
+                    </IconButton>
+                    <Menu
+                        id="simple-menu"
+                        anchorEl={anchorEl}
+                        keepMounted
+                        open={Boolean(anchorEl)}
+                        onClose={handleClose}
+                    >
+                        <MenuItem onClick={handleClose}>My account</MenuItem>
+                        <MenuItem onClick={handleClose}>Logout</MenuItem>
+                    </Menu>
+                </Toolbar>
+            </AppBar>
+            <Drawer
+                variant="permanent"
+                classes={{
+                paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
+                }}
+                open={open}
             >
-                <MenuItem onClick={handleClose}>My account</MenuItem>
-                <MenuItem onClick={handleClose}>Logout</MenuItem>
-            </Menu>
-        </Toolbar>
-      </AppBar>
-      <Drawer
-        variant="permanent"
-        classes={{
-          paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
-        }}
-        open={open}
-      >
-        <div className={classes.toolbarIcon}>
-          <IconButton onClick={handleDrawerClose}>
-            <ChevronLeftIcon />
-          </IconButton>
+                <div className={classes.toolbarIcon}>
+                <IconButton onClick={handleDrawerClose}>
+                    <ChevronLeftIcon />
+                </IconButton>
+                </div>
+                <Divider />
+                <ListItems />
+            </Drawer>
+            <main className={classes.content}>
+                <div className={classes.appBarSpacer} />
+                <Container maxWidth='false' className={classes.container}>
+                    <Switch>
+                        <Route exact path="/example">
+                            <Sandbox />
+                        </Route>
+                    </Switch>
+                </Container>
+            </main>
         </div>
-        <Divider />
-        <ListItems />
-      </Drawer>
-      <main className={classes.content}>
-        <div className={classes.appBarSpacer} />
-        <Container maxWidth="lg" className={classes.container}>
-          
-        </Container>
-      </main>
-    </div>
+    </Router>
   );
 }

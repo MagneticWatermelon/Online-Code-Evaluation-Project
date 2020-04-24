@@ -10,6 +10,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Dashboard from '../Dashboard/Dashboard';
+import CodeArea from '../CodeArea/CodeArea';
 
 
 const useStyles = makeStyles((theme) => ({
