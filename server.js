@@ -36,13 +36,13 @@ app.set('view-engine','ejs')
 .post('/execute-code', (req,res)=>{
 
     var code = req.body.code_src
-
-    console.log(code)
-
-    runner.run('java',code,(output)=>{
-        console.log(output)
-        req.flash('output',output)
+    
+    let inputs =[['1','9'],['2','4'],['9','7'],['10','85']]
+      
+    runner.evaluateAttempt('nyilmaz','java',code,[[]],[],(resultset)=>{
+        req.flash('output',resultset.toString())
         return res.redirect('/home')
+
     })
 })
 app.listen(8080);

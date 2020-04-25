@@ -1,3 +1,5 @@
+module.exports.evaluateAttempt = evaluateAttempt;
+
 const Docker    = require('dockerode')
 const fs        = require('fs')
 const streamify = require('stream-array')
@@ -36,17 +38,22 @@ const compileCommands =
 
 function evaluateAttempt(userid, lang, code, inputs, outputs, callback){
   initUser(userid,lang,code).then(options=>{
+    console.log('initiated user')
     executeCode(options).then((message)=>{
       console.log(message)
       testCode(options,inputs).then(resultset=>{
-        console.log(resultset.toString())
+        console.log('resultset is returned')
+        callback(resultset)
       })
     })
   })
 }
 
 function initUser(userid,lang,code){
+  console.log('initiating user...')
   return new Promise((resolve,reject)=>{
+
+    console.log('creating user files...')
 
     let userFolder = `temp/${userid}`
 
@@ -55,6 +62,8 @@ function initUser(userid,lang,code){
     let tempFile = `${userFolder}/src${extensions[lang]}`
     fs.openSync(tempFile,'w')
     fs.writeFileSync(tempFile,code)
+
+    console.log('user files are created...')
 
     mountOptions = {
       Source   :`${unixpathToApp}/${userFolder}`,
@@ -79,6 +88,7 @@ function initUser(userid,lang,code){
 *   isCompiled : determines action of the container  
 */
 function createContainer(isCompiled, options){
+  console.log('creating container...')
   return docker.createContainer(
     {
       name          : options.containername,
@@ -96,12 +106,18 @@ function createContainer(isCompiled, options){
 }
 
 function executeCode(options){
-
+  console.log('starting compilation....')
   return new Promise((resolve,reject)=>{
     createContainer(false,options).then(container=>{
+        console.log('container is created')
         container.start().then(data=>{
+          console.log('container is started')
           container.stop().then(data=>{
-            container.remove().then(data=>{resolve('container removed')})
+            console.log('container is stopped')
+            container.remove().then(data=>{
+              console.log('container is removed');
+              resolve('code compiled')
+            })
           })
         })
     })
@@ -109,17 +125,28 @@ function executeCode(options){
 }
 
 function testCode(options,inputs){
+  console.log('starting execution...')
   return new Promise((resolve,reject)=>{
-    createContainer(true,options).then(async (container)=>{
-      container.start()
-      var result;
-      for(args of inputs){
-        result = await singleTest(container,args)
-      }
-      container.stop().then(info=>{
-        container.remove().then(info=>{
-          resolve(result)
-        })
+    createContainer(true,options).then((container)=>{
+      console.log('container is created')
+      container.start().then(async info=>{
+        console.log('container is started')
+        var result;
+        for(args of inputs){
+          console.log('test case starting...')
+          result = await singleTest(container,args)
+          console.log('test case ended')
+        }
+          console.log('all test cases are done')
+          console.log('stopping container...')
+          container.stop().then(info=>{
+            console.log('container is stopped')
+            console.log('removing container...')
+            container.remove().then(info=>{
+              console.log('container removed')
+              resolve(result)
+            })
+          })
       })
     })
   })
@@ -130,10 +157,17 @@ function singleTest(container, inputs){
   let attach_opts = {stream: true, stdin: true, stdout: true, stderr: true};
 
   return new Promise((resolve,reject)=>{
+    console.log('attaching inputs...')
     container.attach(attach_opts).then(stream=>{
       streamify(mapInputs(inputs)).pipe(stream)
+      console.log('inputs are attached')
+
+      console.log('restarting container...')
       container.restart().then(info=>{
+        console.log('restarted container')
+        console.log('getting log of event...')
         container.logs({stdout:true,stderr:true}).then(data=>{
+          console.log('log is returned')
           resolve(data)
         })
       })
@@ -145,39 +179,3 @@ function mapInputs(inputs){
   inputs.push(os.EOL)
   return inputs.map(item=>`${item}\n`)
 }
-
-
-function test(){
-
-  let code = `import java.util.Scanner;
-
-  public class src {
-  
-      public static void main(String[] args) {
-  
-        Scanner sc = new Scanner(System.in);
-
-        int a = sc.nextInt();
-        int b = sc.nextInt();
-
-        System.out.println(a/b);
-    }
-    }
-  
-  `
-  let inputs =[['1','9'],['2','4'],['9','7']]
-
-  let outputs = [
-    ['3'],
-    ['7'],
-    ['99']
-  ]
-  evaluateAttempt('nyilmaz','java',code,inputs,outputs)
-
-}
-
-test()
-
-
-
-
