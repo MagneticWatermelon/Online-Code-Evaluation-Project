@@ -21,9 +21,11 @@ data = {
             name:'Dockerfile',
             content:`
                 FROM openjdk:8
-                COPY . .
+                RUN mkdir /var/src/java
+                COPY . /var/src/java
+                WORKDIR /var/src/java
                 RUN javac src.java
-                CMD ['java','src']
+                CMD ["java","src"]
             `
         }
     ]
