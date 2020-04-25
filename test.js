@@ -6,7 +6,16 @@ const hostPort = 2376
 docker = new Docker({host:hostIP, port:hostPort});
 
 
-docker.buildImage('test.tar',{t:'testimage'},()=>{})
+function build(callback){
+    docker.buildImage('test.tar',{t:'testimage'})
+
+    .then(stream=>{
+        new Promise((resolve, reject) => {
+            docker.modem.followProgress(stream, (err, res) => err ? reject(err) : resolve(res));
+        })
+    })
+}
   
+build()
   
 
