@@ -9,34 +9,34 @@ import AssignmentIcon from '@material-ui/icons/Assignment';
 import SchoolIcon from '@material-ui/icons/School';
 import { Link as RouterLink } from 'react-router-dom';
 
-export default function ListItems() {
+export default function ListItems(props) {
   return (
     <List>
-      <ListItem button component={RouterLink} to="/">
+      <ListItem button component={RouterLink} to="/dashboard" onClick={props.onClick}>
         <ListItemIcon>
           <DashboardIcon />
         </ListItemIcon>
         <ListItemText primary="Dashboard" />
       </ListItem>
-      <ListItem button component={RouterLink} to="/courses">
+      <ListItem button component={RouterLink} to="/courses" onClick={props.onClick}>
         <ListItemIcon>
           <SchoolIcon />
         </ListItemIcon>
         <ListItemText primary="Courses" />
       </ListItem>
-      <ListItem button component={RouterLink} to="/assignments">
+      <ListItem button component={RouterLink} to="/assignments" onClick={props.onClick}>
         <ListItemIcon>
           <AssignmentIcon />
         </ListItemIcon>
         <ListItemText primary="Assignments" />
       </ListItem>
-      <ListItem button component={RouterLink} to="/submissions">
+      <ListItem button component={RouterLink} to="/submissions" onClick={props.onClick}>
         <ListItemIcon>
           <DescriptionIcon />
         </ListItemIcon>
         <ListItemText primary="Submissions" />
       </ListItem>
-      <ListItem button component={RouterLink} to="/example">
+      <ListItem button component={RouterLink} to="/example" onClick={props.onClick}>
         <ListItemIcon>
           <DescriptionIcon />
         </ListItemIcon>

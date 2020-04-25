@@ -1,5 +1,5 @@
 import React from 'react';
-import SplitPane, { Pane } from 'react-split-pane';
+import SplitPane from 'react-split-pane';
 import ProblemArea from '../ProblemArea/ProblemArea';
 import CodeArea from '../CodeArea/CodeArea';
 import OutputArea from '../OutputArea/OutputArea';

@@ -5,7 +5,6 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import List from '@material-ui/core/List';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
@@ -17,8 +16,10 @@ import { Avatar } from '@material-ui/core';
 import PersonIcon from '@material-ui/icons/Person';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
-import { MemoryRouter as Router, Switch, Route } from 'react-router';
+import {Switch, Route } from 'react-router';
 import Sandbox from '../Sandbox/Sandbox';
+import {BrowserRouter as Router} from 'react-router-dom';
+import CourseGrid from '../CourseGrid/CourseGrid';
 
 
 
@@ -109,6 +110,11 @@ export default function Dashboard() {
   const [open, setOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [title, setTitle] = React.useState('Dashboard');
+  const [courseList, setCourses] = React.useState(['COMP101-01', 'COMP112-02', 'COMP114-01']);
+
+  const handleTitle = (event) => {
+    setTitle(event.currentTarget.children[1].innerText);
+  }
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -174,12 +180,15 @@ export default function Dashboard() {
                 </IconButton>
                 </div>
                 <Divider />
-                <ListItems />
+                <ListItems onClick={handleTitle}/>
             </Drawer>
             <main className={classes.content}>
                 <div className={classes.appBarSpacer} />
-                <Container maxWidth='false' className={classes.container}>
+                <Container maxWidth={false} className={classes.container}>
                     <Switch>
+                        <Route exact path="/dashboard">
+                          <CourseGrid courses={courseList} />
+                        </Route>
                         <Route exact path="/example">
                             <Sandbox />
                         </Route>
