@@ -1,181 +1,123 @@
-module.exports.evaluateAttempt = evaluateAttempt;
+module.exports.build        = build;
+module.exports.getResults   = getResults;
 
-const Docker    = require('dockerode')
-const fs        = require('fs')
-const streamify = require('stream-array')
-const os        = require('os')
-const path      = require('path')
+const Docker        = require('dockerode')
+const targenerator  = require('./tar-generator')
+const dotenv        = require('dotenv')
+const readable      = require('stream').Readable;
 
-const hostIP = '192.168.99.100'
-const hostPort = 2376
+dotenv.config('./env')
+
+const hostIP        =   process.env.DOCKER_IP
+const hostPort      =   process.env.DOCKER_PORT
+const attachOptions =   {logs:true,stream: true, stdin: true, stdout: true, stderr: true};
 
 docker = new Docker({host:hostIP, port:hostPort});
 
-// This is the unix path for conversion problems
-const unixpathToApp = '//c/Users/10bag/Workspaces/ASSIGNMENTS/Comp202Project'
 
-const baseImages =
-{
-  'java'  :'openjdk:8'
-}
+function build(bundle, options, callback){
 
-const extensions =
-{
-  'java':'.java',
-  'c'   :'.c',
-  'c++' :'.cpp'
-}
+    let tar = targenerator.generateFromBundle(bundle)
 
-const runCommands =
-{
-  'java':['java','src']
-}
-
-const compileCommands =
-{
-  'java':['javac','src.java']
-}
-
-function evaluateAttempt(userid, lang, code, inputs, outputs, callback){
-  initUser(userid,lang,code).then(options=>{
-    console.log('initiated user')
-    executeCode(options).then((message)=>{
-      console.log(message)
-      testCode(options,inputs).then(resultset=>{
-        console.log('resultset is returned')
-        callback(resultset)
-      })
+    docker.buildImage(tar,options)
+    .then((logs)=>{
+        callback(null, options.t)
     })
-  })
-}
-
-function initUser(userid,lang,code){
-  console.log('initiating user...')
-  return new Promise((resolve,reject)=>{
-
-    console.log('creating user files...')
-
-    let userFolder = `temp/${userid}`
-
-    if(!fs.existsSync(path.resolve(userFolder))){fs.mkdirSync(userFolder)}
-
-    let tempFile = `${userFolder}/src${extensions[lang]}`
-    fs.openSync(tempFile,'w')
-    fs.writeFileSync(tempFile,code)
-
-    console.log('user files are created...')
-
-    mountOptions = {
-      Source   :`${unixpathToApp}/${userFolder}`,
-      Target   :'/var/src', Type     :'bind',
-    }
-
-    let options = {
-      'userfolder'    :userFolder,
-      'src'           :tempFile,
-      'containername' :`${userid}${lang}`,
-      'baseimage'     :baseImages[lang],
-      'compilecmd'    :compileCommands[lang],
-      'runcmd'        :runCommands[lang],
-      'workingdir'    :'/var/src',
-      'hostconfig'    : {Mounts: [mountOptions]}
-    }
-    resolve(options)
-  })
-}
-
-/*
-*   isCompiled : determines action of the container  
-*/
-function createContainer(isCompiled, options){
-  console.log('creating container...')
-  return docker.createContainer(
-    {
-      name          : options.containername,
-      Image         : options.baseimage,
-      AttachStdin   : true,
-      AttachStdout  : true,
-      AttachStderr  : true,
-      OpenStdin     : true,
-      StdinOnce     : false,
-      Tty           : false,
-      Cmd           : isCompiled ? options.runcmd : options.compilecmd,
-      HostConfig    : options.hostconfig,
-      WorkingDir    : options.workingdir
+    .catch((err)=>{
+        console.log(err)
+        callback(err,null)
     })
 }
 
-function executeCode(options){
-  console.log('starting compilation....')
-  return new Promise((resolve,reject)=>{
-    createContainer(false,options).then(container=>{
-        console.log('container is created')
-        container.start().then(data=>{
-          console.log('container is started')
-          container.stop().then(data=>{
-            console.log('container is stopped')
-            container.remove().then(data=>{
-              console.log('container is removed');
-              resolve('code compiled')
+function run(imagename, testcase){
+    return new Promise((resolve,reject)=>{
+        createContainer(imagename,null)
+
+        .then(container=>{
+            attachInputs(container,testcase)
+            .then(message=>{
+                console.log(message)
+                container.start()
+                .then(info=>{
+                    
+                    output = []
+
+                    var logStream = new require('stream').PassThrough();
+                    logStream.on('data', function(chunk){
+                        output.push(chunk)
+                    });
+
+                    container.logs({follow:true,stdout:true,stderr:true},(err,stream)=>{
+                        
+                        container.modem.demuxStream(stream, logStream, logStream);
+
+                        stream.on('end', function(){
+                            logStream.end();
+                            resolve(output)
+                        });
+                    })
+
+                })
             })
-          })
+        })
+        
+        .catch(err=>{
+            reject(err)
         })
     })
-  })
 }
 
-function testCode(options,inputs){
-  console.log('starting execution...')
-  return new Promise((resolve,reject)=>{
-    createContainer(true,options).then((container)=>{
-      console.log('container is created')
-      container.start().then(async info=>{
-        console.log('container is started')
-        var result;
-        for(args of inputs){
-          console.log('test case starting...')
-          result = await singleTest(container,args)
-          console.log('test case ended')
+function getResults(imagename, inputs){
+    return new Promise(async (resolve,reject)=>{
+
+        let results = []
+        
+        for(testcase of inputs){
+            await run(imagename, testcase)
+            .then(output=>{results.push(output)})
+            .catch(err=>{reject(err)})
         }
-          console.log('all test cases are done')
-          console.log('stopping container...')
-          container.stop().then(info=>{
-            console.log('container is stopped')
-            console.log('removing container...')
-            container.remove().then(info=>{
-              console.log('container removed')
-              resolve(result)
-            })
-          })
-      })
+        resolve(results)
     })
-  })
 }
 
-function singleTest(container, inputs){
-
-  let attach_opts = {stream: true, stdin: true, stdout: true, stderr: true};
-
-  return new Promise((resolve,reject)=>{
-    console.log('attaching inputs...')
-    container.attach(attach_opts).then(stream=>{
-      streamify(mapInputs(inputs)).pipe(stream)
-      console.log('inputs are attached')
-
-      console.log('restarting container...')
-      container.restart().then(info=>{
-        console.log('restarted container')
-        console.log('getting log of event...')
-        container.logs({stdout:true,stderr:true}).then(data=>{
-          console.log('log is returned')
-          resolve(data)
+function attachInputs(container, inputs){
+    let inputstream     = readable.from(mapInputs(inputs))
+    return new Promise((resolve,reject)=>{
+        container.attach(attachOptions)
+        .then(stream=>{
+            inputstream.pipe(stream)
+            resolve('input is attached')
         })
-      })
     })
-  })
 }
 
 function mapInputs(inputs){
-  inputs.push(os.EOL)
-  return inputs.map(item=>`${item}\n`)
+    return [].concat(...inputs.map(e => [e, '\n']))
 }
+
+
+function createContainer(imagename, hostConfig){
+    return new Promise((resolve,reject)=>{
+        
+        docker.createContainer(
+        {
+          Image         : imagename,
+          AttachStdin   : true,
+          AttachStdout  : true,
+          AttachStderr  : true,
+          OpenStdin     : true,
+          StdinOnce     : false,
+          Tty           : false,
+          Cmd           : []
+        })
+        .then(container=>{
+            resolve(container)
+        })
+        .catch(err=>{
+            reject(err)
+        })
+    })
+}
+  
+

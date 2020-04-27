@@ -1,61 +1,35 @@
 const tar = require('tar-stream')
-const fs  = require('fs')
 
 
-
-data = {
-    lang  : 'java', 
-    files : [
-        {
-            name: 'src.java',
-            content:`public class test {
-
-
-                public static void main(String[] args) {
-                    System.out.println("hello world");
-                }
-            }` 
-        },
-
-        {
-            name:'Dockerfile',
-            content:`
-                FROM openjdk:8
-                RUN mkdir /var/src/java
-                COPY . /var/src/java
-                WORKDIR /var/src/java
-                RUN javac src.java
-                CMD ["java","src"]
-            `
-        }
-    ]
-}
-
-
-function convert(data){
+function generateFromBundle(bundle){
     let pack = tar.pack()
+    
+    let data = bundle.toJSON();
+
     data.files.forEach(file => {
         pack.entry({name:file.name},file.content)
     });
+    
+    pack.finalize()
 
+    return pack
+}
 
-    let path = './test.tar'
-    let tarball = fs.createWriteStream(path)
+function generateFromJson(json){
+    let pack = tar.pack()
 
-    pack.pipe(tarball)
+    json.files.forEach(file => {
+        pack.entry({name:file.name},file.content)
+    });
+    
+    pack.finalize()
 
-    tarball.on('close', function () {
-    console.log(path + ' has been written')
-    fs.stat(path, function(err, stats) {
-    if (err) throw err
-    console.log(stats)
-    console.log('Got file info successfully!')
-    })
-    })
+    return pack
 }
 
 
-convert(data)
+module.exports.generateFromBundle   = generateFromBundle
+module.exports.generateFromJson     = generateFromJson
 
 
 
