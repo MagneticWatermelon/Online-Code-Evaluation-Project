@@ -1,3 +1,12 @@
+/* Bundle is an object that keeps all the needed information
+   for a code execution
+        bundle has following properties
+            * files     : these are files coming from the user
+            * inputs    : these are inputs for test cases
+            * outputs   : these are correct outputs
+            * lang      : this is the language for the execution
+*/
+
 module.exports = class Bundle{
 
     constructor(lang, inputs, outputs){

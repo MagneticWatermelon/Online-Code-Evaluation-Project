@@ -1,3 +1,7 @@
+/* This class runs the user-submitted code on a conainer and then
+   returns back the result
+*/
+
 module.exports.build        = build;
 module.exports.getResults   = getResults;
 
@@ -14,21 +18,21 @@ const attachOptions =   {logs:true,stream: true, stdin: true, stdout: true, stde
 
 docker = new Docker({host:hostIP, port:hostPort});
 
-
-function build(bundle, options, callback){
+/*function for building the image
+*/
+async function build(bundle, options){
 
     let tar = targenerator.generateFromBundle(bundle)
 
-    docker.buildImage(tar,options)
-    .then((logs)=>{
-        callback(null, options.t)
-    })
-    .catch((err)=>{
-        console.log(err)
-        callback(err,null)
+    let stream = await docker.buildImage(tar,options)
+    
+    await new Promise((resolve,reject)=>{
+        docker.modem.followProgress(stream, (err, res) => err ? reject(err) : resolve(res));
     })
 }
 
+/*function for running a single test case
+*/
 function run(imagename, testcase){
     return new Promise((resolve,reject)=>{
         createContainer(imagename,null)
@@ -36,7 +40,6 @@ function run(imagename, testcase){
         .then(container=>{
             attachInputs(container,testcase)
             .then(message=>{
-                console.log(message)
                 container.start()
                 .then(info=>{
                     
@@ -44,29 +47,46 @@ function run(imagename, testcase){
 
                     var logStream = new require('stream').PassThrough();
                     logStream.on('data', function(chunk){
-                        output.push(chunk)
-                    });
+                        output.push(chunk.toString('utf8').replace('\n',''))
+                    })
 
                     container.logs({follow:true,stdout:true,stderr:true},(err,stream)=>{
-                        
+                        if(err){reject('cannot get logs from container')}
+
                         container.modem.demuxStream(stream, logStream, logStream);
 
                         stream.on('end', function(){
+                            container.stop(()=>{
+                                container.remove(()=>{
+                                    
+                                })
+                            })
+                            
                             logStream.end();
                             resolve(output)
                         });
                     })
 
                 })
+
+                .catch(err=>{
+                    reject('cannot start container')
+                })
+            })
+
+            .catch(err=>{
+                reject(err)
             })
         })
         
         .catch(err=>{
-            reject(err)
+            reject('cannot create container')
         })
     })
 }
 
+/*function for getting all results from all test cases
+*/
 function getResults(imagename, inputs){
     return new Promise(async (resolve,reject)=>{
 
@@ -77,10 +97,14 @@ function getResults(imagename, inputs){
             .then(output=>{results.push(output)})
             .catch(err=>{reject(err)})
         }
-        resolve(results)
+        docker.getImage(imagename).remove((info)=>{
+            resolve(results)
+        })
     })
 }
 
+/*function for attaching inputs to the container
+*/
 function attachInputs(container, inputs){
     let inputstream     = readable.from(mapInputs(inputs))
     return new Promise((resolve,reject)=>{
@@ -89,14 +113,22 @@ function attachInputs(container, inputs){
             inputstream.pipe(stream)
             resolve('input is attached')
         })
+
+        .catch(err=>{
+            reject('cannot atach inputs')
+        })
     })
 }
 
+/*function for adding '\n' to the end of each input
+  they need to be entered that's the point of this function
+*/
 function mapInputs(inputs){
     return [].concat(...inputs.map(e => [e, '\n']))
 }
 
-
+/*function for creating a container for a test case
+*/
 function createContainer(imagename, hostConfig){
     return new Promise((resolve,reject)=>{
         
