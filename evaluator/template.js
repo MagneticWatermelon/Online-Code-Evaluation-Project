@@ -1,15 +1,18 @@
 const data = {
     
-    lang  : 'golang:1.13', // a string to define language
+    lang  : 'c', // a string to define language
 
     files : // a json array that each element has 'name' and 'content' feature 
     [
         {
             name: 'main.go',
-            content:`package main
-            import "fmt"
-            func main() {
-             fmt.Println("Hello World")
+            content:`
+            
+                #include <stdio.h>
+                int main() {
+                // printf() displays the string inside quotation
+                printf("Hello, World!");
+                return 0;
             }` 
         }
     ],

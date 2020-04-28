@@ -9,11 +9,11 @@ module.exports = {
         name:'Dockerfile',
         content:`
             
-            FROM openjdk:8
-            COPY . /
-            WORKDIR /
-            RUN javac *.java
-            CMD ["java","main"]
+            FROM        openjdk:8
+            COPY        . /
+            WORKDIR     /
+            RUN         javac *.java
+            CMD         ["java","main"]
         `
     },
 
@@ -22,10 +22,10 @@ module.exports = {
         name:'Dockerfile',
         content:`
             
-            FROM python:3
-            COPY . /
-            WORKDIR /
-            CMD ["python","main.py"]
+            FROM        python:3
+            COPY        . /
+            WORKDIR     /
+            CMD         ["python","main.py"]
         `
     },
 
@@ -33,22 +33,28 @@ module.exports = {
 
         name:'Dockerfile',
         content:`
-            FROM golang:1.13
-            COPY . /
-            WORKDIR /
-            RUN go build -o main .
-            CMD ["./main"]
+            FROM        golang:1.13
+            COPY        . /
+            WORKDIR     /
+            RUN         go build -o main .
+            CMD         ["./main"]
         `
 
     },
 
-    'c++' : `
-    
-    
-    
-    
-    
-    `,
+    'c' :{
+
+        name:'Dockerfile',
+        content:`
+            FROM gcc:8
+            COPY . /
+            WORKDIR /
+            RUN gcc -o main main.c
+            CMD ["./main"]
+
+        `
+
+    }
 
     
 
