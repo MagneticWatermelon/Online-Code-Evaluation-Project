@@ -6,9 +6,11 @@ module.exports.build        = build;
 module.exports.getResults   = getResults;
 
 const Docker        = require('dockerode')
-const targenerator  = require('./tar-generator')
-const dotenv        = require('dotenv')
 const readable      = require('stream').Readable;
+const dotenv        = require('dotenv')
+
+
+const targenerator  = require('./tar-generator')
 
 dotenv.config('./env')
 

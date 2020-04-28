@@ -2,21 +2,15 @@
   "name": "comp202-project",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "./evaluator/demo.js",
   "scripts": {
-    "test": "nodemon server.js"
+    "remote_code_execution_demo": "node ./evaluator/demo.js"
   },
   "author": "nazmi yilmaz",
   "license": "ISC",
   "dependencies": {
-    "bluebird": "^3.7.2",
     "dockerode": "^3.2.0",
     "dotenv": "^8.2.0",
-    "ejs": "^3.0.2",
-    "express": "^4.17.1",
-    "express-flash": "0.0.2",
-    "express-session": "^1.17.1",
-    "nodemon": "^2.0.3",
     "tar-stream": "^2.1.2"
   }
 }

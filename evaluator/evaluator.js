@@ -24,6 +24,7 @@ function getResults(bundle, imageName){
 
         .catch(err=>{
             reject('build has failed')
+            console.log(err)
         })
     })
 }
@@ -45,14 +46,6 @@ function evaluate(userid, bundle){
     })
 
 }
-
-let template = require('./template')
-const bundle = require('./bundle')
-        
-let data = new bundle(template.lang, template.inputs, template.outputs)
-data.addAll(template.files)
-
-evaluate('nyilmaz', data);
 
 
 
