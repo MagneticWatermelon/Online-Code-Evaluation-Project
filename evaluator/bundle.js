@@ -5,6 +5,8 @@
             * inputs    : these are inputs for test cases
             * outputs   : these are correct outputs
             * lang      : this is the language for the execution
+    - Whenever a bundle is created, dockerfile corresponding that
+      language is automatically atached tho the bundle
 */
 
 module.exports = class Bundle{
