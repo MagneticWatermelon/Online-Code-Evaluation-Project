@@ -4,52 +4,73 @@ const runner = require('./runner')
 
 /*function for building and generating outputs from the code
 */
-function getResults(bundle, imageName){
-    return new Promise((resolve,reject)=>{
+async function getResults(bundle, imageName){
 
-        runner.build(bundle,{t:imageName})
+    let buildsuccess = await runner.build(bundle,{t:imageName})
 
-        .then(info=>{
+    if(!buildsuccess){throw 'build has failed'}
 
-            runner.getResults(imageName,bundle.getInputs())
-            .then(results=>{
-                resolve(results)
-            })
+    let results      = await runner.getResults(imageName,bundle.getInputs())
 
-            .catch(err=>{
-                reject(err)
-            })
-
-        })
-
-        .catch(err=>{
-            reject('build has failed')
-            console.log(err)
-        })
-    })
+    return results;
 }
 
 /*function for evaluating the attempt
 */
-function evaluate(userid, bundle){
+async function evaluate(userid, bundle, callback){
+    try {
 
-    getResults(bundle, userid)
+        first = Date.now()
+        let resultset = await getResults(bundle,userid)
 
-    .then(resultset=>{
+        let evaluation = [];
+        let overall    = 0;
 
-        console.log(resultset)
-    })
+        let answers    = bundle.getOutputs();
+        let length     = answers.length;
 
-    .catch(err=>{
+        if(length != resultset.length){
+            throw 'outputs\' length is not valid'
+        }
 
-        console.log(err)
-    })
+        for(let a = 0 ; a < length ; a++){
+
+            let output = resultset[a]
+            let answer = answers[a]
+            let score  = compare(output,answer)
+
+            overall += score * (1/length);
+
+            evaluation.push({
+                status : (score == 0) ? 'wrong' : 'correct',
+                given  : output,
+                answer : answer
+            })
+        }
+
+        console.log(Date.now()-first)
+        callback(null, overall, evaluation);
+    } 
+    catch (e) {
+        callback(e,null,null)
+    }
 }
 
 
 function compare(o1, o2){
     
-
+    if(o1 == o2){
+        return 1.0;
+    }
+    else if(o1.join(' ') == o2.join(' ')){
+        return 1.0;
+    }
+    else if(o1.join('\n') == o2.join('\n')){
+        return 1.0;
+    }
+    else{
+        return 0.0;
+    }
 }
 
 

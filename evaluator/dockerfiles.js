@@ -7,14 +7,13 @@ module.exports = {
     'java:8' : {
 
         name:'Dockerfile',
-        content:`
-            
-            FROM        openjdk:8
-            COPY        . /
-            WORKDIR     /
-            RUN         javac main.java
-            CMD         ["java","main"]
-        `
+        content:
+            `FROM        openjdk:8
+             ADD        . /
+             WORKDIR     /
+             RUN         javac main.java
+             CMD         ["java","main"]
+            `
     },
 
     'python:3': {

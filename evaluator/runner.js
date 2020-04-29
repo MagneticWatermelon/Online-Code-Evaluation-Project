@@ -9,7 +9,6 @@ const Docker        = require('dockerode')
 const readable      = require('stream').Readable;
 const dotenv        = require('dotenv')
 
-
 const targenerator  = require('./tar-generator')
 
 dotenv.config('./env')
@@ -23,95 +22,86 @@ docker = new Docker({host:hostIP, port:hostPort});
 /*function for building the image
 */
 async function build(bundle, options){
-
+    
     let tar = targenerator.generateFromBundle(bundle)
-
+    
     let stream = await docker.buildImage(tar,options)
     
-    await new Promise((resolve,reject)=>{
-        docker.modem.followProgress(stream, (err, res) => err ? reject(err) : resolve(res));
+    let success = await new Promise((resolve,reject)=>{
+        docker.modem.followProgress(stream, 
+            (err, res) => err ? reject(false) : resolve(true));
     })
+
+    return success;
 }
 
 /*function for running a single test case
 */
-function run(imagename, testcase){
-    return new Promise((resolve,reject)=>{
-        createContainer(imagename,null)
+async function run(imagename, testcase){
 
-        .then(container=>{
-            attachInputs(container,testcase)
-            .then(message=>{
-                container.start()
-                .then(info=>{
-                    
-                    output = []
+    let container = await createContainer(imagename,null);
 
-                    var logStream = new require('stream').PassThrough();
-                    logStream.on('data', function(chunk){
-                        output.push(chunk.toString('utf8').replace('\n',''))
-                    })
+    await attachInputsToContainer(container,testcase)
 
-                    container.wait()
-                    .then(info=>{
-                        container.logs({follow:true,stdout:true,stderr:true},(err,stream)=>{
-                            if(err){reject('cannot get logs from container')}
+    container.start();
+
+    let output = []
+
+    let logStream = new require('stream').PassThrough();
+
+    logStream.on('data', function(chunk){
+        output.push(chunk.toString('utf8').replace('\n',''))
+    })
     
-                            container.modem.demuxStream(stream, logStream, logStream);
-    
-                            stream.on('end', function(){
-                                
-                                resolve(output)
-                                logStream.end();
+    await container.wait();
 
-                                container.remove(()=>{})
-                                
-                            });
-                        })
-
-                    })
-
-                })
-
-                .catch(err=>{
-                    reject('cannot start container')
-                })
-            })
-
-            .catch(err=>{
-                reject(err)
-            })
-        })
+    await new Promise((resolve,reject)=>{
         
-        .catch(err=>{
-            reject('cannot create container')
+        container.logs({follow:true,stdout:true,stderr:true},(err,stream)=>{
+            if(err){reject('cannot get logs from container')}
+            
+            container.modem.demuxStream(stream, logStream, logStream);
+            
+            stream.on('end', function(){
+                
+                resolve('log is ended')
+                logStream.end();
+                
+                container.remove(()=>{})
+                
+            });
         })
     })
+
+    return output;
 }
 
 /*function for getting all results from all test cases
 */
-function getResults(imagename, inputs){
-    return new Promise(async (resolve,reject)=>{
+async function getResults(imagename, inputs){
+    let resultset = []
 
-        let results = []
-        
-        for(testcase of inputs){
-            await run(imagename, testcase)
-            .then(output=>{results.push(output)})
-            .catch(err=>{reject(err)})
+    for(input of inputs){
+        try{
+            let output = await run(imagename,input)
+            resultset.push(output)
         }
-        docker.getImage(imagename).remove((info)=>{
-            resolve(results)
-        })
-    })
+        catch(e){
+            resultset.push([])
+        }
+    }
+
+    return output;
 }
 
 /*function for attaching inputs to the container
 */
-function attachInputs(container, inputs){
-    let inputstream     = readable.from(mapInputs(inputs))
-    return new Promise((resolve,reject)=>{
+async function attachInputsToContainer(container, inputs){
+    
+    let inputs_fixed    = [].concat(...inputs.map(e => [e, '\n']))
+    let inputstream     = readable.from(inputs_fixed)
+    
+    await new Promise((resolve,reject)=>{
         container.attach(attachOptions)
         .then(stream=>{
             inputstream.pipe(stream)
@@ -124,19 +114,10 @@ function attachInputs(container, inputs){
     })
 }
 
-/*function for adding '\n' to the end of each input
-  they need to be entered that's the point of this function
-*/
-function mapInputs(inputs){
-    return [].concat(...inputs.map(e => [e, '\n']))
-}
-
 /*function for creating a container for a test case
 */
-function createContainer(imagename, hostConfig){
-    return new Promise((resolve,reject)=>{
-        
-        docker.createContainer(
+async function createContainer(imagename, hostConfig){
+    let container = await docker.createContainer(
         {
           Image         : imagename,
           AttachStdin   : true,
@@ -145,15 +126,11 @@ function createContainer(imagename, hostConfig){
           OpenStdin     : true,
           StdinOnce     : false,
           Tty           : false,
-          Cmd           : []
+          Cmd           : [],
+          HostConfig    : hostConfig
         })
-        .then(container=>{
-            resolve(container)
-        })
-        .catch(err=>{
-            reject(err)
-        })
-    })
+
+    return container
 }
   
 
