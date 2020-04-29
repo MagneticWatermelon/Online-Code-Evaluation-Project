@@ -2,8 +2,9 @@
    returns back the result
 */
 
-module.exports.build        = build;
+module.exports.buildImage   = buildImage;
 module.exports.getResults   = getResults;
+module.exports.runCode      = runCode;
 
 const Docker        = require('dockerode')
 const readable      = require('stream').Readable;
@@ -21,7 +22,7 @@ docker = new Docker({host:hostIP, port:hostPort});
 
 /*function for building the image
 */
-async function build(bundle, options){
+async function buildImage(bundle, options){
     
     let tar = targenerator.generateFromBundle(bundle)
     
@@ -35,13 +36,23 @@ async function build(bundle, options){
     return success;
 }
 
+async function runCode(bundle, imagename){
+    let tag = `${imagename}test`;
+    let buildsucess = await buildImage(bundle,{t:tag})
+    if(!buildsucess){throw 'compilation error!'}
+
+    let output = await testInput(tag,null)
+
+    return output;
+}
+
 /*function for running a single test case
 */
-async function run(imagename, testcase){
+async function testInput(imagename, testcase){
 
     let container = await createContainer(imagename,null);
 
-    await attachInputsToContainer(container,testcase)
+    await attachToContainer(container,testcase)
 
     container.start();
 
@@ -83,7 +94,7 @@ async function getResults(imagename, inputs){
 
     for(input of inputs){
         try{
-            let output = await run(imagename,input)
+            let output = await testInput(imagename,input)
             resultset.push(output)
         }
         catch(e){
@@ -91,13 +102,14 @@ async function getResults(imagename, inputs){
         }
     }
 
-    return output;
+    return resultset;
 }
 
 /*function for attaching inputs to the container
 */
-async function attachInputsToContainer(container, inputs){
-    
+async function attachToContainer(container, inputs){
+    if(inputs==null || container == null){return}
+
     let inputs_fixed    = [].concat(...inputs.map(e => [e, '\n']))
     let inputstream     = readable.from(inputs_fixed)
     

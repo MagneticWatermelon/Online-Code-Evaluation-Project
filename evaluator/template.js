@@ -97,25 +97,16 @@ const bundleTemplate2 = {
 
 const bundleTemplate3 = {
     
-    lang  : 'java:8', // a string to define language
+    lang  : 'python:3', // a string to define language
 
     files : // a json array that each element has 'name' and 'content' feature 
     [
         {
-            name: 'main.java',
-            content:`
-                import java.util.Scanner;
-                public class main{
-                    public static void main(String[] args){
-
-                        Scanner sc = new Scanner(System.in);
-
-                        int a = sc.nextInt();
-                        int b = sc.nextInt();
-                        
-                        System.out.println("yusuf");
-                    }
-                }` 
+            name: 'main.py',
+            content:`num1 = input()\n`+
+                    `num2 = input()\n`+
+                    `sum = float(num1) + float(num2)\n`+
+                    `print(sum)\n`
         }
     ],
 
@@ -135,7 +126,34 @@ const bundleTemplate3 = {
                     ['130']
                 ], 
 }
+
+
+
+const bundleTemplate4 = {
+    
+    lang  : 'java:8', // a string to define language
+
+    files : // a json array that each element has 'name' and 'content' feature 
+    [
+        {
+            name: 'main.java',
+            content:`
+            
+            public class main{
+                public static void main(String[] args){
+                    System.out.println("Hello World");
+                    System.out.println("This file was executed by docker remote api");
+                }
+            }
+            `
+        }
+    ],
+
+    inputs  :   [],
+    outputs :   [], 
+}
 module.exports.bundleTemplate = bundleTemplate;
 module.exports.bundleTemplate2=bundleTemplate2;
 module.exports.bundleTemplate3=bundleTemplate3;
+module.exports.bundleTemplate4=bundleTemplate4;
 module.exports.evaluationTemplate = evaluationTemplate;

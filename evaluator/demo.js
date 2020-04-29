@@ -1,9 +1,10 @@
 const evaluator = require('./evaluator')
 const bundle = require('./bundle')
+const runner = require('./runner')
 
 
 
-async function u1(){
+async function test1(){
 
     let b = require('./template').bundleTemplate;
     
@@ -23,7 +24,7 @@ async function u1(){
     });
 }
 
-async function u2(){
+async function test2(){
 
     let b = require('./template').bundleTemplate2;
     
@@ -44,7 +45,7 @@ async function u2(){
 }
 
 
-async function u3(){
+async function test3(){
 
     let b = require('./template').bundleTemplate3;
     
@@ -65,6 +66,27 @@ async function u3(){
 }
 
 
-u1();
-//u2();
-//u3();
+async function test4(){
+
+    let b = require('./template').bundleTemplate4;
+    
+    let source = new bundle(b.lang, b.inputs, b.outputs)
+    
+    source.addAll(b.files)
+
+    try{
+
+     let output = await runner.runCode(source,'nyilmaz')
+     console.log(output)
+    }
+    catch(e){
+        console.log(e)
+    }
+
+}
+
+
+//test1();
+//test2();
+//test3();
+test4();

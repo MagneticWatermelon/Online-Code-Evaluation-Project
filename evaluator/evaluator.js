@@ -6,9 +6,9 @@ const runner = require('./runner')
 */
 async function getResults(bundle, imageName){
 
-    let buildsuccess = await runner.build(bundle,{t:imageName})
+    let buildsuccess = await runner.buildImage(bundle,{t:imageName})
 
-    if(!buildsuccess){throw 'build has failed'}
+    if(!buildsuccess){throw 'compilation error!'}
 
     let results      = await runner.getResults(imageName,bundle.getInputs())
 
