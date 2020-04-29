@@ -22,7 +22,7 @@ const bundleTemplate = {
                         int a = sc.nextInt();
                         int b = sc.nextInt();
                         
-                        System.out.println("osman");
+                        System.out.println(a+b);
                     }
                 }` 
         }
@@ -74,7 +74,7 @@ const bundleTemplate2 = {
                         int a = sc.nextInt();
                         int b = sc.nextInt();
                         
-                        System.out.println("nazmi");
+                        System.out.println(a+b);
                     }
                 }` 
         }
@@ -103,9 +103,9 @@ const bundleTemplate3 = {
     [
         {
             name: 'main.py',
-            content:`num1 = input()\n`+
-                    `num2 = input()\n`+
-                    `sum = float(num1) + float(num2)\n`+
+            content:`num1 = int(input())\n`+
+                    `num2 = int(input())\n`+
+                    `sum = num1 + num2\n`+
                     `print(sum)\n`
         }
     ],
