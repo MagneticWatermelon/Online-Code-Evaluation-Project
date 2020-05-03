@@ -42,7 +42,6 @@ export default function SignIn() {
   const classes = useStyles();
 
   return (
-    <Router>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <div className={classes.paper}>
@@ -85,7 +84,8 @@ export default function SignIn() {
               variant="contained"
               color="primary"
               className={classes.submit}
-              href="/dashboard"
+              component={RouterLink} 
+              to="/dashboard"
             >
               Sign In
             </Button>
@@ -104,6 +104,5 @@ export default function SignIn() {
           </form>
         </div>
       </Container>
-    </Router>
   );
 }
