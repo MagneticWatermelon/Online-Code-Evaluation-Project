@@ -3,11 +3,11 @@
 */
 
 module.exports.buildImage   = buildImage;
-module.exports.getResults   = getResults;
+module.exports.getOutputs   = getOutputs;
 module.exports.runCode      = runCode;
 
 const Docker        = require('dockerode')
-const readable      = require('stream').Readable;
+const Readable      = require('stream').Readable;
 const dotenv        = require('dotenv')
 
 const targenerator  = require('./tar-generator')
@@ -24,7 +24,7 @@ docker = new Docker({host:hostIP, port:hostPort});
 */
 async function buildImage(bundle, options){
     
-    let tar = targenerator.generateFromBundle(bundle)
+    let tar = targenerator.fromBundle(bundle)
     
     let stream = await docker.buildImage(tar,options)
     
@@ -54,7 +54,7 @@ async function testInput(imagename, testcase){
 
     await attachToContainer(container,testcase)
 
-    container.start();
+    await container.start();
 
     let output = []
 
@@ -87,22 +87,22 @@ async function testInput(imagename, testcase){
     return output;
 }
 
-/*function for getting all results from all test cases
+/*function for getting all outputs from all test cases
 */
-async function getResults(imagename, inputs){
-    let resultset = []
+async function getOutputs(imagename, inputs){
+    let outputs = []
 
     for(input of inputs){
         try{
             let output = await testInput(imagename,input)
-            resultset.push(output)
+            outputs.push(output)
         }
         catch(e){
-            resultset.push([])
+            outputs.push([])
         }
     }
 
-    return resultset;
+    return outputs;
 }
 
 /*function for attaching inputs to the container
@@ -111,7 +111,7 @@ async function attachToContainer(container, inputs){
     if(inputs==null || container == null){return}
 
     let inputs_fixed    = [].concat(...inputs.map(e => [e, '\n']))
-    let inputstream     = readable.from(inputs_fixed)
+    let inputstream     = Readable.from(inputs_fixed)
     
     await new Promise((resolve,reject)=>{
         container.attach(attachOptions)
@@ -142,7 +142,7 @@ async function createContainer(imagename, hostConfig){
           HostConfig    : hostConfig
         })
 
-    return container
+    return container;
 }
   
 
