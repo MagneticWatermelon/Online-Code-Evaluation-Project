@@ -8,7 +8,7 @@ import { makeStyles } from '@material-ui/core/styles';
 export default function Course(props) {
     const useStyles = makeStyles((theme) => ({
         root: {
-          
+          width: 250
         },
         content: {
           padding: 0,
@@ -19,13 +19,17 @@ export default function Course(props) {
         },
         info: {
           padding: 16,
+          fontSize: 14,
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis'
         },
       }));
 
     const styles = useStyles();
 
     return (
-        <Card >    
+        <Card className={styles.root}>    
             <CardContent className={styles.content}>
                 <div className={styles.divcolor}>
                     

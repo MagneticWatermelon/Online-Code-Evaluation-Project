@@ -20,6 +20,7 @@ import {Switch, Route } from 'react-router';
 import Sandbox from '../Sandbox/Sandbox';
 import {BrowserRouter as Router} from 'react-router-dom';
 import CourseGrid from '../CourseGrid/CourseGrid';
+import RightBar from '../RightBar/RightBar';
 
 
 
@@ -29,6 +30,7 @@ const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
+    scrollbarWidth: 'none',
   },
   toolbar: {
     paddingRight: 24, // keep right padding when drawer closed
@@ -93,6 +95,8 @@ const useStyles = makeStyles((theme) => ({
   container: {
     paddingTop: theme.spacing(2),
     paddingBottom: theme.spacing(2),
+    display: 'inline-flex',
+    width: 'fit-content',
   },
   paper: {
     padding: theme.spacing(2),
@@ -110,7 +114,9 @@ export default function Dashboard() {
   const [open, setOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [title, setTitle] = React.useState('Dashboard');
-  const [courseList, setCourses] = React.useState(['COMP101-01', 'COMP112-02', 'COMP114-01']);
+  const [courseList, setCourses] = React.useState(['COMP101-01', 'COMP112-02', 'COMP114-01', 
+  'COMP151-01', 'COMP152-02', 'COMP124-01', 'COMP101-01', 'COMP112-02', 'COMP114-01', 
+  'COMP151-01', 'COMP152-02', 'COMP124-01']);
 
   const handleTitle = (event) => {
     setTitle(event.currentTarget.children[1].innerText);
@@ -188,6 +194,7 @@ export default function Dashboard() {
                     <Switch>
                         <Route exact path="/dashboard">
                           <CourseGrid courses={courseList} />
+                          <RightBar />
                         </Route>
                         <Route exact path="/example">
                             <Sandbox />
