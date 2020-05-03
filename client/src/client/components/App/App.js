@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import { MemoryRouter as Router, Route } from 'react-router';
+import { MemoryRouter as Router, Route, Switch } from 'react-router';
 import { Link as RouterLink } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import SignIn from '../SignIn/SignIn';
@@ -30,7 +30,8 @@ const classes = useStyles();
   return (
     <Router>
       <CssBaseline />
-      <Dashboard />
+      <Route exact path="/" component={SignIn} />
+      <Route exact path="/dashboard" component={Dashboard} />
     </Router>
   );
 }

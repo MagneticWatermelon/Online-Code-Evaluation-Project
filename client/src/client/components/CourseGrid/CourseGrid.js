@@ -1,6 +1,8 @@
 import React from 'react';
 import Course from '../Course/Course';
 import { Grid } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
+
 
 function getRandomColor() {
     var letters = '0123456789ABCDEF';
@@ -12,15 +14,23 @@ function getRandomColor() {
   }
 
 export default function CourseGrid(props) {
-    return (
-        <Grid container direction='row' spacing={5}>
-            {props.courses.map(course => {
-           return (
-            <Grid item>
-              <Course course={course} color={getRandomColor()}/>
-            </Grid>
-           )
-        })}
-        </Grid>
-    );
+  const useStyles = makeStyles((theme) => ({
+    root: {
+      display: 'inline-flex'
+    }
+  }));
+
+  const styles = useStyles();
+  
+  return (
+      <Grid container direction='row' spacing={5} className={styles.root}>
+          {props.courses.map(course => {
+          return (
+          <Grid item wrap='nowrap'>
+            <Course course={course} color={getRandomColor()}/>
+          </Grid>
+          )
+      })}
+      </Grid>
+  );
 }
