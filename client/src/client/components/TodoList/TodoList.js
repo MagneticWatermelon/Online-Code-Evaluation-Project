@@ -5,12 +5,16 @@ import { makeStyles } from '@material-ui/core/styles';
 
 
 
-export default function TodoList() {
+export default function TodoList(props) {
 
     const useStyles = makeStyles((theme) => ({
         root: {
           width: 250,
           display: 'block',
+        },
+        content: {
+            marginTop: 5,
+            marginBottom: 5,
         }
       }));
     
@@ -23,32 +27,38 @@ export default function TodoList() {
             </Typography>
             <Divider />
             <List>
-                <ListItem>
-                    <ListItemIcon>
-                        <AssignmentIcon />
-                    </ListItemIcon>
-                    <ListItemText 
-                        primary='Assigment Name'
-                        secondary={
-                            <React.Fragment>
-                                <Typography
-                                    component="p"
-                                    variant="body2"
-                                    color="textPrimary"
-                                >
-                                    Course Name
-                                </Typography>
-                                <Typography
-                                    component="p"
-                                    variant="body2"
-                                    color="textPrimary"
-                                >
-                                    Due Date
-                                </Typography>
-                            </React.Fragment>
-                        }
-                    />
-                </ListItem>
+                {props.todos.map(todo => {
+                    return (
+                        <ListItem>
+                            <ListItemIcon>
+                                <AssignmentIcon />
+                            </ListItemIcon>
+                            <ListItemText 
+                                primary={todo.name}
+                                secondary={
+                                    <React.Fragment>
+                                        <Typography
+                                            component="p"
+                                            variant="body2"
+                                            color="textPrimary"
+                                            className={styles.content}
+                                        >
+                                            {todo.courseName}
+                                        </Typography>
+                                        <Typography
+                                            component="p"
+                                            variant="body2"
+                                            color="textPrimary"
+                                            
+                                        >
+                                            {todo.dueDate}
+                                        </Typography>
+                                    </React.Fragment>
+                                }
+                            />
+                        </ListItem>
+                    )
+                })}
             </List>
         </div>
     );

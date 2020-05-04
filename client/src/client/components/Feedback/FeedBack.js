@@ -6,7 +6,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 
 
-export default function FeedBack() {
+export default function FeedBack(props) {
 
     const useStyles = makeStyles((theme) => ({
         root: {
@@ -15,6 +15,10 @@ export default function FeedBack() {
         },
         title: {
             paddingLeft: 10,
+        },
+        content: {
+            marginTop: 5,
+            marginBottom: 5,
         }
       }));
     
@@ -27,32 +31,37 @@ export default function FeedBack() {
             </Typography>
             <Divider />
             <List>
-                <ListItem>
-                    <ListItemIcon>
-                        <DoneIcon style={{ color: green[500] }} />
-                    </ListItemIcon>
-                    <ListItemText 
-                        primary='Assigment Name'
-                        secondary={
-                            <React.Fragment>
-                                <Typography
-                                    component="p"
-                                    variant="body2"
-                                    color="textPrimary"
-                                >
-                                    Course Name
-                                </Typography>
-                                <Typography
-                                    component="p"
-                                    variant="body2"
-                                    color="textPrimary"
-                                >
-                                    5 out of 10
-                                </Typography>
-                            </React.Fragment>
-                        }
-                    />
-                </ListItem>
+                {props.grades.map(grade => {
+                return (
+                    <ListItem>
+                        <ListItemIcon>
+                            <DoneIcon style={{ color: green[500] }} />
+                        </ListItemIcon>
+                        <ListItemText 
+                            primary={grade.name}
+                            secondary={
+                                <React.Fragment>
+                                    <Typography
+                                        component="p"
+                                        variant="body2"
+                                        color="textPrimary"
+                                        className={styles.content}
+                                    >
+                                        {grade.courseName}
+                                    </Typography>
+                                    <Typography
+                                        component="p"
+                                        variant="body2"
+                                        color="textPrimary"
+                                    >
+                                        {grade.gradeInfo}
+                                    </Typography>
+                                </React.Fragment>
+                            }
+                        />
+                    </ListItem>
+                )
+                })}
             </List>
         </div>
     );
