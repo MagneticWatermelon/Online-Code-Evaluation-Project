@@ -12,62 +12,61 @@
 module.exports = class Bundle{
 
     constructor(lang, inputs, outputs){
-        this.#lang    = lang;
-        this.#inputs  = inputs;
-        this.#outputs = outputs;
-        this.#files   = [];
-
-        this.#files.push(require('./dockerfiles')[lang])
+        this.lang    = lang;
+        this.inputs  = inputs;
+        this.outputs = outputs;
+        this.files   = [];
+        
+        this.setDockerFile(lang)
     }
-    
-    #lang;
-    #inputs;
-    #outputs;
-    #files;
 
+    setDockerFile(lang){
+        let {name,content} = require('./dockerfiles').getDockerFile(lang)
+        this.addFile(name,content)
+    }
     addFile(name,content){
-        this.#files.push(
-            {
-                'name'      :name,
-                'content'   :content,
-            }
-        )
+        if(name==null || content == null){return}
+        this.files.push({'name':name,'content':content,})
     }
 
     addAll(files){
-        this.#files.push(...files)
+        if(files==null){return}
+        files.forEach((f)=>{
+            let {name, content} = f
+            this.addFile(name,content)
+        })
     }
 
     setInputs(inputs){
-        this.#inputs=inputs;
+        this.inputs=inputs;
     }
 
     getInputs(){
-        return this.#inputs
+        return this.inputs
     }
 
     setOutputs(outputs){
-        this.#outputs = outputs;
+        this.outputs = outputs;
     }
 
     getOutputs(){
-        return this.#outputs
+        return this.outputs;
     }
 
-    fileList(){
-        console.log(this.#files)
+    getFiles(){
+        return this.files;
     }
 
     deletefile(name){
-        console.log('delete function is not implemented')
+        this.files = this.files.filter(file => {file.name!=name})
     }
 
     toJSON(){
         return {
-            lang    : this.#lang,
-            files   : this.#files,
-            inputs  : this.#inputs,
-            outputs : this.#outputs
+            lang    : this.lang,
+            files   : this.files,
+            inputs  : this.inputs,
+            outputs : this.outputs
         }
     }
 }

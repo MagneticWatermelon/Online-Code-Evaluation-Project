@@ -1,18 +1,16 @@
 const evaluator = require('./evaluator')
-const bundle = require('./bundle')
+const Bundle = require('./bundle')
 const runner = require('./runner')
 
 
 
 async function test1(){
 
-    let b = require('./template').bundleTemplate;
+    let {lang, files, inputs, outputs} = require('./template').javaTemplate;
+    let bundle = new Bundle(lang, inputs, outputs)
+    bundle.addAll(files)
     
-    let source = new bundle(b.lang, b.inputs, b.outputs)
-    
-    source.addAll(b.files)
-    
-    evaluator.evaluate('nyilmaz', source, (err, score, evaluation)=>{
+    evaluator.evaluate('user1', bundle, (err, score, evaluation)=>{
         
         if(err){return console.log(err);}
         
@@ -26,13 +24,11 @@ async function test1(){
 
 async function test2(){
 
-    let b = require('./template').bundleTemplate2;
+    let {lang, files, inputs, outputs} = require('./template').cTemplate;
+    let bundle = new Bundle(lang, inputs, outputs)
+    bundle.addAll(files)
     
-    let source = new bundle(b.lang, b.inputs, b.outputs)
-    
-    source.addAll(b.files)
-    
-    evaluator.evaluate('oekinci', source, (err, score, evaluation)=>{
+    evaluator.evaluate('user2', bundle, (err, score, evaluation)=>{
         
         if(err){return console.log(err);}
         
@@ -43,17 +39,14 @@ async function test2(){
         }
     });
 }
-
 
 async function test3(){
 
-    let b = require('./template').bundleTemplate3;
+    let {lang, files, inputs, outputs} = require('./template').cppTemplate;
+    let bundle = new Bundle(lang, inputs, outputs)
+    bundle.addAll(files)
     
-    let source = new bundle(b.lang, b.inputs, b.outputs)
-    
-    source.addAll(b.files)
-    
-    evaluator.evaluate('yonuk', source, (err, score, evaluation)=>{
+    evaluator.evaluate('user3', bundle, (err, score, evaluation)=>{
         
         if(err){return console.log(err);}
         
@@ -65,18 +58,51 @@ async function test3(){
     });
 }
 
-
 async function test4(){
 
-    let b = require('./template').bundleTemplate4;
+    let {lang, files, inputs, outputs} = require('./template').goTemplate;
+    let bundle = new Bundle(lang, inputs, outputs)
+    bundle.addAll(files)
     
-    let source = new bundle(b.lang, b.inputs, b.outputs)
+    evaluator.evaluate('user4', bundle, (err, score, evaluation)=>{
+        
+        if(err){return console.log(err);}
+        
+        console.log(`score is ${score}`);
+        
+        for(e of evaluation){
+            console.log(e);
+        }
+    });
+}
+
+async function test5(){
+
+    let {lang, files, inputs, outputs} = require('./template').pythonTemplate;
+    let bundle = new Bundle(lang, inputs, outputs)
+    bundle.addAll(files)
     
-    source.addAll(b.files)
+    evaluator.evaluate('user5', bundle, (err, score, evaluation)=>{
+        
+        if(err){return console.log(err);}
+        
+        console.log(`score is ${score}`);
+        
+        for(e of evaluation){
+            console.log(e);
+        }
+    });
+}
+
+async function test6(){
+
+    let {lang, files, inputs, outputs} = require('./template').exerciseTemplate;
+    let bundle = new Bundle(lang, inputs, outputs)
+    bundle.addAll(files)
 
     try{
 
-     let output = await runner.runCode(source,'nyilmaz')
+     let output = await runner.runCode(bundle,'user6')
      console.log(output)
     }
     catch(e){
@@ -90,3 +116,5 @@ test1();
 test2();
 test3();
 test4();
+test5();
+test6();

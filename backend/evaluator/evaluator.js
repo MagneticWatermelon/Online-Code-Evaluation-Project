@@ -4,13 +4,13 @@ const runner = require('./runner')
 
 /*function for building and generating outputs from the code
 */
-async function getResults(bundle, imageName){
+async function getOutputs(bundle, imageName){
 
     let buildsuccess = await runner.buildImage(bundle,{t:imageName})
 
     if(!buildsuccess){throw 'compilation error!'}
 
-    let results      = await runner.getResults(imageName,bundle.getInputs())
+    let results      = await runner.getOutputs(imageName,bundle.getInputs())
 
     return results;
 }
@@ -20,36 +20,34 @@ async function getResults(bundle, imageName){
 async function evaluate(userid, bundle, callback){
     try {
 
-        first = Date.now()
-        let resultset = await getResults(bundle,userid)
+        let outputs = await  getOutputs(bundle,userid);
+        let answers = bundle.getOutputs();
 
-        let evaluation = [];
-        let overall    = 0;
+        let evaluation  = [];
+        let score       = 0.0;
+        let length      = answers.length;
 
-        let answers    = bundle.getOutputs();
-        let length     = answers.length;
-
-        if(length != resultset.length){
+        if(length != outputs.length){
             throw 'outputs\' length is not valid'
         }
 
         for(let a = 0 ; a < length ; a++){
 
-            let output = resultset[a]
+            let output = outputs[a]
             let answer = answers[a]
-            let score  = compare(output,answer)
 
-            overall += score * (1/length);
+            let isCorrect  = compare(output,answer)
+
+            score += isCorrect ? (1/length) : 0;
 
             evaluation.push({
-                status : (score == 0) ? 'wrong' : 'correct',
-                given  : output,
-                answer : answer
+                'status' : isCorrect ? 'correct' : 'wrong',
+                'output' : output,
+                'answer' : answer
             })
         }
 
-        console.log(Date.now()-first)
-        callback(null, overall, evaluation);
+        callback(null, score, evaluation);
     } 
     catch (e) {
         callback(e,null,null)
@@ -60,16 +58,16 @@ async function evaluate(userid, bundle, callback){
 function compare(o1, o2){
     
     if(o1 == o2){
-        return 1.0;
+        return true;
     }
     else if(o1.join(' ') == o2.join(' ')){
-        return 1.0;
+        return true;
     }
     else if(o1.join('\n') == o2.join('\n')){
-        return 1.0;
+        return true;
     }
     else{
-        return 0.0;
+        return false;
     }
 }
 
