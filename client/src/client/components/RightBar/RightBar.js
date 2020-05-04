@@ -17,9 +17,9 @@ export default function RightBar() {
     {name: 'Knapsack', courseName: 'Algorithms and Data Structures', gradeInfo: '6 out of 10'}, 
     {name: 'Simple Array', courseName: 'Art of Computing', gradeInfo: '9 out of 10'}, 
     {name: 'Inheritance', courseName: 'Object Oriented Programming', gradeInfo: '7 out of 10'}]);
-    const [toDoList, setTodos] = React.useState([{name: 'Task Scheduling', courseName: 'Algorithmic Thinking', dueDate: '15 May 2020'}, 
-    {name: 'Functions', courseName: 'Art of Computing', dueDate: '10 May 2020'}, 
-    {name: 'Encapsulation', courseName: 'Object Oriented Programming', dueDate: '11 May 2020'}]);
+    const [toDoList, setTodos] = React.useState([{name: 'Task Scheduling', courseName: 'Algorithmic Thinking', dueDate: '15 May at 23:59'}, 
+    {name: 'Functions', courseName: 'Art of Computing', dueDate: '10 May at 23:59'}, 
+    {name: 'Encapsulation', courseName: 'Object Oriented Programming', dueDate: '11 May at 23:59'}]);
     const styles = useStyles();
     return (
         <Container className={styles.root}>

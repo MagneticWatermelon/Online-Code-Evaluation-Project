@@ -114,9 +114,12 @@ export default function Dashboard() {
   const [open, setOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [title, setTitle] = React.useState('Dashboard');
-  const [courseList, setCourses] = React.useState(['COMP101-01', 'COMP112-02', 'COMP114-01', 
-  'COMP151-01', 'COMP152-02', 'COMP124-01', 'COMP101-01', 'COMP112-02', 'COMP114-01', 
-  'COMP151-01', 'COMP152-02', 'COMP124-01']);
+  const [courseList, setCourses] = React.useState([
+    {courseName: 'Art of Computing', courseID: 'COMP101-01', courseSemestr: '2019/2020 Spring'}, 
+    {courseName: 'Algorithms and Data Structures', courseID: 'COMP203-02', courseSemestr: '2019/2020 Spring'},
+    {courseName: 'Exploring Profession', courseID: 'COMP104-01', courseSemestr: '2019/2020 Spring'},
+    {courseName: 'Object Oriented Programming', courseID: 'COMP112-02', courseSemestr: '2019/2020 Spring'},
+  ]);
 
   const handleTitle = (event) => {
     setTitle(event.currentTarget.children[1].innerText);
@@ -197,7 +200,7 @@ export default function Dashboard() {
                           <RightBar />
                         </Route>
                         <Route exact path="/example">
-                            <Sandbox />
+                            <Sandbox id="editor1"/>
                         </Route>
                     </Switch>
                 </Container>
