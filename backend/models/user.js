@@ -46,6 +46,13 @@ const updateUser = (user_id, name, mail, password, callback)=>{
 
 }
 
+/* Following function updates the password of the user
+    example callback call => callback(err)
+ */
+const updatePassword = (user_id, password)=>{
+
+}
+
 /* Following deletes the user
     example callback call => callback(err)
  */
@@ -83,5 +90,6 @@ module.exports.getUser = getUser;
 module.exports.updateUser = updateUser;
 module.exports.deleteUser = deleteUser;
 module.exports.addProfilePhoto = addProfilePhoto;
+module.exports.updatePassword  = updatePassword;
 module.exports.getGivenCourses = getGivenCourses;
 module.exports.getTakenCourses = getTakenCourses;

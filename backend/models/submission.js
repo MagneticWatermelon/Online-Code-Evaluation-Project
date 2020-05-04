@@ -37,6 +37,23 @@ const getSubmission = (submission_id, callback)=>{
 
 }
 
+/* Following function returns an array of json object
+
+    !! important
+
+    example :  [    {name:String, content:String}, // file1
+                    {name:String, content:String}  // file2
+                    .
+                    .
+                    .
+               ]
+
+    example callback call => callback(err, files)
+*/
+const getFiles = (submission_id, callback)=>{
+
+}
+
 /* Deletes the submission
     example callback call => callback(err)
  */
@@ -66,3 +83,4 @@ module.exports.getSubmission = getSubmission;
 module.exports.deleteSubmission = deleteSubmission;
 module.exports.updateScore = updateScore;
 module.exports.updateEvaluation = updateEvaluation;
+module.exports.getFiles = getFiles;
