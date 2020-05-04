@@ -1,7 +1,6 @@
 const evaluationTemplate = {
     status:'', // correct, wrong
-    output:[],         // student's answer
-    answer:[],        // instructor's answer
+    outputs:[],         // student's answer
 }
 
 const javaTemplate = {
