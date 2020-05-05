@@ -120,6 +120,8 @@ export default function Dashboard() {
   const [openNotif, setOpenNotif] = React.useState(false);
   const [anchorElNotif, setAnchorElNotif] = React.useState(null);
   const [title, setTitle] = React.useState('Dashboard');
+  const [count, setCount] = React.useState(2);
+
   const [courseList, setCourses] = React.useState([
     {courseName: 'Art of Computing', courseID: 'COMP101-01', courseSemestr: '2019/2020 Spring'}, 
     {courseName: 'Algorithms and Data Structures', courseID: 'COMP203-02', courseSemestr: '2019/2020 Spring'},
@@ -153,6 +155,7 @@ export default function Dashboard() {
 
   const handleClickNotif = (event) => {
     setAnchorElNotif(event.currentTarget);
+    setCount(0);
   };
 
   const handleCloseNotif = () => {
@@ -186,7 +189,7 @@ export default function Dashboard() {
                         aria-describedby='notif'
                         onClick={handleClickNotif}
                       >
-                        <Badge badgeContent={2} color="secondary">
+                        <Badge badgeContent={count} color="secondary">
                           <MailIcon />
                         </Badge> 
                     </IconButton>
