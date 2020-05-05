@@ -1,10 +1,12 @@
 import React from 'react';
-import { Card, CardContent, Typography} from '@material-ui/core';
+import { Card, CardContent, Typography, Grid, IconButton} from '@material-ui/core';
 import {withStyles, makeStyles } from '@material-ui/core/styles';
 import Tooltip from '@material-ui/core/Tooltip';
 import { Link as RouterLink} from 'react-router-dom';
 import Link from '@material-ui/core/Link'
-
+import NotificationsIcon from '@material-ui/icons/Notifications';
+import AssignmentIcon from '@material-ui/icons/Assignment';
+import FolderSharedIcon from '@material-ui/icons/FolderShared';
 
 
 
@@ -27,6 +29,9 @@ export default function Course(props) {
         },
         content: {
           padding: 0,
+          "&:last-child": {
+            paddingBottom: 0
+          }
         },
         divcolor: {
           padding: '80px 120px',
@@ -78,7 +83,30 @@ export default function Course(props) {
                   <Typography component="p" variant="body2" className={styles.detail}>
                       {props.course.courseSemestr}
                   </Typography>
+                  <Grid
+                    container
+                    direction="row"
+                    justify="space-evenly"
+                    alignItems="center"
+                  >
+                      <Grid item>
+                        <IconButton component={RouterLink} to={`courses/${props.course.courseID}/announcements`}>
+                          <NotificationsIcon />
+                        </IconButton>
+                      </Grid>
 
+                      <Grid item>
+                        <IconButton component={RouterLink} to={`courses/${props.course.courseID}/assigments`}>
+                          <AssignmentIcon />
+                        </IconButton>
+                      </Grid>
+
+                      <Grid item>
+                        <IconButton component={RouterLink} to={`courses/${props.course.courseID}/resources`}>
+                          <FolderSharedIcon />  
+                        </IconButton>
+                      </Grid>
+                  </Grid>
               </CardContent>
           </Card>
         </Link>
