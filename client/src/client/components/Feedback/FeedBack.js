@@ -3,6 +3,9 @@ import { Typography, Divider, List, ListItem, ListItemIcon, ListItemText } from 
 import DoneIcon from '@material-ui/icons/Done';
 import { green } from '@material-ui/core/colors';
 import { makeStyles } from '@material-ui/core/styles';
+import { Link as RouterLink} from 'react-router-dom';
+import Link from '@material-ui/core/Link';
+
 
 
 
@@ -34,35 +37,37 @@ export default function FeedBack(props) {
                 {props.grades.map((grade, index) => {
                 return (
                     <div>
-                        <ListItem>
-                            <ListItemIcon>
-                                <DoneIcon style={{ color: green[500] }} />
-                            </ListItemIcon>
-                            <ListItemText 
-                                primary={grade.name}
-                                secondary={
-                                    <React.Fragment>
-                                        <Typography
-                                            component="p"
-                                            variant="body2"
-                                            color="textPrimary"
-                                            className={styles.content}
-                                            noWrap='true'
-                                        >
-                                            {grade.courseName}
-                                        </Typography>
-                                        <Typography
-                                            component="p"
-                                            variant="body2"
-                                            color="textPrimary"
-                                            noWrap='true'
-                                        >
-                                            {grade.gradeInfo}
-                                        </Typography>
-                                    </React.Fragment>
-                                }
-                            />
-                        </ListItem>
+                        <Link>
+                            <ListItem component={RouterLink} to={`courses/${grade.courseID}/${grade.assignID}/submissions/${grade.submID}`}>
+                                <ListItemIcon>
+                                    <DoneIcon style={{ color: green[500] }} />
+                                </ListItemIcon>
+                                <ListItemText 
+                                    primary={grade.name}
+                                    secondary={
+                                        <React.Fragment>
+                                            <Typography
+                                                component="p"
+                                                variant="body2"
+                                                color="textPrimary"
+                                                className={styles.content}
+                                                noWrap='true'
+                                            >
+                                                {grade.courseName}
+                                            </Typography>
+                                            <Typography
+                                                component="p"
+                                                variant="body2"
+                                                color="textPrimary"
+                                                noWrap='true'
+                                            >
+                                                {grade.gradeInfo}
+                                            </Typography>
+                                        </React.Fragment>
+                                    }
+                                />
+                            </ListItem>
+                        </Link>
                         <Divider />
                     </div>
                 )
