@@ -10,18 +10,32 @@ const courseSchema = new Schema({
     timestamps: true,
 });
 
+const Course = mongoose.model('Course', courseSchema);
+
 /* Following function creates a course with given parameters
    example callback call => callback(err)
  */
-const createCourse = (course_code, term, name, instructor_id, callback)=>{
+const createCourse = async (course_code, term, name, callback)=>{
+   const course = new Course({
+      course_code: course_code,
+      term: term,
+      name: name
+   });
 
+   const result = await course.save();
+   if(result)
+   {
+      return callback(null, result);
+   }
+      
+      
 }
 
 /* Following function associates the given instructor with the course
    example callback call => callback(err)
  */
 const associateInstructorWithCourse = (course_id, instructor_id,callback)=>{
-
+   
 }
 
 /* Following function drops instructor from the course
@@ -49,6 +63,8 @@ const dropStudentFromCourse = (course_id, student_id, callback)=>{
    example callback call => callback(err,course)
  */
 const getCourse = (course_id, callback)=>{
+
+   
 
 }
 
@@ -87,9 +103,8 @@ const updateCourse = (course_id, title, course_code, term, callback)=>{
 
 }
 
-const Course = mongoose.model('Course', courseSchema);
-module.exports.model = Course;
 
+module.exports.model = Course;
 module.exports.createCourse = createCourse;
 module.exports.associateInstructorWithCourse = associateInstructorWithCourse;
 module.exports.dropInstructorFromCourse = dropInstructorFromCourse;
