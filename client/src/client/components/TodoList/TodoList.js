@@ -29,6 +29,7 @@ export default function TodoList(props) {
             <List>
                 {props.todos.map(todo => {
                     return (
+                    <div>
                         <ListItem>
                             <ListItemIcon>
                                 <AssignmentIcon />
@@ -42,6 +43,7 @@ export default function TodoList(props) {
                                             variant="body2"
                                             color="textPrimary"
                                             className={styles.content}
+                                            noWrap='true'
                                         >
                                             {todo.courseName}
                                         </Typography>
@@ -49,6 +51,7 @@ export default function TodoList(props) {
                                             component="p"
                                             variant="body2"
                                             color="textPrimary"
+                                            noWrap='true'
                                             
                                         >
                                             {todo.dueDate}
@@ -57,6 +60,8 @@ export default function TodoList(props) {
                                 }
                             />
                         </ListItem>
+                        <Divider />
+                    </div>
                     )
                 })}
             </List>

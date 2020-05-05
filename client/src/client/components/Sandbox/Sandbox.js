@@ -7,12 +7,12 @@ import OutputArea from '../OutputArea/OutputArea';
 import './SandBox.css'
 
 
-export default function Sandbox() {
+export default function Sandbox(props) {
     return (
         <SplitPane split='vertical'>
             <ProblemArea />
-            <Pane minSize="10%" maxSize="30%">
-                <CodeArea />
+            <Pane minSize="10%" maxSize="33%">
+                <CodeArea sessionId={props.id}/>
             </Pane>
             <OutputArea />
         </SplitPane>
