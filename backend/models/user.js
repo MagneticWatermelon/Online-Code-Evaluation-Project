@@ -22,7 +22,7 @@ const userSchema = new Schema({
         - if the user not exist then callback(err, null)
  */
 const checkUser = (mail, password, callback)=>{
-
+    callback(null, 1)
 }
 
 /* Following function adds a new user to the system
@@ -36,7 +36,11 @@ const addUser = (name, mail, user_role, password, callback)=>{
     example callback call => callback(err, userAsJson)
  */
 const getUser = (user_id, callback)=>{
-    
+    callback(null, {
+        name: 'Nazmi Yılmaz',
+        mail: 'nazmi@yilmaz.com',
+        user_role: 'admin'
+    })
 }
 
 /* Following updates the user information
@@ -78,7 +82,7 @@ const getGivenCourses = (instructor_id, callback)=>{
     example callback call => callback(err, arrayOfCourseIDs)
  */
 const getTakenCourses = (student_id, callback) =>{
-
+    callback(null, ['1'])
 }
 
 const User = mongoose.model('User', userSchema);

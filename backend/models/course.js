@@ -4,6 +4,7 @@ const Schema = mongoose.Schema;
 
 const courseSchema = new Schema({
     course_code: {type: Number, required: true},
+    year: {type: Number, required:true},
     term: {type: String, required: true},
     name: {type: String, required: true},
 }, {
@@ -13,8 +14,12 @@ const courseSchema = new Schema({
 /* Following function creates a course with given parameters
    example callback call => callback(err)
  */
-const createCourse = (course_code, term, name, instructor_id, callback)=>{
-
+const createCourse = (course_code, year, term, name, instructor_id, callback)=>{
+   console.log(course_code)
+   console.log(year)
+   console.log(term)
+   console.log(name)
+   console.log(instructor_id)
 }
 
 /* Following function associates the given instructor with the course
@@ -49,7 +54,11 @@ const dropStudentFromCourse = (course_id, student_id, callback)=>{
    example callback call => callback(err,course)
  */
 const getCourse = (course_id, callback)=>{
-
+      callback(null,{
+         course_code: '',
+         term:'',
+         name:''
+      })
 }
 
 /* Returns the assignment ids from this course
@@ -83,7 +92,7 @@ const deleteCourse = (course_id, callback)=>{
 /* Updates course properties
     example callback call => callback(err)
  */
-const updateCourse = (course_id, title, course_code, term, callback)=>{
+const updateCourse = (course_id, name, course_code, year, term, callback)=>{
 
 }
 
