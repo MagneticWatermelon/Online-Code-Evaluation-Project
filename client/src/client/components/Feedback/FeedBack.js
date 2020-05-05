@@ -31,35 +31,40 @@ export default function FeedBack(props) {
             </Typography>
             <Divider />
             <List>
-                {props.grades.map(grade => {
+                {props.grades.map((grade, index) => {
                 return (
-                    <ListItem>
-                        <ListItemIcon>
-                            <DoneIcon style={{ color: green[500] }} />
-                        </ListItemIcon>
-                        <ListItemText 
-                            primary={grade.name}
-                            secondary={
-                                <React.Fragment>
-                                    <Typography
-                                        component="p"
-                                        variant="body2"
-                                        color="textPrimary"
-                                        className={styles.content}
-                                    >
-                                        {grade.courseName}
-                                    </Typography>
-                                    <Typography
-                                        component="p"
-                                        variant="body2"
-                                        color="textPrimary"
-                                    >
-                                        {grade.gradeInfo}
-                                    </Typography>
-                                </React.Fragment>
-                            }
-                        />
-                    </ListItem>
+                    <div>
+                        <ListItem>
+                            <ListItemIcon>
+                                <DoneIcon style={{ color: green[500] }} />
+                            </ListItemIcon>
+                            <ListItemText 
+                                primary={grade.name}
+                                secondary={
+                                    <React.Fragment>
+                                        <Typography
+                                            component="p"
+                                            variant="body2"
+                                            color="textPrimary"
+                                            className={styles.content}
+                                            noWrap='true'
+                                        >
+                                            {grade.courseName}
+                                        </Typography>
+                                        <Typography
+                                            component="p"
+                                            variant="body2"
+                                            color="textPrimary"
+                                            noWrap='true'
+                                        >
+                                            {grade.gradeInfo}
+                                        </Typography>
+                                    </React.Fragment>
+                                }
+                            />
+                        </ListItem>
+                        <Divider />
+                    </div>
                 )
                 })}
             </List>

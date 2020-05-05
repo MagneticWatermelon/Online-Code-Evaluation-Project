@@ -25,7 +25,7 @@ import Badge from '@material-ui/core/Badge';
 import MailIcon from '@material-ui/icons/Mail';
 import Popover from '@material-ui/core/Popover';
 import ListItemText from '@material-ui/core/ListItemText';
-
+import Notification from '../Notification/Notification';
 
 
 
@@ -125,6 +125,11 @@ export default function Dashboard() {
     {courseName: 'Algorithms and Data Structures', courseID: 'COMP203-02', courseSemestr: '2019/2020 Spring'},
     {courseName: 'Exploring Profession', courseID: 'COMP104-01', courseSemestr: '2019/2020 Spring'},
     {courseName: 'Object Oriented Programming', courseID: 'COMP112-02', courseSemestr: '2019/2020 Spring'},
+    {courseName: 'Algorithmic Thinking', courseID: 'COMP401-01', courseSemestr: '2019/2020 Spring'},
+  ]);
+  const [notifs, setNotifs] = React.useState([
+    {notifType: 'Assigment Graded', notifBody: 'Simple Array' , notifDetail: 'Art of Computing - COMP101-01'},
+    {notifType: 'Assigment Graded', notifBody: 'LCS' , notifDetail: 'Algorithmic Thinking - COMP401-01'},
   ]);
 
   const handleTitle = (event) => {
@@ -201,41 +206,11 @@ export default function Dashboard() {
                       }}
                     >
                       <List>
-                        <ListItem alignItems="flex-start">
-                          <ListItemText
-                            primary="Assigment Graded"
-                            secondary={
-                              <React.Fragment>
-                                <Typography
-                                  component="p"
-                                  variant="body2"
-                                  color="textPrimary"
-                                >
-                                  Simple Array
-                                </Typography>
-                                {"Art of Computing - COMP101-01"}
-                              </React.Fragment>
-                            }
-                          />
-                        </ListItem>
-                        <Divider />
-                        <ListItem alignItems="flex-start">
-                          <ListItemText
-                            primary="Assigment Graded"
-                            secondary={
-                              <React.Fragment>
-                                <Typography
-                                  component="p"
-                                  variant="body2"
-                                  color="textPrimary"
-                                >
-                                  LCS
-                                </Typography>
-                                {"Algorithmic Thinking - COMP410-01"}
-                              </React.Fragment>
-                            }
-                          />
-                        </ListItem>
+                        {notifs.map((notif, index) => {
+                            return (
+                            <Notification notification={notif} index={index}/>
+                            )
+                        })}
                       </List>
                     </Popover>
                     
