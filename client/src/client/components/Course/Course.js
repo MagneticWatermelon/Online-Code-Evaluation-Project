@@ -2,6 +2,8 @@ import React from 'react';
 import { Card, CardContent, Typography} from '@material-ui/core';
 import {withStyles, makeStyles } from '@material-ui/core/styles';
 import Tooltip from '@material-ui/core/Tooltip';
+import { Link as RouterLink} from 'react-router-dom';
+import Link from '@material-ui/core/Link'
 
 
 
@@ -54,29 +56,31 @@ export default function Course(props) {
     const styles = useStyles();
 
     return (
-        <Card className={styles.root}>    
-            <CardContent className={styles.content}>
-                <div className={styles.divcolor}>
-                    
-                </div>
+        <Link component={RouterLink} to={`courses/${props.course.courseID}`}>
+          <Card className={styles.root}>    
+              <CardContent className={styles.content}>
+                  <div className={styles.divcolor}>
+                      
+                  </div>
 
-                <HtmlTooltip title={props.course.courseName} placement='top-end'>
-                  <Typography gutterBottom variant="h5" className={styles.info}>
-                      {props.course.courseName}
+                  <HtmlTooltip title={props.course.courseName} placement='top-end'>
+                    <Typography gutterBottom variant="h5" className={styles.info}>
+                        {props.course.courseName}
+                    </Typography>
+                  </HtmlTooltip>
+
+
+                  <Typography component="p" variant="body2" className={styles.detail}>
+                      {props.course.courseID}
                   </Typography>
-                </HtmlTooltip>
 
 
-                <Typography component="p" variant="body2" className={styles.detail}>
-                    {props.course.courseID}
-                </Typography>
+                  <Typography component="p" variant="body2" className={styles.detail}>
+                      {props.course.courseSemestr}
+                  </Typography>
 
-
-                <Typography component="p" variant="body2" className={styles.detail}>
-                    {props.course.courseSemestr}
-                </Typography>
-
-            </CardContent>
-        </Card>
+              </CardContent>
+          </Card>
+        </Link>
     );
 }
