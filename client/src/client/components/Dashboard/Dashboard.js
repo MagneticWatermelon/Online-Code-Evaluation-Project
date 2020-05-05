@@ -12,7 +12,7 @@ import Container from '@material-ui/core/Container';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ListItems from '../ListItems/ListItems';
-import { Avatar } from '@material-ui/core';
+import { Avatar, List, ListItem } from '@material-ui/core';
 import PersonIcon from '@material-ui/icons/Person';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -21,6 +21,10 @@ import Sandbox from '../Sandbox/Sandbox';
 import {BrowserRouter as Router} from 'react-router-dom';
 import CourseGrid from '../CourseGrid/CourseGrid';
 import RightBar from '../RightBar/RightBar';
+import Badge from '@material-ui/core/Badge';
+import MailIcon from '@material-ui/icons/Mail';
+import Popover from '@material-ui/core/Popover';
+import ListItemText from '@material-ui/core/ListItemText';
 
 
 
@@ -113,6 +117,8 @@ export default function Dashboard() {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [openNotif, setOpenNotif] = React.useState(false);
+  const [anchorElNotif, setAnchorElNotif] = React.useState(null);
   const [title, setTitle] = React.useState('Dashboard');
   const [courseList, setCourses] = React.useState([
     {courseName: 'Art of Computing', courseID: 'COMP101-01', courseSemestr: '2019/2020 Spring'}, 
@@ -139,6 +145,14 @@ export default function Dashboard() {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const handleClickNotif = (event) => {
+    setAnchorElNotif(event.currentTarget);
+  };
+
+  const handleCloseNotif = () => {
+    setAnchorElNotif(null);
+  };
   
 
   return (
@@ -154,16 +168,83 @@ export default function Dashboard() {
                         onClick={handleDrawerOpen}
                         className={clsx(classes.menuButton, open && classes.menuButtonHidden)}
                     >
-                        <MenuIcon />
+                      <MenuIcon />
                     </IconButton>
+
                     <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
                         {title}
                     </Typography>
+
+                    <IconButton
+                        color="inherit"
+                        aria-haspopup='true'
+                        aria-describedby='notif'
+                        onClick={handleClickNotif}
+                      >
+                        <Badge badgeContent={2} color="secondary">
+                          <MailIcon />
+                        </Badge> 
+                    </IconButton>
+
+                    <Popover
+                      id='notif'
+                      open={Boolean(anchorElNotif)}
+                      anchorEl={anchorElNotif}
+                      onClose={handleCloseNotif}
+                      anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'left',
+                      }}
+                      transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'right',
+                      }}
+                    >
+                      <List>
+                        <ListItem alignItems="flex-start">
+                          <ListItemText
+                            primary="Assigment Graded"
+                            secondary={
+                              <React.Fragment>
+                                <Typography
+                                  component="p"
+                                  variant="body2"
+                                  color="textPrimary"
+                                >
+                                  Simple Array
+                                </Typography>
+                                {"Art of Computing - COMP101-01"}
+                              </React.Fragment>
+                            }
+                          />
+                        </ListItem>
+                        <Divider />
+                        <ListItem alignItems="flex-start">
+                          <ListItemText
+                            primary="Assigment Graded"
+                            secondary={
+                              <React.Fragment>
+                                <Typography
+                                  component="p"
+                                  variant="body2"
+                                  color="textPrimary"
+                                >
+                                  LCS
+                                </Typography>
+                                {"Algorithmic Thinking - COMP410-01"}
+                              </React.Fragment>
+                            }
+                          />
+                        </ListItem>
+                      </List>
+                    </Popover>
+                    
                     <IconButton color="inherit" aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
                         <Avatar>
                             <PersonIcon />
                         </Avatar>
                     </IconButton>
+
                     <Menu
                         id="simple-menu"
                         anchorEl={anchorEl}
