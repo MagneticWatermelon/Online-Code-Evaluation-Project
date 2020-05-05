@@ -5,8 +5,7 @@ const Schema = mongoose.Schema;
 const questionSchema = new Schema({
     assignment_id: {type: mongoose.Schema.Types.ObjectId, ref: 'Assignment', required: true},
     title: {type: String, required: true},
-    explanation: {type: String, required: true},
-    
+    explanation: {type: String, required: true},    
     inputs:[[
         {type: String, required:true}
     ]], // added

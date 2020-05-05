@@ -4,19 +4,14 @@ const Schema = mongoose.Schema;
 
 const submissionSchema = new Schema({
     student_id: {type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true},
-    question_id: {type: mongoose.Schema.Types.ObjectId, ref: 'Question', required: true},
-    
+    question_id: {type: mongoose.Schema.Types.ObjectId, ref: 'Question', required: true},    
     score:{type:Number, required: true}, // added
-
     evaluation:[{
         status  : String, // 'correct' or 'wrong'
         outputs : Array,  // student's outputs => ['o1','o2'.....]
     }],//added
-
     submitted_code:  {type: String, required: true},   // should be changed to files
-
     language:{type:String, required:true}, // added
-
     date: {type: Date, default: Date.now},    
     comment: {type: String, required: false}
 }, {
