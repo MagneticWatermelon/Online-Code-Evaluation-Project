@@ -7,6 +7,7 @@ import Link from '@material-ui/core/Link'
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import FolderSharedIcon from '@material-ui/icons/FolderShared';
+import GradeIcon from '@material-ui/icons/Grade';
 
 
 
@@ -98,6 +99,12 @@ export default function Course(props) {
                       <Grid item>
                         <IconButton component={RouterLink} to={`courses/${props.course.courseID}/assigments`}>
                           <AssignmentIcon />
+                        </IconButton>
+                      </Grid>
+
+                      <Grid item>
+                        <IconButton component={RouterLink} to={`courses/${props.course.courseID}/grades`}>
+                          <GradeIcon />
                         </IconButton>
                       </Grid>
 
