@@ -1,12 +1,23 @@
 import React from 'react';
 import { Card, CardContent, Typography} from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import {withStyles, makeStyles } from '@material-ui/core/styles';
+import Tooltip from '@material-ui/core/Tooltip';
 
 
 
 
 export default function Course(props) {
     const [color, setColor] = React.useState(props.color);
+
+    const HtmlTooltip = withStyles((theme) => ({
+      tooltip: {
+        backgroundColor: '#f5f5f9',
+        color: 'rgba(0, 0, 0, 0.87)',
+        maxWidth: 220,
+        fontSize: theme.typography.pxToRem(16),
+        border: '1px solid #dadde9',
+      },
+    }))(Tooltip);
 
     const useStyles = makeStyles((theme) => ({
         root: {
@@ -25,7 +36,13 @@ export default function Course(props) {
           fontSize: 16,
           whiteSpace: 'nowrap',
           overflow: 'hidden',
-          textOverflow: 'ellipsis'
+          textOverflow: 'ellipsis',
+          '&:hover': {
+            textDecoration: 'underline'
+          },
+          '&:focus': {
+            textDecoration: 'underline'
+          },
         },
         detail:{
           paddingTop: 4,
@@ -42,15 +59,23 @@ export default function Course(props) {
                 <div className={styles.divcolor}>
                     
                 </div>
-                <Typography gutterBottom variant="h5" className={styles.info}>
-                    {props.course.courseName}
-                </Typography>
+
+                <HtmlTooltip title={props.course.courseName} placement='top-end'>
+                  <Typography gutterBottom variant="h5" className={styles.info}>
+                      {props.course.courseName}
+                  </Typography>
+                </HtmlTooltip>
+
+
                 <Typography component="p" variant="body2" className={styles.detail}>
                     {props.course.courseID}
                 </Typography>
+
+
                 <Typography component="p" variant="body2" className={styles.detail}>
                     {props.course.courseSemestr}
                 </Typography>
+
             </CardContent>
         </Card>
     );
