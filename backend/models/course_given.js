@@ -4,8 +4,8 @@ const Schema = mongoose.Schema;
 
 const Course_Given_Schema = new Schema({
     instructor_id: {type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true},
-    course_id: {type: mongoose.Schema.Types.ObjectId, ref: 'Course', required: true},
-    term: {type: String, required: true},
+    course_id: {type: mongoose.Schema.Types.ObjectId, ref: 'Course', required: true}
+    
 }, {
     timestamps: true,    
 

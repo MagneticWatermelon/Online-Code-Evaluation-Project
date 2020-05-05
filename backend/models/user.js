@@ -5,12 +5,9 @@ const Schema = mongoose.Schema;
 const userSchema = new Schema({
     name: {type: String, required: true},
     mail: {type: String, required: true},
-
-    user_role: {type: Number, required: true}, // added
-    
+    user_role: {type: Number, required: true}, // added    
     profile_photo: {type: Buffer, required: false},
     password_hash: {type: String, required: true},
-    salt: {type: String, required: true},
     date: {type: Date, default: Date.now}
 }, {
     timestamps: true,
@@ -82,7 +79,9 @@ const getGivenCourses = (instructor_id, callback)=>{
     example callback call => callback(err, arrayOfCourseIDs)
  */
 const getTakenCourses = (student_id, callback) =>{
-    callback(null, ['1'])
+    
+    
+
 }
 
 const User = mongoose.model('User', userSchema);

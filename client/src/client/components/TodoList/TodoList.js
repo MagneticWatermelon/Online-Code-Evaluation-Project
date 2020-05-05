@@ -2,7 +2,8 @@ import React from 'react';
 import { Typography, Divider, List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import { makeStyles } from '@material-ui/core/styles';
-
+import { Link as RouterLink} from 'react-router-dom';
+import Link from '@material-ui/core/Link';
 
 
 export default function TodoList(props) {
@@ -29,34 +30,41 @@ export default function TodoList(props) {
             <List>
                 {props.todos.map(todo => {
                     return (
-                        <ListItem>
-                            <ListItemIcon>
-                                <AssignmentIcon />
-                            </ListItemIcon>
-                            <ListItemText 
-                                primary={todo.name}
-                                secondary={
-                                    <React.Fragment>
-                                        <Typography
-                                            component="p"
-                                            variant="body2"
-                                            color="textPrimary"
-                                            className={styles.content}
-                                        >
-                                            {todo.courseName}
-                                        </Typography>
-                                        <Typography
-                                            component="p"
-                                            variant="body2"
-                                            color="textPrimary"
-                                            
-                                        >
-                                            {todo.dueDate}
-                                        </Typography>
-                                    </React.Fragment>
-                                }
-                            />
-                        </ListItem>
+                    <div>
+                        <Link component={RouterLink} to={`courses/${todo.courseID}/${todo.assignID}`}>
+                            <ListItem>
+                                <ListItemIcon>
+                                    <AssignmentIcon />
+                                </ListItemIcon>
+                                <ListItemText 
+                                    primary={todo.name}
+                                    secondary={
+                                        <React.Fragment>
+                                            <Typography
+                                                component="p"
+                                                variant="body2"
+                                                color="textPrimary"
+                                                className={styles.content}
+                                                noWrap='true'
+                                            >
+                                                {todo.courseName}
+                                            </Typography>
+                                            <Typography
+                                                component="p"
+                                                variant="body2"
+                                                color="textPrimary"
+                                                noWrap='true'
+                                                
+                                            >
+                                                {todo.dueDate}
+                                            </Typography>
+                                        </React.Fragment>
+                                    }
+                                />
+                            </ListItem>
+                        </Link>
+                        <Divider />
+                    </div>
                     )
                 })}
             </List>
