@@ -11,6 +11,9 @@ const Readable      = require('stream').Readable;
 
 const targenerator  = require('./tar-generator')
 
+const dotenv        = require('dotenv')
+dotenv.config('./env')
+
 
 const hostIP        =   process.env.DOCKER_IP
 const hostPort      =   process.env.DOCKER_PORT

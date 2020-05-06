@@ -4,9 +4,9 @@ const app       = express();
 const authRoutes    = require('./routes/auth')
 const courseRoutes  = require('./routes/course')
 const userRoutes    = require('./routes/user')
-const dotenv        = require('dotenv')
 const database      = require('./util/database')
 
+const dotenv        = require('dotenv')
 dotenv.config('./env')
 
 

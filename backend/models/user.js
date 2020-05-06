@@ -63,7 +63,7 @@ const addUser = (name, mail, user_role, password, callback)=>{
             let user = new User({
                 name:name,
                 mail:mail,
-                //User role Student:0 , TA:1 , Teacher:2 ,Admin:3
+                //User role Student:0 , Teacher:1 ,Admin:2
                 user_role: user_role,
                 profile_photo:null,
                 password_hash:hash_pass,
@@ -99,16 +99,6 @@ const getUser = (user_id, callback)=>{
     })
 }
 
-/* Following updates the user information
-    example callback call => callback(err)
- */
-const updateUser =  (user_id, name,profile_photo, callback)=>{
-    // all information has to be filled, otherwise problem can be existed in DB
-User.updateMany({_id:user_id},{$set: {name:name,profile_photo:profile_photo}},(err)=>{
-    if(err) return  callback("There is an error to Uptade to DB")
-})
-return callback(null);
-}
 
 /* Following function updates the password of the user
     example callback call => callback(err)
@@ -126,8 +116,9 @@ let usr =  User.findOne({_id:user_id},).then(
                             new_password=>{
                                 User.updateOne({_id:user_id}, {$set: {password_hash:new_password}},(err)=>{
                                     if(err) return callback('There is an error to Uptade to DB')
+
+                                    return callback(null);
                                 });
-                                return callback(null);
                             }
                         ).
                         catch(
@@ -222,7 +213,6 @@ module.exports.model = User;
 module.exports.checkUser = checkUser;
 module.exports.addUser = addUser;
 module.exports.getUser = getUser;
-module.exports.updateUser = updateUser;
 module.exports.deleteUser = deleteUser;
 module.exports.addProfilePhoto = addProfilePhoto;
 module.exports.updatePassword  = updatePassword;

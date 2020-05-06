@@ -46,10 +46,9 @@ const createCourse = (course_code, year, term, name, callback)=>{
       .then(result=>{
          course.save()
          .then(result=>{
-            return callback(null, cors._id)
+            return callback(null, course._id)
          })
          .catch(err=>{
-            console.log(err)
             return callback('Course cannot be created',null)
          })
       })
@@ -68,7 +67,7 @@ const createCourse = (course_code, year, term, name, callback)=>{
 /* Following function associates the given instructor with the course
    example callback call => callback(err)
  */
-const associateInstructorWithCourse = async (course_id, instructor_id, callback)=>{
+const associateInstructorWithCourse = (course_id, instructor_id, callback)=>{
    //check for duplicates
    CourseGiven.findOne({
       course_id: course_id,
@@ -95,16 +94,16 @@ const associateInstructorWithCourse = async (course_id, instructor_id, callback)
             return callback(null)
          })
          .catch(err=>{
-            return callback(err)
+            return callback('Cannot associate instructor with course')
          })
       })
       .catch(err=>{
-         return callback(err)
+         return callback('Cannot associate instructor with course')
       })
    })
 
    .catch(err=>{
-      return callback(err)
+      return callback('Cannot associate instructor with course')
    })
 }
 
@@ -112,12 +111,14 @@ const associateInstructorWithCourse = async (course_id, instructor_id, callback)
    example callback call => callback(err)
 */
 const dropInstructorFromCourse = async (course_id, instructor_id, callback)=>{
-   
+      
    try {
       const result =await CourseGiven.findOneAndDelete({
          course_id: course_id,
          instructor_id: instructor_id,
       });
+
+
       return callback(null);
    } catch (e) {
       return callback(e);
