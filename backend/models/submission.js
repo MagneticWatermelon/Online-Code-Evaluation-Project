@@ -4,10 +4,8 @@ const Schema = mongoose.Schema;
 
 const submissionSchema = new Schema({
     student_id: {type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true},
-    question_id: {type: mongoose.Schema.Types.ObjectId, ref: 'Question', required: true},
-    
+    question_id: {type: mongoose.Schema.Types.ObjectId, ref: 'Question', required: true},    
     score:{type:Number, required: true}, // added
-
     evaluation:[{
         status  : String, // 'correct' or 'wrong'
         outputs : Array,  // student's outputs => ['o1','o2'.....]
@@ -16,7 +14,6 @@ const submissionSchema = new Schema({
     files:  [{nameofFile:String,subimittedcode:String}],   // should be changed to files
 
     language:{type:String, required:true}, // added
-
     date: {type: Date, default: Date.now},    
     comment: {type: String, required: false}
 }, {
@@ -38,7 +35,7 @@ const saveSubmission = async (student_id, question_id, score, evaluation, files,
         comment:comment
     });
     submission_obj.save()
-    .then()
+    .then(callback(null))
     .catch((err)=> callback("Saving question problem to DB"));
 }
 
@@ -78,6 +75,7 @@ const deleteSubmission = async(submission_id, callback)=>{
     let submisson_delete = await Submission.findById(submission_id);
     if(!submisson_delete) return callback("SubmissionID is not valid ",null);
     Submission.findByIdAndDelete(submission_id,(err)=>{if(err)return callback("Delete Problem in DB")});
+    return   callback(null);
 }
 
 /* Following function is used for changing the score manually (by instructor)
@@ -90,6 +88,7 @@ const updateScore = async(submission_id, score, callback)=>{
             score:score,
         },
     },(err)=>{if(err) return callback("Update problem to DB")});
+    return  callback(null);
 }
 
 /* Updates the evaluation
@@ -102,6 +101,7 @@ const updateEvaluation = async(submission_id, evaluation, callback)=>{
             evaluation:evaluation,
         },
     },(err)=>{if(err) return callback("Update problem to DB")});
+    return  callback(null);
 }
 module.exports.model = Submission;
 

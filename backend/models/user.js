@@ -54,7 +54,7 @@ const addUser = async(name, mail, user_role, password, callback)=>{
     });
     // saving user
     user.save()
-    .then()
+    .then(callback(null))
     .catch((err)=> callback("Saving User problem"));
 }
 
@@ -64,7 +64,7 @@ const addUser = async(name, mail, user_role, password, callback)=>{
 const getUser = async (user_id, callback)=>{
     let usr = await User.findOne({_id:user_id});
     if(!usr) return callback("Not invalid UserId");
-    callback(null,usr);
+    return  callback(null,usr);
 }
 
 /* Following updates the user information
@@ -75,6 +75,7 @@ const updateUser = async (user_id, name,profile_photo, callback)=>{
 await User.updateMany({_id:user_id},{$set: {name:name,profile_photo:profile_photo}},(err)=>{
     if(err) return  callback("There is an error to Uptade to DB")
 })
+return callback(null);
 }
 
 /* Following function updates the password of the user
@@ -91,7 +92,7 @@ console.log(new_password);
 await User.updateOne({_id:user_id}, {$set: {password_hash:new_password}},(err)=>{
     if(err) return callback('There is an error to Uptade to DB')
 });
-//usr.updateO({$set: {password_hash:new_password}});
+return callback(null);
 }
 
 /* Following deletes the user
@@ -103,6 +104,7 @@ const deleteUser = async (user_id, callback)=>{
     User.findByIdAndDelete(user_id,(err,data)=>{
         if(err) return callback("There is a error when deleting")
     });
+    return  callback(null);
 }
 
 /* Following adds a profile photo to the given user
@@ -113,6 +115,7 @@ const addProfilePhoto = async(user_id, profile_photo, callback)=>{
  let usr = await User.findByIdAndUpdate(user_id,{$set:{profile_photo:profile_photo}},(err,res)=>{
      if(err) return callback("it didnt update")
  });
+ return callback(null);
 }
 
 /* Following function returns an array of given course ids by the given instructor

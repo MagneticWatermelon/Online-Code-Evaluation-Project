@@ -5,8 +5,7 @@ const Schema = mongoose.Schema;
 const questionSchema = new Schema({
     assignment_id: {type: mongoose.Schema.Types.ObjectId, ref: 'Assignment', required: true},
     title: {type: String, required: true},
-    explanation: {type: String, required: true},
-    
+    explanation: {type: String, required: true},    
     inputs:[[
         {type: String, required:true}
     ]], // added
@@ -36,7 +35,7 @@ const createQuestion = async (assignment_id, title, explanation, inputs, outputs
             outputs:outputs,
     });
     question.save()
-    .then()
+    .then(callback(null))
     .catch((err)=> callback("Saving question problem to DB"));
 }
 
@@ -60,6 +59,7 @@ const setIOOfQuestion = async(question_id, inputs, outputs, callback)=>{
         outputs:outputs
     },
 },(err)=>{if(err) return callback("Update problem to DB")});
+return callback(null);
 }
 
 /* Updates the question with given parameters
@@ -73,6 +73,7 @@ const updateQuestion = async(question_id, title, explanation, callback)=>{
             explanation:explanation
         },
     },(err)=>{if(err) return callback("Update problem to DB")});
+   return callback(null);
 }
 
 /* Deletes the question
@@ -82,6 +83,7 @@ const deleteQuestion = async(question_id, callback)=>{
     let quest = await Question.findById(question_id);
     if(!quest) return callback("QuestionID is not valid ");
     Question.findByIdAndDelete(question_id,(err)=>{if(err)return callback("Delete Problem i DB")});
+    return  callback(null);
 }
 module.exports.model = Question;
 

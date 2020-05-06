@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Course from '../Course/Course';
 import { Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
@@ -14,6 +14,9 @@ function getRandomColor() {
   }
 
 export default function CourseGrid(props) {
+
+  const[courseColors, setCourseColors] = React.useState([ "#390F9B", "#E73420", "#298939", "#AA7379", "#E0F936" ]);
+
   const useStyles = makeStyles((theme) => ({
     root: {
       display: 'inline-flex'
@@ -24,10 +27,11 @@ export default function CourseGrid(props) {
   
   return (
       <Grid container direction='row' spacing={5} className={styles.root}>
-          {props.courses.map(course => {
+          {props.courses.map((course, index) => {
+          console.log(courseColors[index]);
           return (
           <Grid item wrap='nowrap'>
-            <Course course={course} color={getRandomColor()}/>
+            <Course course={course} color={courseColors[index]}/>
           </Grid>
           )
       })}
