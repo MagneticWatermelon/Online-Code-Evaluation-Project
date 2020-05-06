@@ -8,11 +8,9 @@ module.exports.runCode      = runCode;
 
 const Docker        = require('dockerode')
 const Readable      = require('stream').Readable;
-const dotenv        = require('dotenv')
 
 const targenerator  = require('./tar-generator')
 
-dotenv.config('./env')
 
 const hostIP        =   process.env.DOCKER_IP
 const hostPort      =   process.env.DOCKER_PORT

@@ -11,10 +11,10 @@ module.exports.createCourse = async (req, res, next)=>{
 
     course.createCourse(course_code,year,term,course_name, (err,course_id)=>{
         if(err){
-            return res.status(500).json({message:'Cannot create course'})
+            return res.status(500).json({message:err})
         }
         course.associateInstructorWithCourse(course_id, instructor_id, (err)=>{
-            if(err){return res.status(500).json({message:'Course created but instructor cannot be added to course'})}
+            if(err){return res.status(500).json({message:err})}
 
             return res.status(201).json({message:'Course succesfully created'})
         })

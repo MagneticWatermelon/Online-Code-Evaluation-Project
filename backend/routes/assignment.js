@@ -9,19 +9,11 @@ const router = express.Router();
 const assignmentController = require('../controllers/assigment')
 
 
-router.post('/create', isAdmin, courseController.createCourse)
-router.get('/get/:id', isAuth, courseController.getCourse)
-router.post('/update/:id', isAdmin, courseController.updateCourse)
-router.delete('/delete/:id', isAdmin, courseController.deleteCourse)
-
-router.post('/addStudent', isAdmin, courseController.addStudent)
-router.delete('/dropStudent', isAdmin, courseController.dropStudent)
-
-router.post('/addInstructor', isAdmin, courseController.addInstructor)
-router.delete('/dropInstructor', isAdmin, courseController.dropInstructor)
+router.post('/create', isInstructor, assignmentController.createAssignment)
+router.get('/get/:id', isAuth, assignmentController.getAssignment)
+router.post('/update/:id', isInstructor, assignmentController.updateAssignment)
+router.delete('/delete/:id', isInstructor, assignmentController.deleteAssignment)
 
 
-router.get('/getAssignments/:id', isAuth, courseController.getAssignments)
-router.get('/getStudents/:id', isAuth, courseController.getStudents)
 
 module.exports = router;

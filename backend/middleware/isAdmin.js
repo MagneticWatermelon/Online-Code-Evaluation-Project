@@ -23,7 +23,7 @@ module.exports = (req,res,next)=>{
 
     user_role = decodedToken.user_role
 
-    if(user_role=='admin'){
+    if(user_role==2){
         next()
     }
     else{

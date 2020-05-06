@@ -3,6 +3,11 @@ const app       = express();
 
 const authRoutes    = require('./routes/auth')
 const courseRoutes  = require('./routes/course')
+const userRoutes    = require('./routes/user')
+const dotenv        = require('dotenv')
+const database      = require('./util/database')
+
+dotenv.config('./env')
 
 
 app.use(express.urlencoded({extended:true}))
@@ -10,5 +15,10 @@ app.use(express.json())
 
 app.use('/auth',authRoutes)
 app.use('/course', courseRoutes)
+app.use('/user', userRoutes)
 
-app.listen(8080)
+database.connectToDB((result)=>{
+    console.log('Connectted to DB, starting server...')
+    app.listen(8080)
+})
+

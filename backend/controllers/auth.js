@@ -9,6 +9,7 @@ module.exports.loginUser = (req,res,next)=>{
         if(err){
             return res.status(401).json({message:'Authentication failed'})
         }
+        
         user.getUser(user_id, (err, user_information)=>{
             if(err){
                 return res.status(401).json({message:'Authentication failed'})
