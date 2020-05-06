@@ -15,7 +15,7 @@ function getRandomColor() {
 
 export default function CourseGrid(props) {
 
-  const[courseColors, setCourseColors] = React.useState([ "#390F9B", "#E73420", "#298939", "#AA7379", "#E0F936" ]);
+  const[courseColors, setCourseColors] = React.useState([ "#083D77", "#51A3A3", "#F4D35E", "#EE964B", "#F95738" ]);
 
   const useStyles = makeStyles((theme) => ({
     root: {
@@ -28,7 +28,6 @@ export default function CourseGrid(props) {
   return (
       <Grid container direction='row' spacing={5} className={styles.root}>
           {props.courses.map((course, index) => {
-          console.log(courseColors[index]);
           return (
           <Grid item wrap='nowrap'>
             <Course course={course} color={courseColors[index]}/>
