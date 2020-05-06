@@ -153,6 +153,8 @@ const getCourse = async (course_id, callback)=>{
       return callback("Not found", null)
    }  
 
+   
+
 }
 
 /* Returns the assignment ids from this course
