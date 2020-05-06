@@ -23,7 +23,7 @@ module.exports = (req,res,next)=>{
 
     user_role = decodedToken.user_role
 
-    if(user_role=='isStudent'){
+    if(user_role==0){
         next()
     }
     else{

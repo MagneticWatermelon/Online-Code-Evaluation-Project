@@ -34,12 +34,12 @@ const sub_files = [{
 app.listen(port, () => {
 console.log('Server is listening...');
 });
-getFiles("5eb1dc33418a8145ac3fb12e",(err,res)=>{
+/*getFiles("5eb1dc33418a8145ac3fb12e",(err,res)=>{
     if(err) return console.log(err);console.log(res);
-})
+})*/
 
 
-/*addUser("SalihMertATALAY","salihmert.atalay@agu.edu.tr",0,"Salih12345",(err, user)=>{
+/*addUser("SadikCoban","SadikCoban.atalay@agu.edu.tr",0,"Salih12345",(err, user)=>{
     if(err){return console.log(err)}
     console.log(user)
 });*/
@@ -47,16 +47,16 @@ getFiles("5eb1dc33418a8145ac3fb12e",(err,res)=>{
     if(err){return console.log(err)}
     console.log(user)
 });*/
-/*updatePassword("5eb1697c70abfb181839d82a","YeniSİfre",(err, user)=>{
+updatePassword("5eb2a8d54b576c4a94b1a05a","YeniSİfre",(err, user)=>{
     if(err){return console.log(err)}
     console.log(user)
-});*/
+});
 //$2b$10$TfL6b69R77gW6VewdACEp.aDfkS53eH1z1qYRvjnZufJcx.6JmlSK
 /*getUser("5eb1697c70abfb181839d82a",(err,user)=>{
     if(err) return console.log(err);
     console.log(user);
 });*/
-/*updateUser("5eb1697c70abfb181839d82a","Salih",null,(err,user)=>{
+/*updateUser("5eb2a8d54b576c4a94b1a05a","Salih",null,(err,user)=>{
     if(err) return console.log(err);
      console.log(user);
 });*/

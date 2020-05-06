@@ -9,8 +9,10 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
+    "mongodb": "^3.5.7",
     "mongoose": "^5.9.12",
-    "tar-stream": "^2.1.2"
+    "tar-stream": "^2.1.2",
+    "validate-email-node-js": "0.0.2"
   },
   "scripts": {
     "test": "nodemon app.js",

@@ -20,37 +20,49 @@ const Course = mongoose.model('Course', courseSchema);
 //const CourseGiven = mongoose.model('Course_Given', course_given_schema);
 
 /* Following function creates a course with given parameters
-   example callback call => callback(err)
+   example callback call => callback(err, course.id)
  */
-const createCourse = async (course_code, year, term, name, callback)=>{
-   //check if the same course exists
-   const cors = await Course.findOne({
-      course_code: course_code     
-   });
-   if(cors)
-   {
-      return callback("DUPLICATE COURSE");
-   }
+const createCourse = (course_code, year, term, name, callback)=>{
 
-   //if it does not exist
-   else
-   {
-      try{
-         const course = new Course({
-            course_code: course_code,
-            term: term,
-            year: year,
-            name: name
-         });
-         await course.validate();
-         const result = await course.save();
-         return callback(null);
-      }
-      catch(e){
-         return callback();
-      }
-   }  
-      
+   //check if the same course exists
+   Course.findOne({course_code: course_code})
+
+   .then(cors=>{
+      if(cors){return true}
+      return false;
+   })
+   .then(doesExist=>{
+
+      if(doesExist){return callback('Course already exist', null)}
+
+      const course = new Course({
+         course_code: course_code,
+         term: term,
+         year: year,
+         name: name
+      });
+
+      course.validate()
+      .then(result=>{
+         course.save()
+         .then(result=>{
+            return callback(null, cors._id)
+         })
+         .catch(err=>{
+            console.log(err)
+            return callback('Course cannot be created',null)
+         })
+      })
+      .catch(err=>{
+         return callback('Bad parameters', null)
+      })
+
+
+   })
+
+   .catch(err=>{
+      return callback(err,null)
+   })
 }
 
 /* Following function associates the given instructor with the course
@@ -58,28 +70,42 @@ const createCourse = async (course_code, year, term, name, callback)=>{
  */
 const associateInstructorWithCourse = async (course_id, instructor_id, callback)=>{
    //check for duplicates
-   const flag = await CourseGiven.findOne({
+   CourseGiven.findOne({
       course_id: course_id,
       instructor_id: instructor_id
-   });
-   if(flag){
-      return callback("Duplicate error");
-   }
-   else {
-      try {
-         const courseGiven = new CourseGiven({
-            course_id: course_id,
-            instructor_id: instructor_id,
-         });
-         await courseGiven.validate();
-         const result = await courseGiven.save();
-         return callback(null);
-      } catch (e) {
-         return callback("An error occured while creating data");         
-      }
-   }
+   })
 
+   .then(flag=>{
+      if(flag){return true;}
+      return false
+   })
+   .then(isDuplicate=>{
+
+      if(isDuplicate){return callback("Duplicate error");}
    
+      const courseGiven = new CourseGiven({
+         course_id: course_id,
+         instructor_id: instructor_id,
+      });
+
+      courseGiven.validate()
+      .then(result=>{
+         courseGiven.save()
+         .then(result=>{
+            return callback(null)
+         })
+         .catch(err=>{
+            return callback(err)
+         })
+      })
+      .catch(err=>{
+         return callback(err)
+      })
+   })
+
+   .catch(err=>{
+      return callback(err)
+   })
 }
 
 /* Following function drops instructor from the course

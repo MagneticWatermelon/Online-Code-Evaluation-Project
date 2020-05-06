@@ -1,7 +1,7 @@
 const course = require('../models/course')
 const user   = require('../models/user')
 
-module.exports.createCourse = (req, res, next)=>{
+module.exports.createCourse = async (req, res, next)=>{
 
     const course_code   = req.body.course_code;
     const course_name   = req.body.course_name;
@@ -9,13 +9,16 @@ module.exports.createCourse = (req, res, next)=>{
     const term          = req.body.term;
     const year          = req.body.year;
 
-    console.log(req.body)
-    course.createCourse(course_code,year,term,course_name,instructor_id, (err)=>{
+    course.createCourse(course_code,year,term,course_name, (err,course_id)=>{
         if(err){
-            return res.status(500).json({message:'Cannot create course'})
+            return res.status(500).json({message:err})
         }
-        return res.status(201).json({message:'Course succesfully created'})
+        course.associateInstructorWithCourse(course_id, instructor_id, (err)=>{
+            if(err){return res.status(500).json({message:err})}
 
+            return res.status(201).json({message:'Course succesfully created'})
+        })
+        
     })
 }
 
@@ -87,7 +90,23 @@ module.exports.addStudent = (req, res, next)=>{
 
 }
 
+module.exports.dropStudent = (req,res,next)=>{
+
+}
+
 
 module.exports.addInstructor = (req, res, next)=>{
+
+}
+
+module.exports.dropInstructor = (req,res,next)=>{
+
+}
+
+module.exports.getAssignments = (req,res,next)=>{
+
+}
+
+module.exports.getStudents = (req,res,next)=>{
 
 }

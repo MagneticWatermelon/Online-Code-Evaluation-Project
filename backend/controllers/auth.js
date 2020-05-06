@@ -1,5 +1,4 @@
 const user = require('../models/user');
-const bcrypt = require('bcrypt')
 const jwt   = require('jsonwebtoken')
 
 module.exports.loginUser = (req,res,next)=>{
@@ -10,6 +9,7 @@ module.exports.loginUser = (req,res,next)=>{
         if(err){
             return res.status(401).json({message:'Authentication failed'})
         }
+        
         user.getUser(user_id, (err, user_information)=>{
             if(err){
                 return res.status(401).json({message:'Authentication failed'})
@@ -21,7 +21,7 @@ module.exports.loginUser = (req,res,next)=>{
             const token = jwt.sign(
                 {mail: user_mail, user_role:user_role},
                 'dwightgetthedoor',
-                {expiresIn:'4h'}
+                {expiresIn:'30d'}
             )
     
             return res.status(200).json({
