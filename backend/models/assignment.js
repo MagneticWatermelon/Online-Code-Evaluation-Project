@@ -113,7 +113,6 @@ const updateAssignment = async (assignment_id, title, release_date, due_date, ex
     }
 }
 
-
 module.exports.model = Assignment;
 module.exports.createAssignment = createAssignment;
 module.exports.getQuestions     = getQuestions;

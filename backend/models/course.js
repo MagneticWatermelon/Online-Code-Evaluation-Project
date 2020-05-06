@@ -16,7 +16,6 @@ const courseSchema = new Schema({
 });
 
 
-
 const Course = mongoose.model('Course', courseSchema);
 //const CourseGiven = mongoose.model('Course_Given', course_given_schema);
 
@@ -45,6 +44,7 @@ const createCourse = async (course_code, year, term, name, callback)=>{
          });
          await course.validate();
          const result = await course.save();
+         return callback(null);
       }
       catch(e){
          return callback();
@@ -73,6 +73,7 @@ const associateInstructorWithCourse = async (course_id, instructor_id, callback)
          });
          await courseGiven.validate();
          const result = await courseGiven.save();
+         return callback(null);
       } catch (e) {
          return callback("An error occured while creating data");         
       }
@@ -91,7 +92,7 @@ const dropInstructorFromCourse = async (course_id, instructor_id, callback)=>{
          course_id: course_id,
          instructor_id: instructor_id,
       });
-      
+      return callback(null);
    } catch (e) {
       return callback(e);
    }
@@ -118,7 +119,7 @@ const addStudentToCourse = async (course_id, student_id, callback)=>{
          
          await course_taken.validate();
          const result = await course_taken.save();
-         
+         return callback(null);         
       } catch (e) {
          return callback(e)
       }
@@ -135,7 +136,7 @@ const dropStudentFromCourse =async (course_id, student_id, callback)=>{
          student_id: student_id,
          course_id: course_id
       });
-      
+      return callback(null);
    } catch (e) {
       return callback(e);
    }
@@ -205,6 +206,7 @@ const getStudents = async (course_id, callback)=>{
 const deleteCourse = async (course_id, callback)=>{
    try {
       const result = await Course.findByIdAndDelete(course_id);
+      return callback(null);
    } catch (e) {
       return callback("Error occured");
    }
@@ -215,19 +217,23 @@ const deleteCourse = async (course_id, callback)=>{
  */
 const updateCourse = async (course_id, title, course_code, term, year, callback)=>{
 
-      const course = await Course.findByIdAndUpdate(course_id, {
-         $set: {
-            title: title,
-            course_code: course_code,
-            term: term,
-            year: year
-         }
-         
-      }, (err) => {
-         if(err) return callback("Error occured");
+      try {
+         const course = await Course.findByIdAndUpdate(course_id, {
+            $set: {
+               title: title,
+               course_code: course_code,
+               term: term,
+               year: year
+            }
+            
+         });
+
+         return callback(null);
+      } 
+      catch (error) {
+         return callback("Error occured");
       }
-      );  
-}
+   }
 
 
 module.exports.model = Course;
