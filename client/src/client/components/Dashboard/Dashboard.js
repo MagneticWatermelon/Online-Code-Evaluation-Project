@@ -26,6 +26,7 @@ import MailIcon from '@material-ui/icons/Mail';
 import Popover from '@material-ui/core/Popover';
 import ListItemText from '@material-ui/core/ListItemText';
 import Notification from '../Notification/Notification';
+import Course from '../Course/Course';
 
 
 
@@ -260,6 +261,9 @@ export default function Dashboard() {
                         </Route>
                         <Route exact path="/example">
                             <Sandbox id="editor1"/>
+                        </Route>
+                        <Route exact path='/courses'>
+                          <Course course={courseList[0]}/>
                         </Route>
                     </Switch>
                 </Container>
