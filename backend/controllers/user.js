@@ -86,8 +86,23 @@ module.exports.addProfilePhoto = (req,res,next)=>{
 
 module.exports.getGivenCourses = (req,res,next)=>{
 
+    const userid = req.params.id
+
+    user.getGivenCourses(userid, (err, course_ids)=>{
+        if(err){return res.status(500).json({message:'Cannot get courses of the user'})}
+
+        return res.status(200).json({courses:course_ids})
+    })
+
 }
 
 module.exports.getTakenCourses = (req,res,next)=>{
 
+    const userid = req.params.id
+
+    user.getTakenCourses(userid,(err, course_ids)=>{
+        if(err){return res.status(500).json({message:'Cannot get courses of the user'})}
+
+        return res.status(200).json({courses:course_ids})
+    })
 }

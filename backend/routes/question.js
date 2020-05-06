@@ -8,7 +8,7 @@ const router = express.Router();
 const questionController = require('../controllers/question')
 
 
-router.post('/create', isInstructor, questionController.createQuesion)
+router.post('/create', isInstructor, questionController.createQuestion)
 router.get('/get/:id', isAuth, questionController.getQuestion)
 router.post('/update/:id', isInstructor, questionController.updateQuestion)
 router.delete('/delete/:id', isInstructor, questionController.deleteQuestion)

@@ -30,9 +30,9 @@ module.exports.getCourse = (req,res,next)=>{
     let role = req.user_role;
     let personID = req.user_id;
 
-    console.log(courseID)
+    console.log(role)
 
-    if(role=='admin'){
+    if(role==2){
         course.getCourse(courseID, (err,course)=>{
             if(err){
                 return res.status(404).json({message:err})
@@ -41,7 +41,7 @@ module.exports.getCourse = (req,res,next)=>{
         })
     }
 
-    if(role=='instructor'){
+    if(role==1){
 
         user.getGivenCourses(personID,(err, courses)=>{
             
@@ -58,7 +58,7 @@ module.exports.getCourse = (req,res,next)=>{
         })
     }
 
-    if(role=='student'){
+    if(role==0){
         user.getTakenCourses(personID,(err, courses)=>{
             console.log(courses)
             if(err){return res.status(403).json({message:err})}
@@ -73,8 +73,6 @@ module.exports.getCourse = (req,res,next)=>{
             }
         })
     }
-
-    return res.status(404).json({message:'Don\'t have permission'});
 }
 
 module.exports.updateCourse = (req, res, next)=>{
