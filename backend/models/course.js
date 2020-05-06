@@ -21,16 +21,18 @@ const Course = mongoose.model('Course', courseSchema);
 //const CourseGiven = mongoose.model('Course_Given', course_given_schema);
 
 /* Following function creates a course with given parameters
-   example callback call => callback(err)
+   example callback call => callback(err, course.id)
  */
 const createCourse = async (course_code, year, term, name, callback)=>{
+
    //check if the same course exists
    const cors = await Course.findOne({
       course_code: course_code     
    });
+
    if(cors)
    {
-      return callback("DUPLICATE COURSE");
+      return callback("DUPLICATE COURSE",null);
    }
 
    //if it does not exist
@@ -43,11 +45,16 @@ const createCourse = async (course_code, year, term, name, callback)=>{
             year: year,
             name: name
          });
+
          await course.validate();
-         const result = await course.save();
+         await course.save();
+
+         console.log('calling callback...')
+         
+         return callback(null, course._id);
       }
       catch(e){
-         return callback();
+         return callback(e);
       }
    }  
       
@@ -72,7 +79,9 @@ const associateInstructorWithCourse = async (course_id, instructor_id, callback)
             instructor_id: instructor_id,
          });
          await courseGiven.validate();
-         const result = await courseGiven.save();
+         await courseGiven.save();
+
+         return callback(null)
       } catch (e) {
          return callback("An error occured while creating data");         
       }
