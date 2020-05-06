@@ -46,9 +46,10 @@ const createCourse = (course_code, year, term, name, callback)=>{
       .then(result=>{
          course.save()
          .then(result=>{
-            return callback('Course created', cors._id)
+            return callback(null, cors._id)
          })
          .catch(err=>{
+            console.log(err)
             return callback('Course cannot be created',null)
          })
       })
