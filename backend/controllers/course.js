@@ -1,7 +1,7 @@
 const course = require('../models/course')
 const user   = require('../models/user')
 
-module.exports.createCourse = async (req, res, next)=>{
+module.exports.createCourse = (req, res, next)=>{
 
     const course_code   = req.body.course_code;
     const course_name   = req.body.course_name;
@@ -16,9 +16,11 @@ module.exports.createCourse = async (req, res, next)=>{
         course.associateInstructorWithCourse(course_id, instructor_id, (err)=>{
             if(err){return res.status(500).json({message:err})}
 
-            return res.status(201).json({message:'Course succesfully created'})
+            return res.status(201).json({
+                                            message:'Course succesfully created',
+                                            course_id:course_id,
+                                        })
         })
-        
     })
 }
 
@@ -28,9 +30,9 @@ module.exports.getCourse = (req,res,next)=>{
     let role = req.user_role;
     let personID = req.user_id;
 
-    console.log(courseID)
+    console.log(role)
 
-    if(role=='admin'){
+    if(role==2){
         course.getCourse(courseID, (err,course)=>{
             if(err){
                 return res.status(404).json({message:err})
@@ -39,7 +41,7 @@ module.exports.getCourse = (req,res,next)=>{
         })
     }
 
-    if(role=='instructor'){
+    if(role==1){
 
         user.getGivenCourses(personID,(err, courses)=>{
             
@@ -56,7 +58,7 @@ module.exports.getCourse = (req,res,next)=>{
         })
     }
 
-    if(role=='student'){
+    if(role==0){
         user.getTakenCourses(personID,(err, courses)=>{
             console.log(courses)
             if(err){return res.status(403).json({message:err})}
@@ -71,20 +73,15 @@ module.exports.getCourse = (req,res,next)=>{
             }
         })
     }
-
-    return res.status(404).json({message:'Don\'t have permission'});
 }
-
-
-module.exports.deleteCourse = (req, res, next)=>{
-
-}
-
 
 module.exports.updateCourse = (req, res, next)=>{
 
 }
 
+module.exports.deleteCourse = (req, res, next)=>{
+
+}
 
 module.exports.addStudent = (req, res, next)=>{
 
@@ -108,5 +105,9 @@ module.exports.getAssignments = (req,res,next)=>{
 }
 
 module.exports.getStudents = (req,res,next)=>{
+
+}
+
+module.exports.getInstructors = (req,res,next)=>{
 
 }

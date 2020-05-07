@@ -1,8 +1,6 @@
 const express = require('express');
 
 const isAdmin       = require('../middleware/isAdmin')
-const isInstructor  = require('../middleware/isInstructor')
-const isStudent     = require('../middleware/isStudent')
 const isAuth        = require('../middleware/isAuth')
 
 const router = express.Router();
@@ -24,5 +22,6 @@ router.delete('/dropInstructor', isAdmin, courseController.dropInstructor)
 
 router.get('/getAssignments/:id', isAuth, courseController.getAssignments)
 router.get('/getStudents/:id', isAuth, courseController.getStudents)
+router.get('/getInstructors/:id', isAuth, courseController.getInstructors)
 
 module.exports = router;

@@ -1,12 +1,16 @@
 const express   = require('express');
 const app       = express();    
 
-const authRoutes    = require('./routes/auth')
-const courseRoutes  = require('./routes/course')
-const userRoutes    = require('./routes/user')
-const dotenv        = require('dotenv')
+const authRoutes        = require('./routes/auth')
+const courseRoutes      = require('./routes/course')
+const userRoutes        = require('./routes/user')
+const submissionRoutes  = require('./routes/submission')
+const assignmentRoutes  = require('./routes/assignment')
+const questionRoutes    = require('./routes/question')
+
 const database      = require('./util/database')
 
+const dotenv        = require('dotenv')
 dotenv.config('./env')
 
 
@@ -16,6 +20,10 @@ app.use(express.json())
 app.use('/auth',authRoutes)
 app.use('/course', courseRoutes)
 app.use('/user', userRoutes)
+app.use('/submission', submissionRoutes)
+app.use('/assignment', assignmentRoutes)
+app.use('/question',questionRoutes)
+
 
 database.connectToDB((result)=>{
     console.log('Connectted to DB, starting server...')
