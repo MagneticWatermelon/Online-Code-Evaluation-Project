@@ -19,7 +19,7 @@ export default function CourseMenu(props) {
                 <ListItem 
                     button 
                     component={RouterLink} 
-                    to='/courses/COMP101-01/announcements'
+                    to={`/courses/${props.course.courseID}/announcements`}
                     selected={selectedIndex === 0}
                     onClick={(event) => handleListItemClick(event, 0)}
                 >
