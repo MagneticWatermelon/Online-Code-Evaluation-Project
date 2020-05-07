@@ -100,8 +100,9 @@ const useStyles = makeStyles((theme) => ({
   container: {
     paddingTop: theme.spacing(2),
     paddingBottom: theme.spacing(2),
-    display: 'inline-flex',
-    width: 'fit-content',
+    display: 'flex',
+    width: '100%',
+    flexGrow: 1,
   },
   paper: {
     padding: theme.spacing(2),
@@ -122,6 +123,7 @@ export default function Dashboard() {
   const [anchorElNotif, setAnchorElNotif] = React.useState(null);
   const [title, setTitle] = React.useState('Dashboard');
   const [count, setCount] = React.useState(2);
+  const [clickedCourse, setIndex] = React.useState(1);
 
   const [courseList, setCourses] = React.useState([
     {courseName: 'Art of Computing', courseID: 'COMP101-01', courseSemestr: '2019/2020 Spring'}, 
@@ -256,14 +258,14 @@ export default function Dashboard() {
                 <Container maxWidth={false} className={classes.container}>
                     <Switch>
                         <Route exact path="/dashboard">
-                          <CourseGrid courses={courseList} />
+                          <CourseGrid courses={courseList} click={index => {setIndex(index)}}/>
                           <RightBar />
                         </Route>
                         <Route exact path="/example">
                             <Sandbox id="editor1"/>
                         </Route>
-                        <Route exact path='/courses'>
-                          <Course course={courseList[0]}/>
+                        <Route path='/courses/:courseID'>
+                          <Course course={courseList[clickedCourse]}/>
                         </Route>
                     </Switch>
                 </Container>
