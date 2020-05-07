@@ -123,10 +123,11 @@ export default function Dashboard() {
   const [anchorElNotif, setAnchorElNotif] = React.useState(null);
   const [title, setTitle] = React.useState('Dashboard');
   const [count, setCount] = React.useState(2);
+  const [clickedCourse, setIndex] = React.useState(1);
 
   const [courseList, setCourses] = React.useState([
     {courseName: 'Art of Computing', courseID: 'COMP101-01', courseSemestr: '2019/2020 Spring'}, 
-    {courseName: 'Algorithms and Data Structuressssssssss', courseID: 'COMP203-02', courseSemestr: '2019/2020 Spring'},
+    {courseName: 'Algorithms and Data Structures', courseID: 'COMP203-02', courseSemestr: '2019/2020 Spring'},
     {courseName: 'Exploring Profession', courseID: 'COMP104-01', courseSemestr: '2019/2020 Spring'},
     {courseName: 'Object Oriented Programming', courseID: 'COMP112-02', courseSemestr: '2019/2020 Spring'},
     {courseName: 'Algorithmic Thinking', courseID: 'COMP401-01', courseSemestr: '2019/2020 Spring'},
@@ -257,14 +258,14 @@ export default function Dashboard() {
                 <Container maxWidth={false} className={classes.container}>
                     <Switch>
                         <Route exact path="/dashboard">
-                          <CourseGrid courses={courseList} />
+                          <CourseGrid courses={courseList} click={index => {setIndex(index)}}/>
                           <RightBar />
                         </Route>
                         <Route exact path="/example">
                             <Sandbox id="editor1"/>
                         </Route>
-                        <Route exact path='/courses/COMP101-01'>
-                          <Course course={courseList[0]}/>
+                        <Route path='/courses/:courseID'>
+                          <Course course={courseList[clickedCourse]}/>
                         </Route>
                     </Switch>
                 </Container>

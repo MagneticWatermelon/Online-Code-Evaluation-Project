@@ -20,7 +20,7 @@ export default function CourseGrid(props) {
           {props.courses.map((course, index) => {
           return (
           <Grid item wrap='nowrap'>
-            <CourseCard course={course} color={courseColors[index]}/>
+            <CourseCard course={course} color={courseColors[index]} click={e => props.click(e)} index={index}/>
           </Grid>
           )
       })}

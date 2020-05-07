@@ -68,16 +68,22 @@ export default function Course(props) {
                     <Divider className={styles.divider}/>
                     <div className={styles.content}>
                         <CourseMenu course={props.course} />
-                        
+
                         <Switch>
-                            <Route exact path='/courses/COMP101-01/assignments'>
-                                <Typography
-                                    variant='h4'
-                                    component='div'
-                                    className={styles.title}
-                                >
-                                    {props.course.courseName}
-                                </Typography>
+                            <Route path={`/courses/${props.course.courseID}/announcements`}>
+                                
+                            </Route>
+
+                            <Route path={`/courses/${props.course.courseID}/assignments`}>
+                                
+                            </Route>
+
+                            <Route path={`/courses/${props.course.courseID}/grades`}>
+                                
+                            </Route>
+
+                            <Route path={`/courses/${props.course.courseID}/files`}>
+                                
                             </Route>
                         </Switch>
                     </div>

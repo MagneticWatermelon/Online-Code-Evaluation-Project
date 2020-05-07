@@ -60,9 +60,10 @@ export default function CourseCard(props) {
       }));
 
     const styles = useStyles();
+    const [index, setIndex] = React.useState(props.index);
 
     return (
-        <Link component={RouterLink} to={`courses/${props.course.courseID}`}>
+        <Link component={RouterLink} to={`courses/${props.course.courseID}`} onClick={() => props.click(index)}>
           <Card className={styles.root}>    
               <CardContent className={styles.content}>
                   <div className={styles.divcolor}>
