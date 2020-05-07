@@ -100,8 +100,9 @@ const useStyles = makeStyles((theme) => ({
   container: {
     paddingTop: theme.spacing(2),
     paddingBottom: theme.spacing(2),
-    display: 'inline-flex',
-    width: 'fit-content',
+    display: 'flex',
+    width: '100%',
+    flexGrow: 1,
   },
   paper: {
     padding: theme.spacing(2),
@@ -125,7 +126,7 @@ export default function Dashboard() {
 
   const [courseList, setCourses] = React.useState([
     {courseName: 'Art of Computing', courseID: 'COMP101-01', courseSemestr: '2019/2020 Spring'}, 
-    {courseName: 'Algorithms and Data Structures', courseID: 'COMP203-02', courseSemestr: '2019/2020 Spring'},
+    {courseName: 'Algorithms and Data Structuressssssssss', courseID: 'COMP203-02', courseSemestr: '2019/2020 Spring'},
     {courseName: 'Exploring Profession', courseID: 'COMP104-01', courseSemestr: '2019/2020 Spring'},
     {courseName: 'Object Oriented Programming', courseID: 'COMP112-02', courseSemestr: '2019/2020 Spring'},
     {courseName: 'Algorithmic Thinking', courseID: 'COMP401-01', courseSemestr: '2019/2020 Spring'},
@@ -262,7 +263,7 @@ export default function Dashboard() {
                         <Route exact path="/example">
                             <Sandbox id="editor1"/>
                         </Route>
-                        <Route exact path='/courses'>
+                        <Route exact path='/courses/COMP101-01'>
                           <Course course={courseList[0]}/>
                         </Route>
                     </Switch>

@@ -24,7 +24,7 @@ export default function ListItems(props) {
           <ListItemText primary="Dashboard" />
         </ListItem>
 
-        <ListItem button component={RouterLink} to="/courses" onClick={props.onClick}>
+        <ListItem button component={RouterLink} to="/courses/COMP101-01" onClick={props.onClick}>
           <ListItemIcon>
             <SchoolIcon />
           </ListItemIcon>
