@@ -211,6 +211,5 @@ const exerciseTemplate = {
 module.exports.javaTemplate = javaTemplate;
 module.exports.cppTemplate  = cppTemplate;
 module.exports.pythonTemplate= pythonTemplate;
-module.exports.goTemplate   = goTemplate;
 module.exports.cTemplate    = cTemplate;
 module.exports.exerciseTemplate = exerciseTemplate;

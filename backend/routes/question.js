@@ -8,13 +8,13 @@ const router = express.Router();
 const questionController = require('../controllers/question')
 
 
-router.post('/create', isInstructor, questionController.createQuestion)
+router.post('/create', isAuth, isInstructor, questionController.createQuestion)
 router.get('/get/:id', isAuth, questionController.getQuestion)
-router.post('/update/:id', isInstructor, questionController.updateQuestion)
-router.delete('/delete/:id', isInstructor, questionController.deleteQuestion)
+router.post('/update/:id', isAuth, isInstructor, questionController.updateQuestion)
+router.delete('/delete/:id', isAuth, isInstructor, questionController.deleteQuestion)
 
-router.post('/setIO/:id', isInstructor, questionController.updateIO)
+router.post('/setIO/:id', isAuth, isInstructor, questionController.updateIO)
 
-router.post('/execute/:id', isInstructor, questionController.execute)
+router.post('/execute/:id', isAuth, isInstructor, questionController.execute)
 
 module.exports = router;

@@ -1,5 +1,5 @@
-const course = require('../models/course')
-const user   = require('../models/user')
+const courseModel = require('../models/course')
+const userController = require('../controllers/user')
 
 module.exports.createCourse = (req, res, next)=>{
 
@@ -9,11 +9,11 @@ module.exports.createCourse = (req, res, next)=>{
     const term          = req.body.term;
     const year          = req.body.year;
 
-    course.createCourse(course_code,year,term,course_name, (err,course_id)=>{
+    courseModel.createCourse(course_code,year,term,course_name, (err,course_id)=>{
         if(err){
             return res.status(500).json({message:err})
         }
-        course.associateInstructorWithCourse(course_id, instructor_id, (err)=>{
+        courseModel.associateInstructorWithCourse(course_id, instructor_id, (err)=>{
             if(err){return res.status(500).json({message:err})}
 
             return res.status(201).json({
@@ -30,48 +30,23 @@ module.exports.getCourse = (req,res,next)=>{
     let role = req.user_role;
     let personID = req.user_id;
 
-    console.log(role)
-
-    if(role==2){
-        course.getCourse(courseID, (err,course)=>{
-            if(err){
-                return res.status(404).json({message:err})
-            }
-            return res.status(200).json(course)
+    if (role==0 || role==1 || role==2){
+        userController.doesHaveCourse(courseID, personID, user_role)
+        .then(success=>{
+             courseModel.getCourse(courseID, (err, course)=>{
+                if(err){
+                    return res.status(403).json({message:'Don\'t have permission'})
+                }
+                return res.status(200).json(course)
+             })
+        })
+        .catch(err=>{
+            return res.status(403).json({message:'Don\'t have permission'})
         })
     }
 
-    if(role==1){
-
-        user.getGivenCourses(personID,(err, courses)=>{
-            
-            if(err){return res.status(403).json({message:err})}
-            
-            if(courses.includes(courseID)){
-                course.getCourse(courseID, (err,course)=>{
-                    if(err){
-                        return res.status(404).json({message:'Don\'t have permission'})
-                    }
-                    return res.status(200).json(course)
-                })
-            }
-        })
-    }
-
-    if(role==0){
-        user.getTakenCourses(personID,(err, courses)=>{
-            console.log(courses)
-            if(err){return res.status(403).json({message:err})}
-            
-            if(courses.includes(courseID)){
-                course.getCourse(courseID, (err,course)=>{
-                    if(err){
-                        return res.status(404).json({message:'Don\'t have permission'})
-                    }
-                    return res.status(200).json(course)
-                })
-            }
-        })
+    else{
+        return res.status(401).json({message:'Authentication required'})
     }
 }
 

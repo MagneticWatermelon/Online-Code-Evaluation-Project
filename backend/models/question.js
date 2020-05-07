@@ -68,12 +68,15 @@ return callback(null);
 const updateQuestion = async(question_id, title, explanation, callback)=>{
     let quest = await Question.findById(question_id);
     if(!quest) return callback("QuestionID is not valid ");
+
     Question.findByIdAndUpdate(question_id,{$set:{
             title:title,
             explanation:explanation
         },
-    },(err)=>{if(err) return callback("Update problem to DB")});
-   return callback(null);
+    },(err)=>{
+        if(err) return callback("Update problem to DB")
+        return callback(null);
+    });
 }
 
 /* Deletes the question

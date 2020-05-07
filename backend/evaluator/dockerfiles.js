@@ -15,13 +15,6 @@ const dockerfiles = {
                         CMD         ["python","main.py"]
                        `,
 
-    'golang:1.13':     `FROM        golang:1.13
-                        COPY        . /
-                        WORKDIR     /
-                        RUN         go build -o main main.go
-                        CMD         ["./main"]
-                       `,
-
     'c++':             `FROM gcc:8
                         COPY . /
                         WORKDIR /

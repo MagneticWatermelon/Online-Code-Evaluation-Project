@@ -9,14 +9,14 @@ const router = express.Router();
 const submissionController = require('../controllers/submission')
 
 
-router.post('/create', isStudent, submissionController.createSubmission)
+router.post('/create', isAuth, isStudent, submissionController.createSubmission)
 router.get('/get/:id', isAuth, submissionController.getSubmission)
-router.delete('/delete/:id', isInstructor, submissionController.deleteSubmission)
+router.delete('/delete/:id', isAuth, isInstructor, submissionController.deleteSubmission)
 
 router.get('/files/:id', isAuth, submissionController.getFiles)
 
-router.post('/updateScore/:id',isInstructor, submissionController.updateScore)
-router.post('/updateEvaluation/:id', isInstructor, submissionController.updateEvaluation)
+router.post('/updateScore/:id', isAuth, isInstructor, submissionController.updateScore)
+router.post('/updateEvaluation/:id', isAuth, isInstructor, submissionController.updateEvaluation)
 
 
 module.exports = router;

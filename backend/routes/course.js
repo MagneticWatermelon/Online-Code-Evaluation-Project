@@ -8,16 +8,16 @@ const router = express.Router();
 const courseController = require('../controllers/course')
 
 
-router.post('/create', isAdmin, courseController.createCourse)
+router.post('/create', isAuth, isAdmin, courseController.createCourse)
 router.get('/get/:id', isAuth, courseController.getCourse)
-router.post('/update/:id', isAdmin, courseController.updateCourse)
-router.delete('/delete/:id', isAdmin, courseController.deleteCourse)
+router.post('/update/:id', isAuth, isAdmin, courseController.updateCourse)
+router.delete('/delete/:id', isAuth, isAdmin, courseController.deleteCourse)
 
-router.post('/addStudent', isAdmin, courseController.addStudent)
-router.delete('/dropStudent', isAdmin, courseController.dropStudent)
+router.post('/addStudent', isAuth, isAdmin, courseController.addStudent)
+router.delete('/dropStudent', isAuth, isAdmin, courseController.dropStudent)
 
-router.post('/addInstructor', isAdmin, courseController.addInstructor)
-router.delete('/dropInstructor', isAdmin, courseController.dropInstructor)
+router.post('/addInstructor', isAuth, isAdmin, courseController.addInstructor)
+router.delete('/dropInstructor', isAuth, isAdmin, courseController.dropInstructor)
 
 
 router.get('/getAssignments/:id', isAuth, courseController.getAssignments)
