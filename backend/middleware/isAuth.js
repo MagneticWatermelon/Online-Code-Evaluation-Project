@@ -6,7 +6,7 @@ module.exports = (req,res,next)=>{
     const header = req.get('Authorization');
 
     if(!header){
-        return res.status(403).json({message:'Cannot Read Request Header'})
+        return res.status(403).json({message:'cannot read header'})
     }
     const token = header.split(' ')[1]
 
@@ -16,10 +16,10 @@ module.exports = (req,res,next)=>{
         decodedToken = jwt.verify(token, 'dwightgetthedoor')
     }
     catch(e){
-        return res.status(403).json({message:'Authentication Required'})
+        return res.status(403).json({message:'Don\'t have permission'})
     }
 
-    if(!decodedToken){return res.status(403).json({message:'Authentication Required'})}
+    if(!decodedToken){return res.status(403).json({message:'Don\'t have permission'})}
 
     user_role = decodedToken.user_role
     user_id   = decodedToken.user_id

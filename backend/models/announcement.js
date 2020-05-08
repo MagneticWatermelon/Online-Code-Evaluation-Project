@@ -22,7 +22,7 @@ const Announcement = mongoose.model('Announcement', announcementSchema);
 
     example callback call => callback(err,announcement)
  */
-const createAnnouncement = (instructor_id,course_id,title,explanation, recipients,callback)=>{ //recipients parameter add since it is set to be required in the schema
+const createAnnouncement = (instructor_id,course_id,title,explanation, recipients,callback)=>{ //recipients parameter added since it is set to be required in the schema
     Announcement.findOne({
         instructor_id: instructor_id,
         course_id: course_id,

@@ -42,9 +42,10 @@ const createCourse = (course_code, year, term, name, callback)=>{
       .then(result=>{
          course.save()
          .then(result=>{
-            return callback(null, course._id)
+            return callback(null, cors._id)
          })
          .catch(err=>{
+            console.log(err)
             return callback('Course cannot be created',null)
          })
       })
@@ -63,7 +64,7 @@ const createCourse = (course_code, year, term, name, callback)=>{
 /* Following function associates the given instructor with the course
    example callback call => callback(err)
  */
-const associateInstructorWithCourse = (course_id, instructor_id, callback)=>{
+const associateInstructorWithCourse = async (course_id, instructor_id, callback)=>{
    //check for duplicates
    CourseGiven.findOne({
       course_id: course_id,
@@ -90,16 +91,16 @@ const associateInstructorWithCourse = (course_id, instructor_id, callback)=>{
             return callback(null)
          })
          .catch(err=>{
-            return callback('Cannot associate instructor with course')
+            return callback(err)
          })
       })
       .catch(err=>{
-         return callback('Cannot associate instructor with course')
+         return callback(err)
       })
    })
 
    .catch(err=>{
-      return callback('Cannot associate instructor with course')
+      return callback(err)
    })
 }
 
@@ -219,7 +220,7 @@ const getAssignments = (course_id, callback)=>{
 }
 
 /* Returns the id of the instructor who associated with this course
-    example callback call => callback(err, instructor_ids)
+    example callback call => callback(err, instructor_id)
  */
 const getInstructors = (course_id, callback)=>{
        CourseGiven
@@ -335,8 +336,7 @@ module.exports.addStudentToCourse = addStudentToCourse;
 module.exports.dropStudentFromCourse = dropStudentFromCourse;
 module.exports.getCourse = getCourse;
 module.exports.getAssignments = getAssignments;
-module.exports.getInstructors = getInstructors;
+module.exports.getInstructor = getInstructor;
 module.exports.getStudents = getStudents;
 module.exports.deleteCourse = deleteCourse;
 module.exports.updateCourse = updateCourse;
-module.exports.getAnnouncements= getAnnouncements;

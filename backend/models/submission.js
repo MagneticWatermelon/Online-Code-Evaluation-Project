@@ -11,7 +11,7 @@ const submissionSchema = new Schema({
         outputs : Array,  // student's outputs => ['o1','o2'.....]
     }],//added
 
-    files:  [{nameofFile:String,subimittedcode:String}],
+    files:  [{nameofFile:String,subimittedcode:String}],   // should be changed to files
 
     language:{type:String, required:true}, // added
     date: {type: Date, default: Date.now},    

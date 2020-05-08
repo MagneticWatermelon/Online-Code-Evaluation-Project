@@ -26,7 +26,6 @@ import MailIcon from '@material-ui/icons/Mail';
 import Popover from '@material-ui/core/Popover';
 import ListItemText from '@material-ui/core/ListItemText';
 import Notification from '../Notification/Notification';
-import Course from '../Course/Course';
 
 
 
@@ -100,9 +99,8 @@ const useStyles = makeStyles((theme) => ({
   container: {
     paddingTop: theme.spacing(2),
     paddingBottom: theme.spacing(2),
-    display: 'flex',
-    width: '100%',
-    flexGrow: 1,
+    display: 'inline-flex',
+    width: 'fit-content',
   },
   paper: {
     padding: theme.spacing(2),
@@ -123,7 +121,6 @@ export default function Dashboard() {
   const [anchorElNotif, setAnchorElNotif] = React.useState(null);
   const [title, setTitle] = React.useState('Dashboard');
   const [count, setCount] = React.useState(2);
-  const [clickedCourse, setIndex] = React.useState(1);
 
   const [courseList, setCourses] = React.useState([
     {courseName: 'Art of Computing', courseID: 'COMP101-01', courseSemestr: '2019/2020 Spring'}, 
@@ -136,16 +133,6 @@ export default function Dashboard() {
     {notifType: 'Assigment Graded', notifBody: 'Simple Array' , notifDetail: 'Art of Computing - COMP101-01'},
     {notifType: 'Assigment Graded', notifBody: 'LCS' , notifDetail: 'Algorithmic Thinking - COMP401-01'},
   ]);
-
-  const [gradeList, setGrades] = React.useState([
-    {name: 'LCS', courseName: 'Algorithmic Thinking', gradeInfo: '7 out of 10', submID: 59, assignID: 148, courseID: 'COMP401-01'}, 
-    {name: 'Knapsack', courseName: 'Algorithms and Data Structures', gradeInfo: '6 out of 10', submID: 60, assignID: 149, courseID: 'COMP203-02'}, 
-    {name: 'Simple Array', courseName: 'Art of Computing', gradeInfo: '9 out of 10', submID: 61, assignID: 150, courseID: 'COMP101-01'}, 
-    {name: 'Inheritance', courseName: 'Object Oriented Programming', gradeInfo: '7 out of 10', submID: 62, assignID: 151, courseID: 'COMP112-02'}]);
-  const [toDoList, setTodos] = React.useState([
-    {name: 'Task Scheduling', courseName: 'Algorithmic Thinking', dueDate: '15 May at 23:59', assignID: 152, courseID: 'COMP401-01'}, 
-    {name: 'Functions', courseName: 'Art of Computing', dueDate: '10 May at 23:59', assignID: 153, courseID: 'COMP101-01'}, 
-    {name: 'Encapsulation', courseName: 'Object Oriented Programming', dueDate: '11 May at 23:59', assignID: 154, courseID: 'COMP112-02'}]);
 
   const handleTitle = (event) => {
     setTitle(event.currentTarget.children[1].innerText);
@@ -268,14 +255,11 @@ export default function Dashboard() {
                 <Container maxWidth={false} className={classes.container}>
                     <Switch>
                         <Route exact path="/dashboard">
-                          <CourseGrid courses={courseList} click={index => {setIndex(index)}}/>
-                          <RightBar todos={toDoList} grades={gradeList}/>
+                          <CourseGrid courses={courseList} />
+                          <RightBar />
                         </Route>
                         <Route exact path="/example">
                             <Sandbox id="editor1"/>
-                        </Route>
-                        <Route path='/courses/:courseID'>
-                          <Course course={courseList[clickedCourse]}/>
                         </Route>
                     </Switch>
                 </Container>

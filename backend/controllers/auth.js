@@ -19,7 +19,7 @@ module.exports.loginUser = (req,res,next)=>{
             const user_mail = user_information.mail;
 
             const token = jwt.sign(
-                {mail: user_mail, user_role:user_role, user_id:user_id},
+                {mail: user_mail, user_role:user_role},
                 'dwightgetthedoor',
                 {expiresIn:'30d'}
             )

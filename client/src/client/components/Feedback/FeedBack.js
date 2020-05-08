@@ -30,7 +30,7 @@ export default function FeedBack(props) {
     return (
         <div className={styles.root}>
             <Typography gutterBottom variant='h6' align='left' className={styles.title}>
-                Graded Assigments
+                Grades
             </Typography>
             <Divider />
             <List>

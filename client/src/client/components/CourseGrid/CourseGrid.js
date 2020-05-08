@@ -1,7 +1,17 @@
 import React, { useEffect } from 'react';
-import CourseCard from '../CourseCard/CourseCard';
+import Course from '../Course/Course';
 import { Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+
+
+function getRandomColor() {
+    var letters = '0123456789ABCDEF';
+    var color = '#';
+    for (var i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  }
 
 export default function CourseGrid(props) {
 
@@ -20,7 +30,7 @@ export default function CourseGrid(props) {
           {props.courses.map((course, index) => {
           return (
           <Grid item wrap='nowrap'>
-            <CourseCard course={course} color={courseColors[index]} click={e => props.click(e)} index={index}/>
+            <Course course={course} color={courseColors[index]}/>
           </Grid>
           )
       })}

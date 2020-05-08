@@ -58,6 +58,24 @@ async function test3(){
     });
 }
 
+async function test4(){
+
+    let {lang, files, inputs, outputs} = require('./template').goTemplate;
+    let bundle = new Bundle(lang, inputs, outputs)
+    bundle.addAll(files)
+    
+    evaluator.evaluate('user4', bundle, (err, score, evaluation)=>{
+        
+        if(err){return console.log(err);}
+        
+        console.log(`score is ${score}`);
+        
+        for(e of evaluation){
+            console.log(e);
+        }
+    });
+}
+
 async function test5(){
 
     let {lang, files, inputs, outputs} = require('./template').pythonTemplate;
@@ -97,5 +115,6 @@ async function test6(){
 test1();
 test2();
 test3();
+test4();
 test5();
 test6();
