@@ -27,11 +27,12 @@ const Question = mongoose.model('Question', questionSchema);
         example inputs parameter => [ ['1.1','1.2'] , ['2.1','2.2'] , ['3.1','3.2'] ] // 3 test cases' inputs
         example outputs parameter=> [ ['1.1','1.2'] , ['2.1','2.2'] , ['3.1','3.2'] ] // 3 test cases' outputs
  */
-const createQuestion =(assignment_id, title, explanation, inputs, outputs, callback)=>{
+const createQuestion =(assignment_id, title, explanation, submission_limit, inputs, outputs, callback)=>{
     let question  =  new Question({
             assignment_id:assignment_id,
             title:title,
             explanation:explanation,
+            submission_limit:submission_limit,
             inputs:inputs,
             outputs:outputs,
     });
@@ -88,14 +89,15 @@ const setIOOfQuestion =(question_id, inputs, outputs, callback)=>{
 /* Updates the question with given parameters
     example callback call => callback(err)
  */
-const updateQuestion = (question_id, title, explanation, callback)=>{
+const updateQuestion = (question_id, title, explanation,submission_limit, callback)=>{
     Question.findById(question_id)
     .then(
         quest=>{
            if(!quest) return callback("QuestionID is not valid ");
            Question.findByIdAndUpdate(question_id,{$set:{
             title:title,
-            explanation:explanation
+            explanation:explanation,
+            submission_limit:submission_limit
         },
     },(err)=>{if(err) return callback("Update problem to DB")});
    return callback(null);
