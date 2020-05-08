@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const User = require('./user');
+const Comment = require('./comment');
 
 
 const Schema = mongoose.Schema;
@@ -13,14 +15,51 @@ const announcementSchema = new Schema({
     timestamps: true,
 });
 
-const Announcement = mongoose.model('Annoucement', announcementSchema);
+const Announcement = mongoose.model('Announcement', announcementSchema);
 
 /* Following function creates a new announcement and returns the id of
     created announcement
 
     example callback call => callback(err,announcement)
  */
-const createAnnouncement = (insructor_id,course_id,title,explanation,callback)=>{
+const createAnnouncement = (instructor_id,course_id,title,explanation, recipients,callback)=>{ //recipients parameter added since it is set to be required in the schema
+    Announcement.findOne({
+        instructor_id: instructor_id,
+        course_id: course_id,
+        title: title,
+        explanation: explanation,
+        recipients: recipients
+    })
+    .then(flag => {
+        if (!flag) {
+            const announce = new Announcement({
+                instructor_id: instructor_id,
+                course_id: course_id,
+                title: title,
+                explanation: explanation,
+                recipients: recipients
+            });
+            announce.validate()
+            .then(check => {
+                announce.save()
+                .then(res => {
+                    return callback(null, announce);
+                })
+                .catch(err => {
+                    return callback("Announcement could not be created");
+                })
+            })
+            .catch(err => {
+                return callback("Bad parameters");
+            })
+        } else {
+            return callback("Announcement already exists");
+        }
+    })
+    .catch(err => {
+        return callback("Announcement could not be created");
+    })
+  
 
 }
 
@@ -29,6 +68,17 @@ const createAnnouncement = (insructor_id,course_id,title,explanation,callback)=>
     example callback call => callback(err) 
  */
 const deleteAnnouncement = (announcement_id,callback)=>{
+    Announcement.findByIdAndDelete(announcement_id)
+    .then(result => {
+       if (!result) {
+          return callback("Announcement couldnt found");
+       } else {
+          return callback(null);
+       }
+    })
+    .catch(err => {
+       return callback("Error while deleting the announcement");
+    })
 
 }
 
@@ -37,6 +87,18 @@ const deleteAnnouncement = (announcement_id,callback)=>{
     exmple callback call => callback(err,announcement)
  */
 const getAnnouncement = (announcement_id, callback)=>{
+    Announcement.findById(announcement_id)
+      .then(result => {
+         if (!result) {
+            return callback("Announcement could not found", null);
+         } else {
+            return callback(null, result);
+         }
+
+      })
+      .catch(err => {
+         return callback("Error while getting the Announcement", null);
+      })
     
 }
 
@@ -44,7 +106,19 @@ const getAnnouncement = (announcement_id, callback)=>{
 
     example callback call => callback(err)
  */
-const addReceipent = (announcement_id, user_id, callback)=>{
+const addReceipent = (user_id, callback)=>{ //  DOES NOT FILLED !!!
+    User.findById(user_id)
+    .then(result => {
+        if (!result) {
+            return callback("Invalid user");
+        } else {
+            
+        }
+    })
+    .catch(err => {
+        return callback("Error while adding recipient");
+    })
+
 
 }
 
@@ -63,7 +137,22 @@ const updateAnnouncement = (announcement_id, title, explanation, callback)=>{
     example callback call => callback(err,comment_ids)
  */
 const getComments = (announcement_id)=>{
+    Comment.find({
+        announcement_id: announcement_id
+    })
+    
+      .then(result => {
+         if (!result) {
+            return callback("No comment found", null);
+         } else {
+            return callback(null, result);
+         }
 
+      })
+      .catch(err => {
+         return callback("Error while getting the course", null);
+      })
+    
 }
 
 

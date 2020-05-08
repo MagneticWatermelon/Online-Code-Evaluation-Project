@@ -5,8 +5,7 @@ const Schema = mongoose.Schema;
 const questionSchema = new Schema({
     assignment_id: {type: mongoose.Schema.Types.ObjectId, ref: 'Assignment', required: true},
     title: {type: String, required: true},
-    explanation: {type: String, required: true},
-    submission_limit:{type: Number, required:true}, // added   
+    explanation: {type: String, required: true},    
     inputs:[[
         {type: String, required:true}
     ]], // added
@@ -27,69 +26,101 @@ const Question = mongoose.model('Question', questionSchema);
         example inputs parameter => [ ['1.1','1.2'] , ['2.1','2.2'] , ['3.1','3.2'] ] // 3 test cases' inputs
         example outputs parameter=> [ ['1.1','1.2'] , ['2.1','2.2'] , ['3.1','3.2'] ] // 3 test cases' outputs
  */
-const createQuestion = async (assignment_id, title, explanation,submission_limit, inputs, outputs, callback)=>{
-    let question  =  Question({
+const createQuestion =(assignment_id, title, explanation, inputs, outputs, callback)=>{
+    let question  =  new Question({
             assignment_id:assignment_id,
             title:title,
             explanation:explanation,
-            submission_limit:submission_limit,
             inputs:inputs,
             outputs:outputs,
     });
-    question.save()
-    .then(callback(null))
-    .catch((err)=> callback("Saving question problem to DB"));
+    question.validate().then(value=>{
+        question.save()
+        .then(callback(null))
+        .catch((err)=> callback("Saving question problem to DB"));
+    }
+    ).catch(
+        callback("Validation Error!!!!")
+    );
+   
 }
 
 /* Following function returns the question as a jason object
     example callback call => callback(err, question)
 */
-const getQuestion = async (question_id, callback)=>{
- let quest = await Question.findById(question_id);
- if(!quest) return callback("QuestionID is not valid ",null);
- return callback(null,quest);
+const getQuestion =  (question_id, callback)=>{
+ Question.findById(question_id)
+ .then(
+     quest=>{
+        if(!quest) return callback("QuestionID is not valid ",null);
+        return callback(null,quest);
+     }
+ ).catch(
+    callback(err,null)
+ );
+ 
 }
 
 /* Updates inputs and outputs of the question
     example callback call => callback(err)
  */
-const setIOOfQuestion = async(question_id, inputs, outputs, callback)=>{
-    let quest = await Question.findById(question_id);
-    if(!quest) return callback("QuestionID is not valid ");
-    Question.findByIdAndUpdate(question_id,{$set:{
-        inputs:inputs,
-        outputs:outputs
-    },
-},(err)=>{if(err) return callback("Update problem to DB")});
-return callback(null);
+const setIOOfQuestion =(question_id, inputs, outputs, callback)=>{
+    Question.findById(question_id)
+ .then(
+     quest=>{
+        if(!quest) return callback("QuestionID is not valid ");
+        Question.findByIdAndUpdate(question_id,{$set:{
+            inputs:inputs,
+            outputs:outputs
+        },
+    },(err)=>{if(err) return callback("Update problem to DB")});
+    return callback(null);
+        
+     }
+ ).catch(
+    err=>{
+        return callback(err);
+    }
+);
 }
 
 /* Updates the question with given parameters
     example callback call => callback(err)
  */
-const updateQuestion = async(question_id, title, explanation,submission_limit, callback)=>{
-    let quest = await Question.findById(question_id);
-    if(!quest) return callback("QuestionID is not valid ");
-
-    Question.findByIdAndUpdate(question_id,{$set:{
+const updateQuestion = (question_id, title, explanation, callback)=>{
+    Question.findById(question_id)
+    .then(
+        quest=>{
+           if(!quest) return callback("QuestionID is not valid ");
+           Question.findByIdAndUpdate(question_id,{$set:{
             title:title,
-            explanation:explanation,
-            submission_limit:submission_limit
+            explanation:explanation
         },
-    },(err)=>{
-        if(err) return callback("Update problem to DB")
-        return callback(null);
-    });
+    },(err)=>{if(err) return callback("Update problem to DB")});
+   return callback(null);
+        }
+    ).catch(
+        err=>{
+            return callback(err);
+        }
+    );
+
 }
 
 /* Deletes the question
     example callback call => callback(err)
  */
-const deleteQuestion = async(question_id, callback)=>{
-    let quest = await Question.findById(question_id);
-    if(!quest) return callback("QuestionID is not valid ");
-    Question.findByIdAndDelete(question_id,(err)=>{if(err)return callback("Delete Problem i DB")});
-    return  callback(null);
+const deleteQuestion = (question_id, callback)=>{
+    Question.findById(question_id).then(quest=>{
+        if(!quest) return callback("QuestionID is not valid ");
+        Question.findByIdAndDelete(question_id,(err)=>{if(err)return callback("Delete Problem i DB")});
+        return  callback(null);}
+    ).catch(
+        err=>{
+            return callback(err);
+        }
+    );
+    
 }
 module.exports.model = Question;
 

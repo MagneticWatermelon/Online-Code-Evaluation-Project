@@ -21,20 +21,20 @@ const Assignment = mongoose.model('Assignment', assignmentSchema);
 
    example callback call => callback(err)
  */
-const createAssignment = async (course_id, instructor_id, title, release_date, due_date, explanation, weight, callback)=>{
-    const flag =await  Assignment.findOne({
-        course_id: course_id,
+const createAssignment = (course_id, instructor_id, title, release_date, due_date, explanation, weight, callback)=>{
+    Assignment.findOne({
+            course_id: course_id,
             releasing_instructor_id: instructor_id,
             title: title,
             release_date: release_date,
             due_date: due_date,
             explanation: explanation,
             weight: weight,
-    });
-    if (flag) {
-        return callback("Duplicate error");
-    } else {
-        try {
+    })
+    .then(result => {
+        if (result) {
+            return callback("This assignment already exists");
+        } else {
             const assignment = new Assignment({
                 course_id: course_id,
                 releasing_instructor_id: instructor_id,
@@ -44,12 +44,24 @@ const createAssignment = async (course_id, instructor_id, title, release_date, d
                 explanation: explanation,
                 weight: weight,
             });
-            await assignment.validate();
-            const result = await assignment.save();    
-        } catch (e) {
-            return callback(e);
+            assignment.validate();
+            assignment.save()
+            .then(result => {
+                if (!result) {
+                    return callback("Error while creating creating the assignment");
+                } else {
+                    return callback(null);
+                }
+            })
+            .catch(err => {
+                return callback("Error occured");
+            })
         }
-    }
+    })
+    .catch(err => {
+        return callback("Error occured");
+    })
+   
     
 
 }
@@ -58,48 +70,71 @@ const createAssignment = async (course_id, instructor_id, title, release_date, d
    
     example callback call => callback(err, assignment)
  */
-const getAssignment = async (assignment_id, callback)=>{
-    try {
-        const assignment = await Assignment.findById(assignment_id);
-        return callback(null, assignment);
-    } catch (error) {
-        return callback("Error occured", null);
-    }
+const getAssignment = (assignment_id, callback)=>{
+    
+        Assignment.findById(assignment_id)
+        .then(result => {
+            if (!result) {
+                return callback("Assignment could not found", null);
+            } else {
+                return callback(null, result);
+            }
+        })
+       .catch(err => {
+           return callback("Error occured", null);
+       })
+    
+       
+    
 }
 
 /* following function takes assignment_id and returns an array of question ids
 
     example callback call => callback(err, arrayOfQuestionIDs)
 */
-const getQuestions = async (assignment_id, callback)=>{
-    try {
-        const quests = await Question.model
-            .find({assignment_id: assignment_id})
-            .select({"_id": 0});
-        return callback(null, quests);
-    } catch (error) {
-        return callback("Error occured", null);
-    }
+const getQuestions = (assignment_id, callback)=>{
+    
+        Question.model
+        .find({assignment_id: assignment_id})
+        .select({"_id": 0})
+        .then(result => {
+            if (!result) {
+                return callback("Question could not found", null);
+            } else {
+                return callback(null, result);
+            }
+        })
+        .catch(err => {
+            return callback("Error occured", null);
+        })
+    
+     
 }
 
 /* Deletes assignment
     example callback call => callback(err)
  */
-const deleteAssignment = async(assignment_id, callback)=>{
-    try {
-        const result = await Assignment.findByIdAndDelete(assignment_id);
+const deleteAssignment = (assignment_id, callback)=>{
     
-    } catch (e) {
-        return callback("Error occured");
-    }
+        Assignment.findByIdAndDelete(assignment_id)
+        .then(result => {
+            if (!result) {
+                return callback("Assignment could not be deleted");
+            } else {
+                return callback(null);
+            }
+        })
+        .catch(err => {
+            return callback("Erro occured");
+        });  
 }
 
 /* Updates assignment properties
     example callback call => callback(err)
  */
-const updateAssignment = async (assignment_id, title, release_date, due_date, explanation, weight, callback)=>{    
-    try {
-        const result = await Assignment.findByIdAndUpdate(assignment_id, {
+const updateAssignment =  (assignment_id, title, release_date, due_date, explanation, weight, callback)=>{    
+    
+        Assignment.findByIdAndUpdate(assignment_id, {
             $set:{
                 title: title,
                 release_date: release_date,
@@ -107,10 +142,18 @@ const updateAssignment = async (assignment_id, title, release_date, due_date, ex
                 explanation: explanation,
                 weight: weight
             }
-         });
-    } catch (error) {
-        return callback("Error occured");
-    }
+         })
+         .then(result => {
+             if (!result) {
+                 return callback("Assignment could not be updated");
+             } else {
+                 return callback(null);
+             }
+         })
+         .catch(err => {
+             return callback("Error occured");
+         })
+   
 }
 
 module.exports.model = Assignment;
