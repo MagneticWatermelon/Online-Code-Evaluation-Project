@@ -27,16 +27,22 @@ const Question = mongoose.model('Question', questionSchema);
         example outputs parameter=> [ ['1.1','1.2'] , ['2.1','2.2'] , ['3.1','3.2'] ] // 3 test cases' outputs
  */
 const createQuestion =(assignment_id, title, explanation, inputs, outputs, callback)=>{
-    let question  =  Question({
+    let question  =  new Question({
             assignment_id:assignment_id,
             title:title,
             explanation:explanation,
             inputs:inputs,
             outputs:outputs,
     });
-    question.save()
-    .then(callback(null))
-    .catch((err)=> callback("Saving question problem to DB"));
+    question.validate().then(value=>{
+        question.save()
+        .then(callback(null))
+        .catch((err)=> callback("Saving question problem to DB"));
+    }
+    ).catch(
+        callback("Validation Error!!!!")
+    );
+   
 }
 
 /* Following function returns the question as a jason object
@@ -50,7 +56,7 @@ const getQuestion =  (question_id, callback)=>{
         return callback(null,quest);
      }
  ).catch(
-    callback(err.null)
+    callback(err,null)
  );
  
 }
