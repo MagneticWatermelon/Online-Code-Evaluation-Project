@@ -4,7 +4,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { makeStyles } from '@material-ui/core/styles';
 
 
-export default function CourseSummary(props) {
+export default function CourseSummary() {
 
     const useStyles = makeStyles((theme) => ({
         header: {
@@ -29,7 +29,23 @@ export default function CourseSummary(props) {
 
                 >
                     <Typography>
-                        {`${props.count} Notifications`}
+                        {`Recent Announcements`}
+                    </Typography>
+                </ExpansionPanelSummary>
+                <ExpansionPanelDetails>
+                    <Typography>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex,
+                        sit amet blandit leo lobortis eget.
+                    </Typography>
+                </ExpansionPanelDetails>
+            </ExpansionPanel>
+            <ExpansionPanel>
+                <ExpansionPanelSummary
+                    expandIcon={<ExpandMoreIcon />}
+
+                >
+                    <Typography>
+                        {`Recent Assignments`}
                     </Typography>
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails>

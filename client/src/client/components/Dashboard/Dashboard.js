@@ -27,6 +27,7 @@ import Popover from '@material-ui/core/Popover';
 import ListItemText from '@material-ui/core/ListItemText';
 import Notification from '../Notification/Notification';
 import Course from '../Course/Course';
+import CoursesAll from '../CoursesAll/CoursesAll';
 
 
 
@@ -267,15 +268,19 @@ export default function Dashboard() {
                 <div className={classes.appBarSpacer} />
                 <Container maxWidth={false} className={classes.container}>
                     <Switch>
-                        <Route exact path="/dashboard">
+                        <Route path="/dashboard">
                           <CourseGrid courses={courseList} click={index => {setIndex(index)}}/>
                           <RightBar todos={toDoList} grades={gradeList}/>
                         </Route>
-                        <Route exact path="/example">
-                            <Sandbox id="editor1"/>
-                        </Route>
                         <Route path='/courses/:courseID'>
                           <Course course={courseList[clickedCourse]}/>
+                        </Route>
+
+                        <Route path="/courses">
+                            <CoursesAll  courses={courseList}/>
+                        </Route>
+                        <Route exact path="/example">
+                            <Sandbox id="editor1"/>
                         </Route>
                     </Switch>
                 </Container>
