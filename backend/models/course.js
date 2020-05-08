@@ -23,25 +23,20 @@ const Course = mongoose.model('Course', courseSchema);
    example callback call => callback(err, course.id)
  */
 const createCourse = (course_code, year, term, name, callback)=>{
-
    //check if the same course exists
    Course.findOne({course_code: course_code})
-
    .then(cors=>{
       if(cors){return true}
       return false;
    })
    .then(doesExist=>{
-
       if(doesExist){return callback('Course already exist', null)}
-
       const course = new Course({
          course_code: course_code,
          term: term,
          year: year,
          name: name
       });
-
       course.validate()
       .then(result=>{
          course.save()
@@ -68,7 +63,7 @@ const createCourse = (course_code, year, term, name, callback)=>{
 /* Following function associates the given instructor with the course
    example callback call => callback(err)
  */
-const associateInstructorWithCourse = async (course_id, instructor_id, callback)=>{
+const associateInstructorWithCourse = (course_id, instructor_id, callback)=>{
    //check for duplicates
    CourseGiven.findOne({
       course_id: course_id,
@@ -111,18 +106,13 @@ const associateInstructorWithCourse = async (course_id, instructor_id, callback)
 /* Following function drops instructor from the course
    example callback call => callback(err)
 */
-const dropInstructorFromCourse = async (course_id, instructor_id, callback)=>{
+const dropInstructorFromCourse = async (course_id, instructor_id, callback)=>{  
    
-   try {
-      const result =await CourseGiven.findOneAndDelete({
+      const result = CourseGiven.findOneAndDelete({
          course_id: course_id,
          instructor_id: instructor_id,
       });
-      return callback(null);
-   } catch (e) {
-      return callback(e);
-   }
-
+  
 
 }
 
