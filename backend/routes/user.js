@@ -1,7 +1,5 @@
 const express = require('express');
 
-const isInstructor  = require('../middleware/isInstructor')
-const isStudent     = require('../middleware/isStudent')
 const isAuth        = require('../middleware/isAuth')
 const isAdmin       = require('../middleware/isAdmin')
 
@@ -10,10 +8,14 @@ const router = express.Router();
 const userController = require('../controllers/user')
 
 
-router.post('/create', isAdmin, userController.createUser)
+router.post('/create', isAuth, isAdmin, userController.createUser)
 router.get('/get/:id', isAuth, userController.getUser)
-router.post('/update/:id', isAdmin, userController.updateUser)
-router.delete('/delete/:id', isAdmin, userController.deleteUser)
+router.delete('/delete/:id', isAuth, isAdmin, userController.deleteUser)
+
+router.post('/updatePassword/:id', isAuth, userController.updatePassword)
+router.post('/addProfilePhoto/:id', isAuth, userController.addProfilePhoto)
+
+router.get('/courses', isAuth, userController.getCourses)
 
 module.exports = router;
 

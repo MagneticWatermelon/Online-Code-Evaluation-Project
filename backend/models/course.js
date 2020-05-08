@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const CourseGiven = require('./course_given');
 const CourseTaken = require('./course_taken');
 const Assignment = require('./assignment');
+const Announcement = require('./announcement');
 
 
 const Schema = mongoose.Schema;
@@ -41,10 +42,9 @@ const createCourse = (course_code, year, term, name, callback)=>{
       .then(result=>{
          course.save()
          .then(result=>{
-            return callback(null, cors._id)
+            return callback(null, course._id)
          })
          .catch(err=>{
-            console.log(err)
             return callback('Course cannot be created',null)
          })
       })
@@ -90,28 +90,34 @@ const associateInstructorWithCourse = (course_id, instructor_id, callback)=>{
             return callback(null)
          })
          .catch(err=>{
-            return callback(err)
+            return callback('Cannot associate instructor with course')
          })
       })
       .catch(err=>{
-         return callback(err)
+         return callback('Cannot associate instructor with course')
       })
    })
 
    .catch(err=>{
-      return callback(err)
+      return callback('Cannot associate instructor with course')
    })
 }
 
 /* Following function drops instructor from the course
    example callback call => callback(err)
 */
-const dropInstructorFromCourse = async (course_id, instructor_id, callback)=>{  
+const dropInstructorFromCourse = (course_id, instructor_id, callback)=>{  
    
-      const result = CourseGiven.findOneAndDelete({
+       CourseGiven.findOneAndDelete({
          course_id: course_id,
          instructor_id: instructor_id,
-      });
+      })
+      .then(result=>{
+         return callback(null);
+      })
+      .catch(err=>{
+         return callback("Error while deleting");
+      })
   
 
 }
@@ -119,55 +125,74 @@ const dropInstructorFromCourse = async (course_id, instructor_id, callback)=>{
 /* Adds student to course
    example callback call => callback(err)
  */
-const addStudentToCourse = async (course_id, student_id, callback)=>{
-   const flag = await CourseTaken.findOne({
+const addStudentToCourse = (course_id, student_id, callback)=>{
+   CourseTaken.findOne({
       course_id: course_id,
       student_id: student_id
-   });
-   if (flag) {
-      return callback("Duplicate entry error");
-   } else {
-      try {
-         const course_taken = new CourseTaken({
+   })
+   .then(flag=>{
+      if (flag){
+         return callback("Duplicate error");
+      } else {
+         course_taken = new CourseTaken({
             student_id: student_id,
             course_id: course_id
          });
-         
-         await course_taken.validate();
-         const result = await course_taken.save();
-         return callback(null);         
-      } catch (e) {
-         return callback(e)
+         course_taken.validate();
+         course_taken.save()
+         .then(result => {
+            return callback(null)
+         })
+         .catch(err=>{
+            return callback("Error while inserting data");
+         });
       }
-   }
-
+   })
+   
+   
 }
 
 /* Drops student from course
    example callback call => callback(err)
  */
-const dropStudentFromCourse =async (course_id, student_id, callback)=>{
-   try {
-      const result  =await CourseTaken.findOneAndDelete({
+const dropStudentFromCourse = (course_id, student_id, callback)=>{
+         CourseTaken.findOneAndDelete({
          student_id: student_id,
          course_id: course_id
-      });
-      return callback(null);
-   } catch (e) {
-      return callback(e);
-   }
+      })
+      .then(result => {
+         if(result)
+         {
+            return callback(null);
+         }
+         else{
+            return callback("Course could not find");
+         }
+      })
+      .catch(err => 
+         {
+            return callback("Error while dropping student from the course");
+         });
+   
 }
 
 /* Returns course as a jason object
    example callback call => callback(err,course)
  */
-const getCourse = async (course_id, callback)=>{
-   try {
-      const course = await Course.findById(course_id);      
-      return callback(null, course);
-   } catch (e) {
-      return callback("Not found", null)
-   }  
+const getCourse = (course_id, callback)=>{
+      Course.findById(course_id)
+      .then(result => {
+         if (!result) {
+            return callback("Course could not found", null);
+         } else {
+            return callback(null, result);
+         }
+
+      })
+      .catch(err => {
+         return callback("Error while getting the course", null);
+      })
+    
 
    
 
@@ -176,67 +201,88 @@ const getCourse = async (course_id, callback)=>{
 /* Returns the assignment ids from this course
     example callback call => callback(err, arrayOfAssignmentIDs) 
  */
-const getAssignments = async (course_id, callback)=>{
-   try {
-      const assigns = await Assignment.model
+const getAssignments = (course_id, callback)=>{
+      Assignment.model
          .find({course_id: course_id})
-         .select({"_id": 0});
-      return callback(null, assigns);
-   } catch (error) {
-      return callback("Error occured", null);
-   }
+         .select({"_id": 0})
+         .then(result => {
+            if (!result) {
+               return callback("Assignment could not found", null);
+            } else {
+               return callback(null, result);
+            }
+         })
+         .catch(err => {
+            return callback("Error occured" ,null);
+         });     
+   
 }
 
 /* Returns the id of the instructor who associated with this course
-    example callback call => callback(err, instructor_id)
+    example callback call => callback(err, instructor_ids)
  */
-const getInstructor = async(course_id, callback)=>{
-   try {
-      const instructor = await CourseGiven
+const getInstructors = (course_id, callback)=>{
+       CourseGiven
          .find({course_id: course_id})
-         .select({instructor_id: 1});
-         return callback(null, instructor);
-   } catch (e) {
-      return callback("Error occured", null);
-   }
-
+         .select({instructor_id: 1})
+         .then(result => {
+            if (!result) {
+               return callback("Instructor could not found", null);
+            } else {
+               return callback(null, result);
+            }
+         })
+         .catch(err => {
+            return callback("Error occured" ,null);
+         }); 
 }
 
 /* Returns an array of student ids who are taking this course
     example callback(err, arrayOfStudentIDs)
  */
 const getStudents = async (course_id, callback)=>{
-   try {
-      const result = await CourseTaken
+ 
+       CourseTaken
          .find({course_id: course_id})
-         .select({student_id: 1});
-      return callback(null, result);
-      
-   } catch (e) {
-      return callback("Error occured", null)
-   }
-
+         .select({student_id: 1})
+         .then(result => 
+            {
+               if (!result) {
+                  return callback("Student could not found", null);
+               } else {
+                  return callback(null, result);
+               }
+            })
+            .catch(err => {
+               return callback("Error occured" ,null);
+            }); 
 }
 
 /* Deletes the course
    example callback call => callback(err)
  */
-const deleteCourse = async (course_id, callback)=>{
-   try {
-      const result = await Course.findByIdAndDelete(course_id);
-      return callback(null);
-   } catch (e) {
-      return callback("Error occured");
-   }
+const deleteCourse =  (course_id, callback)=>{
+  
+      Course.findByIdAndDelete(course_id)
+      .then(result => {
+         if (!result) {
+            return callback("Course couldnt found");
+         } else {
+            return callback(null);
+         }
+      })
+      .catch(err => {
+         return callback("Error while deleting the course");
+      })
+      
+   
 }
 
 /* Updates course properties
     example callback call => callback(err)
  */
-const updateCourse = async (course_id, title, course_code, term, year, callback)=>{
-
-      try {
-         const course = await Course.findByIdAndUpdate(course_id, {
+const updateCourse =  (course_id, title, course_code, term, year, callback)=>{     
+         Course.findByIdAndUpdate(course_id, {
             $set: {
                title: title,
                course_code: course_code,
@@ -244,15 +290,42 @@ const updateCourse = async (course_id, title, course_code, term, year, callback)
                year: year
             }
             
+         })
+         .then(result => {
+            if (!result) {
+               return callback("Course could not be updated");
+            } else {
+               return callback(null);
+            }
+         })
+         .catch(err => {
+            return callback("Error while updating the course");
          });
+}
 
-         return callback(null);
-      } 
-      catch (error) {
-         return callback("Error occured");
+/* Following function returns the announcement ids of the given course
+
+   example callback call => callback(err,announcement_ids)
+ */
+const getAnnouncements = (course_id, callback)=>{
+   Announcement.model
+   .find({course_id: course_id})
+   .select({"_id": 0})
+   .then(result => {
+      if (!result) {
+         return callback("No announcement found", null);
+      } else {
+         return callback(null, result);
       }
-   }
+      })
+      .catch(err => {
+         return callback("Error occured while getting announcements", null);
+      });
+   
 
+}
+
+module.exports = Course;
 
 module.exports.model = Course;
 module.exports.createCourse = createCourse;
@@ -262,7 +335,8 @@ module.exports.addStudentToCourse = addStudentToCourse;
 module.exports.dropStudentFromCourse = dropStudentFromCourse;
 module.exports.getCourse = getCourse;
 module.exports.getAssignments = getAssignments;
-module.exports.getInstructor = getInstructor;
+module.exports.getInstructors = getInstructors;
 module.exports.getStudents = getStudents;
 module.exports.deleteCourse = deleteCourse;
 module.exports.updateCourse = updateCourse;
+module.exports.getAnnouncements= getAnnouncements;
