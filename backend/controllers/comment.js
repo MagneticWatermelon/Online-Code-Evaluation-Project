@@ -11,9 +11,11 @@ module.exports.getComment = (req,res,next)=>{
 }
 
 module.exports.deleteComment = (req,res,next)=>{
+   
     
 }
 
 module.exports.updateComment = (req,res,next)=>{
 
+    
 }

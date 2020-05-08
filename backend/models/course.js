@@ -10,7 +10,7 @@ const courseSchema = new Schema({
     course_code: {type: String, required: true, unique: true},
     year: {type: Number, required: true},
     term: {type: String, required: true},
-    name: {type: String, required: true},
+    name: {type: String, required: true}
 }, {
     timestamps: true,
 });
@@ -269,6 +269,14 @@ const updateCourse = async (course_id, title, course_code, term, year, callback)
    example callback call => callback(err,announcement_ids)
  */
 const getAnnouncements = (course_id, callback)=>{
+
+}
+
+/* Following function returns the resource_ids of the given course
+
+   example callback call => callback(err, resource_ids)
+ */
+const getResources = (course_id, callback)=>{
 
 }
 

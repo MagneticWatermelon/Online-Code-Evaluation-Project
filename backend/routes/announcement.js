@@ -11,5 +11,6 @@ const announcementController = require('../controllers/announcement')
 router.post('/create', isAuth, isInsructor, announcementController.createAnnouncement)
 router.get('/get/:id', isAuth, announcementController.getAnnouncement)
 router.delete('/delete/:id', isAuth, isInsructor, announcementController.deleteAnnouncement)
+router.update('/update/:id', isAuth, isInsructor, announcementController.updateAnnouncement)
 
 module.exports = router;

@@ -44,8 +44,19 @@ const getAnnouncement = (announcement_id, callback)=>{
 
     example callback call => callback(err)
  */
-const addReceipent = (user_id, callback)=>{
+const addReceipent = (announcement_id, user_id, callback)=>{
 
+}
+
+/* Following function updates the announcement and at the end of operation
+    receipents should be changed to an empty array since every student should
+    be able noified when a change is made
+
+        example callback call => callback(err)
+ */
+const updateAnnouncement = (announcement_id, title, explanation, callback)=>{
+    // update announcement
+    // delete recipients
 }
 
 /* Following function returns the comment ids made to given announcement
@@ -62,5 +73,6 @@ module.exports.model = Announcement
 module.exports.createAnnouncement   = createAnnouncement;
 module.exports.getAnnouncement      = getAnnouncement;
 module.exports.deleteAnnouncement   = deleteAnnouncement;
+module.exports.updateAnnouncement   = updateAnnouncement;
 module.exports.addReceipent         = addReceipent;
 module.exports.getComments          = getComments;

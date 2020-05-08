@@ -108,6 +108,11 @@ module.exports.getCourses = (req,res,next)=>{
     }
 }
 
+
+module.exports.getNotifications = (req,res,next)=>{
+
+}
+
 module.exports.doesHaveCourse = (course_id, userid, role)=>{
     return new Promise((resolve,reject)=>{
 

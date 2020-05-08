@@ -23,5 +23,5 @@ router.delete('/dropInstructor/:courseID/:instructorID', isAuth, isAdmin, course
 router.get('/assignments/:id', isAuth, courseController.getAssignments)
 router.get('/students/:id', isAuth, courseController.getStudents)
 router.get('/instructors/:id', isAuth, courseController.getInstructors)
-
+router.get('/announcements/:id',isAuth, courseController.getAnnouncements)
 module.exports = router;

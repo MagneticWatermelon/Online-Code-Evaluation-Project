@@ -146,3 +146,8 @@ module.exports.getInstructors = (req,res,next)=>{
         return res.status(403).json({message:'Permission denied'})
     })
 }
+
+
+module.exports.getAnnouncements = (req,res,next)=>{
+
+}

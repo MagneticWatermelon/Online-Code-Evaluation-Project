@@ -11,3 +11,7 @@ module.exports.getAnnouncement = (req,res,next)=>{
 module.exports.deleteAnnouncement = (req,res,next)=>{
 
 }
+
+module.exports.updateAnnouncement = (req,res,next)=>{
+
+}
