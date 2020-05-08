@@ -9,7 +9,7 @@ const notificationSchema = new Schema({
     assignment_id: {type: mongoose.Schema.Types.ObjectId, ref: 'Assignment', required: true},
     title: {type: String, required:true},
     explanation: {type:String, required:true},
-    active: {type: Boolean, default:true}
+    active: {type: Boolean, default:true,required:false}
 }, {
     timestamps: true,
 });
@@ -27,6 +27,7 @@ const createNotification = (student_id,assignment_id,title,explanation,callback)
         assignment_id:assignment_id,
         title:title,
         explanation:explanation,
+        active:true
     });
     not_obj.validate().then( value=>{
         not_obj.save()
@@ -35,7 +36,9 @@ const createNotification = (student_id,assignment_id,title,explanation,callback)
     }
         
     ).catch(
-        callback("Validation Error!!!")
+        err=>{
+            return callback("Validation Error");
+        }
     );
 }
 
@@ -49,7 +52,9 @@ const deleteNotification = (notification_id,callback)=>{
         Notification.findByIdAndDelete(notification_id,(err)=>{if(err)return callback("Delete Problem in DB")});
         return  callback(null);}
     ).catch(
-                callback(err)
+        err=>{
+            return callback(err);
+        }
     );
 }
 
@@ -66,7 +71,8 @@ const getNotification = (notification_id, callback)=>{
         return callback(null,not_obj);
      }
  ).catch(
-    callback(err,null)
+     err=>{
+    callback(err,null)}
  );
 }
 

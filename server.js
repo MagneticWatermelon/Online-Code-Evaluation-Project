@@ -5,7 +5,7 @@ const{createQuestion,deleteQuestion,updateQuestion,getQuestion} = require('./bac
 const{saveSubmission,getFiles,getSubmission,updateEvaluation,updateScore,deleteSubmission} = require('./backend/models/submission');
 const{addUser,User,checkUser,updatePassword,getUser,updateUser,deleteUser,addProfilePhoto,getGivenCourses,getTakenCourses} = require('./backend/models/user');
 const {Course, createCourse} = require('./backend/models/course');
-
+const{createNotification,getNotification,deleteNotification} = require('./backend/models/notification');
 require('./backend/node_modules/dotenv').config();
 const app = express();
 const port = process.env.PORT || 4000;
@@ -34,6 +34,14 @@ const sub_files = [{
 app.listen(port, () => {
 console.log('Server is listening...');
 });
+/*createNotification("5eb1697c70abfb181839d82a","5eb3cd86fcbaec1da4f50cfb","Denene Notification","Deneme Notification", (err)=>{
+        if(err) return console.log(err);
+});*/
+deleteNotification("5eb576ea0228b71a6475a88d",(err)=>{
+        if(err) return console.log(err);
+      //  console.log(data);
+});
+
 /*getFiles("5eb1dc33418a8145ac3fb12e",(err,res)=>{
     if(err) return console.log(err);console.log(res);
 })*/
@@ -47,10 +55,10 @@ console.log('Server is listening...');
     if(err){return console.log(err)}
     console.log(user)
 });*/
-updatePassword("5eb2a8d54b576c4a94b1a05a","YeniSİfre",(err, user)=>{
+/*updatePassword("5eb2a8d54b576c4a94b1a05a","YeniSİfre",(err, user)=>{
     if(err){return console.log(err)}
     console.log(user)
-});
+});*/
 //$2b$10$TfL6b69R77gW6VewdACEp.aDfkS53eH1z1qYRvjnZufJcx.6JmlSK
 /*getUser("5eb1697c70abfb181839d82a",(err,user)=>{
     if(err) return console.log(err);

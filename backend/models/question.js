@@ -78,8 +78,10 @@ const setIOOfQuestion =(question_id, inputs, outputs, callback)=>{
         
      }
  ).catch(
-    callback(err)
- );
+    err=>{
+        return callback(err);
+    }
+);
 }
 
 /* Updates the question with given parameters
@@ -98,7 +100,9 @@ const updateQuestion = (question_id, title, explanation, callback)=>{
    return callback(null);
         }
     ).catch(
-       callback(err)
+        err=>{
+            return callback(err);
+        }
     );
 
 }
@@ -112,7 +116,9 @@ const deleteQuestion = (question_id, callback)=>{
         Question.findByIdAndDelete(question_id,(err)=>{if(err)return callback("Delete Problem i DB")});
         return  callback(null);}
     ).catch(
-                callback(err)
+        err=>{
+            return callback(err);
+        }
     );
     
 }
