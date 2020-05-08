@@ -200,7 +200,7 @@ const getGivenCourses =  (instructor_id, callback)=>{
 /* Following function returns an array of taken course ids by the given student
     example callback call => callback(err, arrayOfCourseIDs)
  */
-const getTakenCourses = async (student_id, callback) =>{
+const getTakenCourses = (student_id, callback) =>{
 course_taken.findOne({student_id:student_id}).then(
     student_id_obj=>{
         if(!student_id_obj) return callback("Not valid ID",null);
@@ -217,6 +217,15 @@ course_taken.findOne({student_id:student_id}).then(
     err=>{return callback("Searching user Error in DB",null)}
 );
 }
+
+/* Following function returns the notification ids of the user
+
+    example callback call => callback(err, notification_ids)
+ */
+const getNotifications = (req,res,next)=>{
+
+}
+
 module.exports.model = User;
 
 module.exports.checkUser = checkUser;
@@ -228,3 +237,4 @@ module.exports.addProfilePhoto = addProfilePhoto;
 module.exports.updatePassword  = updatePassword;
 module.exports.getGivenCourses = getGivenCourses;
 module.exports.getTakenCourses = getTakenCourses;
+module.exports.getNotifications= getNotifications;

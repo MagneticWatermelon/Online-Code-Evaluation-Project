@@ -322,8 +322,6 @@ const getAnnouncements = (course_id, callback)=>{
       .catch(err => {
          return callback("Error occured while getting announcements", null);
       });
-   
-
 }
 
 /* Following function returns the resource_ids of the given course

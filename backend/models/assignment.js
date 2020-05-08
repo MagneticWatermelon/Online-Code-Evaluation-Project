@@ -107,8 +107,6 @@ const getQuestions = (assignment_id, callback)=>{
         .catch(err => {
             return callback("Error occured", null);
         })
-    
-     
 }
 
 /* Deletes assignment
