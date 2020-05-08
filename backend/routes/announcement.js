@@ -1,6 +1,6 @@
 const express = require('express');
 
-const isInsructor     = require('../middleware/isInstructor')
+const isInstructor     = require('../middleware/isInstructor')
 const isAuth        = require('../middleware/isAuth')
 
 const router = express.Router();
@@ -8,9 +8,9 @@ const router = express.Router();
 const announcementController = require('../controllers/announcement')
 
 
-router.post('/create', isAuth, isInsructor, announcementController.createAnnouncement)
+router.post('/create', isAuth, isInstructor, announcementController.createAnnouncement)
 router.get('/get/:id', isAuth, announcementController.getAnnouncement)
-router.delete('/delete/:id', isAuth, isInsructor, announcementController.deleteAnnouncement)
-router.update('/update/:id', isAuth, isInsructor, announcementController.updateAnnouncement)
+router.delete('/delete/:id', isAuth, isInstructor, announcementController.deleteAnnouncement)
+router.post('/update/:id', isAuth, isInstructor, announcementController.updateAnnouncement)
 
 module.exports = router;

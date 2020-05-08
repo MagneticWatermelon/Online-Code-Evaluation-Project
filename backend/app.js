@@ -10,12 +10,12 @@ const questionRoutes    = require('./routes/question')
 const notificationRoutes= require('./routes/notification')
 const announcementRoutes= require('./routes/announcement')
 const commentRoutes     = require('./routes/comment')
+const resourceRoutes    = require('./routes/resource')
 
 const database      = require('./util/database')
 
 const dotenv        = require('dotenv')
 dotenv.config('./env')
-
 
 app.use(express.urlencoded({extended:true}))
 app.use(express.json())
@@ -29,6 +29,7 @@ app.use('/question',questionRoutes)
 app.use('/notification',notificationRoutes)
 app.use('/announcement',announcementRoutes)
 app.use('/comment',commentRoutes)
+app.use('/resource', resourceRoutes)
 
 
 database.connectToDB((result)=>{
