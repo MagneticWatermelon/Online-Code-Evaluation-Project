@@ -4,6 +4,8 @@ import { Switch, Route, Link, BrowserRouter as Router} from 'react-router-dom';
 import { makeStyles, createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import { red } from '@material-ui/core/colors';
 import CourseMenu from '../CourseMenu/CourseMenu';
+import CourseSummary from '../CourseSummary/CourseSummary';
+import RightBar from '../RightBar/RightBar';
 
 
 
@@ -84,6 +86,11 @@ export default function Course(props) {
 
                             <Route path={`/courses/${props.course.courseID}/files`}>
                                 
+                            </Route>
+
+                            <Route path={`/courses/${props.course.courseID}`}>
+                                <CourseSummary count='1'/>
+                                <RightBar todos={[]} grades={[]}/>
                             </Route>
                         </Switch>
                     </div>
