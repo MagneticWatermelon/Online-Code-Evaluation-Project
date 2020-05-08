@@ -208,6 +208,15 @@ course_taken.findOne({student_id:student_id}).then(
     err=>{return callback("Searching user Error in DB",null)}
 );
 }
+
+/* Following function returns the notifications of the given user
+
+    example callback call => callback(err,notifications)
+ */
+const getNotifications = (user_id,callback)=>{
+
+}
+
 module.exports.model = User;
 
 module.exports.checkUser = checkUser;
@@ -218,3 +227,4 @@ module.exports.addProfilePhoto = addProfilePhoto;
 module.exports.updatePassword  = updatePassword;
 module.exports.getGivenCourses = getGivenCourses;
 module.exports.getTakenCourses = getTakenCourses;
+module.exports.getNotifications = getNotifications;

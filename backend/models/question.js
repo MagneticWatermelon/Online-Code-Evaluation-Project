@@ -5,7 +5,8 @@ const Schema = mongoose.Schema;
 const questionSchema = new Schema({
     assignment_id: {type: mongoose.Schema.Types.ObjectId, ref: 'Assignment', required: true},
     title: {type: String, required: true},
-    explanation: {type: String, required: true},    
+    explanation: {type: String, required: true},
+    submission_limit:{type: Number, required:true}, // added   
     inputs:[[
         {type: String, required:true}
     ]], // added
@@ -26,11 +27,12 @@ const Question = mongoose.model('Question', questionSchema);
         example inputs parameter => [ ['1.1','1.2'] , ['2.1','2.2'] , ['3.1','3.2'] ] // 3 test cases' inputs
         example outputs parameter=> [ ['1.1','1.2'] , ['2.1','2.2'] , ['3.1','3.2'] ] // 3 test cases' outputs
  */
-const createQuestion = async (assignment_id, title, explanation, inputs, outputs, callback)=>{
+const createQuestion = async (assignment_id, title, explanation,submission_limit, inputs, outputs, callback)=>{
     let question  =  Question({
             assignment_id:assignment_id,
             title:title,
             explanation:explanation,
+            submission_limit:submission_limit,
             inputs:inputs,
             outputs:outputs,
     });
@@ -65,13 +67,14 @@ return callback(null);
 /* Updates the question with given parameters
     example callback call => callback(err)
  */
-const updateQuestion = async(question_id, title, explanation, callback)=>{
+const updateQuestion = async(question_id, title, explanation,submission_limit, callback)=>{
     let quest = await Question.findById(question_id);
     if(!quest) return callback("QuestionID is not valid ");
 
     Question.findByIdAndUpdate(question_id,{$set:{
             title:title,
-            explanation:explanation
+            explanation:explanation,
+            submission_limit:submission_limit
         },
     },(err)=>{
         if(err) return callback("Update problem to DB")

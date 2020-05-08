@@ -7,6 +7,9 @@ const userRoutes        = require('./routes/user')
 const submissionRoutes  = require('./routes/submission')
 const assignmentRoutes  = require('./routes/assignment')
 const questionRoutes    = require('./routes/question')
+const notificationRoutes= require('./routes/notification')
+const announcementRoutes= require('./routes/announcement')
+const commentRoutes     = require('./routes/comment')
 
 const database      = require('./util/database')
 
@@ -23,6 +26,9 @@ app.use('/user', userRoutes)
 app.use('/submission', submissionRoutes)
 app.use('/assignment', assignmentRoutes)
 app.use('/question',questionRoutes)
+app.use('/notification',notificationRoutes)
+app.use('/announcement',announcementRoutes)
+app.use('/comment',commentRoutes)
 
 
 database.connectToDB((result)=>{

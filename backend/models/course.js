@@ -262,7 +262,15 @@ const updateCourse = async (course_id, title, course_code, term, year, callback)
       catch (error) {
          return callback("Error occured");
       }
-   }
+}
+
+/* Following function returns the announcement ids of the given course
+
+   example callback call => callback(err,announcement_ids)
+ */
+const getAnnouncements = (course_id, callback)=>{
+
+}
 
 
 module.exports.model = Course;
@@ -277,3 +285,4 @@ module.exports.getInstructors = getInstructors;
 module.exports.getStudents = getStudents;
 module.exports.deleteCourse = deleteCourse;
 module.exports.updateCourse = updateCourse;
+module.exports.getAnnouncements= getAnnouncements;
