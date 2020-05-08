@@ -86,27 +86,26 @@ module.exports.addProfilePhoto = (req,res,next)=>{
     }
 }
 
-module.exports.getGivenCourses = (req,res,next)=>{
+module.exports.getCourses = (req,res,next)=>{
 
-    const userid = req.params.id
+    const userid = req.user_id
+    const role   = req.user_role
 
-    userModel.getGivenCourses(userid, (err, course_ids)=>{
-        if(err){return res.status(500).json({message:'Cannot get courses of the user'})}
+    console.log(userid)
+    console.log(role)
+    if(role==1|| role==0){
+        const getCourses = role==1 ? userModel.getGivenCourses : userModel.getTakenCourses;
+        
+        getCourses(userid, (err, course_ids)=>{
+            if(err){return res.status(500).json({message:'Cannot get courses of the user'})}
+    
+            return res.status(200).json({courses:course_ids})
+        })
+    }
 
-        return res.status(200).json({courses:course_ids})
-    })
-
-}
-
-module.exports.getTakenCourses = (req,res,next)=>{
-
-    const userid = req.params.id
-
-    userModel.getTakenCourses(userid,(err, course_ids)=>{
-        if(err){return res.status(500).json({message:'Cannot get courses of the user'})}
-
-        return res.status(200).json({courses:course_ids})
-    })
+    else{
+        return res.status(401).json({message:'Permission denied'})
+    }
 }
 
 module.exports.doesHaveCourse = (course_id, userid, role)=>{

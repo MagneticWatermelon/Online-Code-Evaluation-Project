@@ -199,14 +199,14 @@ const getAssignments = async (course_id, callback)=>{
 }
 
 /* Returns the id of the instructor who associated with this course
-    example callback call => callback(err, instructor_id)
+    example callback call => callback(err, instructor_ids)
  */
-const getInstructor = async(course_id, callback)=>{
+const getInstructors = async(course_id, callback)=>{
    try {
-      const instructor = await CourseGiven
+      const instructors = await CourseGiven
          .find({course_id: course_id})
          .select({instructor_id: 1});
-         return callback(null, instructor);
+         return callback(null, instructors);
    } catch (e) {
       return callback("Error occured", null);
    }
@@ -273,7 +273,7 @@ module.exports.addStudentToCourse = addStudentToCourse;
 module.exports.dropStudentFromCourse = dropStudentFromCourse;
 module.exports.getCourse = getCourse;
 module.exports.getAssignments = getAssignments;
-module.exports.getInstructor = getInstructor;
+module.exports.getInstructors = getInstructors;
 module.exports.getStudents = getStudents;
 module.exports.deleteCourse = deleteCourse;
 module.exports.updateCourse = updateCourse;

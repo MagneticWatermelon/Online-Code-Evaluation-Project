@@ -13,15 +13,15 @@ router.get('/get/:id', isAuth, courseController.getCourse)
 router.post('/update/:id', isAuth, isAdmin, courseController.updateCourse)
 router.delete('/delete/:id', isAuth, isAdmin, courseController.deleteCourse)
 
-router.post('/addStudent', isAuth, isAdmin, courseController.addStudent)
-router.delete('/dropStudent', isAuth, isAdmin, courseController.dropStudent)
+router.post('/addStudent/:courseID/:studentID', isAuth, isAdmin, courseController.addStudent)
+router.delete('/dropStudent/:courseID/:studentID', isAuth, isAdmin, courseController.dropStudent)
 
-router.post('/addInstructor', isAuth, isAdmin, courseController.addInstructor)
-router.delete('/dropInstructor', isAuth, isAdmin, courseController.dropInstructor)
+router.post('/addInstructor/:courseID/:instructorID', isAuth, isAdmin, courseController.addInstructor)
+router.delete('/dropInstructor/:courseID/:instructorID', isAuth, isAdmin, courseController.dropInstructor)
 
 
-router.get('/getAssignments/:id', isAuth, courseController.getAssignments)
-router.get('/getStudents/:id', isAuth, courseController.getStudents)
-router.get('/getInstructors/:id', isAuth, courseController.getInstructors)
+router.get('/assignments/:id', isAuth, courseController.getAssignments)
+router.get('/students/:id', isAuth, courseController.getStudents)
+router.get('/instructors/:id', isAuth, courseController.getInstructors)
 
 module.exports = router;
