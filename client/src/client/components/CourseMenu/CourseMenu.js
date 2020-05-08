@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link as RouterLink} from 'react-router-dom';
 import { List, ListItem, ListItemText, Container} from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 
 
 
@@ -12,8 +13,17 @@ export default function CourseMenu(props) {
         setSelectedIndex(index);
     };
 
+    const useStyles = makeStyles((theme) => ({
+        root: {
+          width: 'fit-content'
+        }
+      }));
+    
+    const styles = useStyles();
+
+    
     return(
-        <Container>
+        <Container className={styles.root}>
             <List component='nav'>
 
                 <ListItem 
