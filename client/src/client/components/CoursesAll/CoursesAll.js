@@ -11,6 +11,9 @@ export default function CoursesAll(props) {
     const [data, setData] = React.useState(props.courses);
 
     const useStyles = makeStyles((theme) => ({
+        root: {
+          marginTop: 25,
+        },
         firstColumn: {
           width: 400,
         }
@@ -19,12 +22,12 @@ export default function CoursesAll(props) {
     const styles = useStyles();
 
     return(
-        <TableContainer>
+        <TableContainer className={styles.root}>
             <Table>
                 <TableBody>
                     {data.map((course) => (
                         <TableRow key={course.courseName}>
-                            <TableCell component={RouterLink} to={`courses/${course.courseID}`} scope="row" align='center' className={styles.firstColumn}>
+                            <TableCell component={RouterLink} to={`/courses/${course.courseID}`} scope="row" align='center' className={styles.firstColumn}>
                                 {course.courseName}
                             </TableCell>
                             <TableCell align="left">{course.courseID}</TableCell>
@@ -37,7 +40,7 @@ export default function CoursesAll(props) {
             <Switch>
                 {data.map((course) => {
                     return(
-                        <Route path={`courses/${course.courseID}`}>
+                        <Route path={`/courses/${course.courseID}`}>
                             <Course course={course} />
                         </Route>
                     );
