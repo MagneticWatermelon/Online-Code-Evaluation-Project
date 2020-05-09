@@ -32,7 +32,14 @@ const deleteResource = (resource_id, callback)=>{
 /* Following function returns the resource
     example callback call => callback(err, resource)
  */
-const getResource   = (comment_id,callback)=>{
+const getResource   = (resource_id,callback)=>{
+
+}
+
+/* Following function changes the filename
+    example callback call => callback(err)
+ */
+const setFilename = (resource_id, file_name, callback)=>{
 
 }
 
@@ -41,3 +48,4 @@ module.exports.model = Resource;
 module.exports.addResource = addResource;
 module.exports.deleteResource = deleteResource;
 module.exports.getResource = getResource;
+module.exports.setFilename = setFilename;

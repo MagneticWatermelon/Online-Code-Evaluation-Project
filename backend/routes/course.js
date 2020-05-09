@@ -24,4 +24,6 @@ router.get('/assignments/:id', isAuth, courseController.getAssignments)
 router.get('/students/:id', isAuth, courseController.getStudents)
 router.get('/instructors/:id', isAuth, courseController.getInstructors)
 router.get('/announcements/:id',isAuth, courseController.getAnnouncements)
+router.get('/resources/:id', isAuth, courseController.getResources)
+
 module.exports = router;

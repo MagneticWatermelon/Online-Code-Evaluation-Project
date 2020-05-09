@@ -151,3 +151,7 @@ module.exports.getInstructors = (req,res,next)=>{
 module.exports.getAnnouncements = (req,res,next)=>{
 
 }
+
+module.exports.getResources = (req,res,next)=>{
+
+}

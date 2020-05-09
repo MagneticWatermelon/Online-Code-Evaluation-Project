@@ -1,14 +1,14 @@
 const resourceModel = require('../models/resource')
-const gcsHelper     = require('../helpers/gcs')
-let Duplex = require('stream').Duplex; 
 
-module.exports.uploadResource = (req,res,next)=>{
+module.exports.addResourceToDB= (req,res,next)=>{
+    const courseID = req.params.courseID
+    const userID   = req.user_id
+    const role     = req.user_role
 
-   let {originalname, mimetype, buffer, size} = req.file
-
-   gcsHelper.uploadFile(originalname, bufferToStream(buffer))
-
+    req.filename   = 'assalkdjlhbj'
 }
+
+module.exports.uploadResource = ()=>{}
 
 module.exports.downloadResource = (req,res,next)=>{
 
@@ -16,11 +16,4 @@ module.exports.downloadResource = (req,res,next)=>{
 
 module.exports.deleteResource = (req,res,next)=>{
 
-}
-
-function bufferToStream(buffer) {  
-    let stream = new Duplex();
-    stream.push(buffer);
-    stream.push(null);
-    return stream;
 }
