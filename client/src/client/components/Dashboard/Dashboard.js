@@ -16,7 +16,7 @@ import { Avatar, List, ListItem } from '@material-ui/core';
 import PersonIcon from '@material-ui/icons/Person';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
-import {Switch, Route } from 'react-router';
+import {Switch, Route } from 'react-router-dom';
 import Sandbox from '../Sandbox/Sandbox';
 import {BrowserRouter as Router} from 'react-router-dom';
 import CourseGrid from '../CourseGrid/CourseGrid';
@@ -272,9 +272,13 @@ export default function Dashboard() {
                           <CourseGrid courses={courseList} click={index => {setIndex(index)}}/>
                           <RightBar todos={toDoList} grades={gradeList}/>
                         </Route>
-                        <Route path='/courses/:courseID'>
-                          <Course course={courseList[clickedCourse]}/>
-                        </Route>
+                        {courseList.map((course) => {
+                            return(
+                                <Route path={`/courses/${course.courseID}`}>
+                                    <Course course={course} />
+                                </Route>
+                            );
+                        })}
 
                         <Route path="/courses">
                             <CoursesAll  courses={courseList}/>

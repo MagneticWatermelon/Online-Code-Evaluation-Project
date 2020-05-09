@@ -92,25 +92,25 @@ export default function CourseCard(props) {
                     alignItems="center"
                   >
                       <Grid item>
-                        <IconButton component={RouterLink} to={`courses/${props.course.courseID}/announcements`}>
+                        <IconButton component={RouterLink} to={`/courses/${props.course.courseID}/announcements`}>
                           <NotificationsIcon />
                         </IconButton>
                       </Grid>
 
                       <Grid item>
-                        <IconButton component={RouterLink} to={`courses/${props.course.courseID}/assigments`}>
+                        <IconButton component={RouterLink} to={`/courses/${props.course.courseID}/assignments`}>
                           <AssignmentIcon />
                         </IconButton>
                       </Grid>
 
                       <Grid item>
-                        <IconButton component={RouterLink} to={`courses/${props.course.courseID}/grades`}>
+                        <IconButton component={RouterLink} to={`/courses/${props.course.courseID}/grades`}>
                           <GradeIcon />
                         </IconButton>
                       </Grid>
 
                       <Grid item>
-                        <IconButton component={RouterLink} to={`courses/${props.course.courseID}/resources`}>
+                        <IconButton component={RouterLink} to={`/courses/${props.course.courseID}/files`}>
                           <FolderSharedIcon />  
                         </IconButton>
                       </Grid>

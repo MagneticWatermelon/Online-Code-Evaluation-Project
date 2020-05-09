@@ -87,7 +87,7 @@ export default function Course(props) {
                                 
                             </Route>
 
-                            <Route path={`/courses/${props.course.courseID}`}>
+                            <Route path={`/courses/:courseID`}>
                                 <CourseSummary />
                                 <RightBar todos={[]} grades={[]}/>
                             </Route>
