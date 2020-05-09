@@ -8,9 +8,25 @@ const router = express.Router();
 const GCSUploader = require('../helpers/GCS-Uploader')
 const resourceController = require('../controllers/resource')
 
-router.post('/upload/:courseID', isAuth, isInstructor, GCSUploader.single('file'))
+router.post(
+    '/upload/:courseID',
+    isAuth,
+    isInstructor,
+    resourceController.checkCourse,
+    GCSUploader.single('file'),
+    resourceController.addResourceToDB)
 
-router.post('/download/:id', isAuth, resourceController.downloadResource)
-router.delete('/delete/:id', isAuth, isInstructor, resourceController.deleteResource)
+router.get(
+    '/get/:id',
+    isAuth,
+    resourceController.validateUser,
+    resourceController.getResource)
+
+router.delete(
+    '/delete/:id',
+    isAuth,
+    isInstructor,
+    resourceController.validateUser,
+    resourceController.deleteResource)
 
 module.exports = router;

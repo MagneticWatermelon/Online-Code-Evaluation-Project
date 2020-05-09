@@ -1,6 +1,7 @@
 const {Storage} = require('@google-cloud/storage')
 
-const multer        = require('multer')
+const multer    = require('multer')
+const shortid   = require('shortid')
 
 const GCS_STORAGE = new Storage({
     projectId   :   process.env.GCS_PROJECT_ID,
@@ -10,20 +11,40 @@ const GCS_STORAGE = new Storage({
 const Bucket = GCS_STORAGE.bucket(process.env.GCS_DEFAULT_BUCKET)
 
 
-function _uploadFile (req, file, callback){
+async function _uploadFile (req, file, callback){
 
-    //const filename  = req.filename;
+    const gcs_file_id = shortid.generate() 
     
-    let writeStream = Bucket.file('asdafafas').createWriteStream({
+    const createdFile = Bucket.file(gcs_file_id)
+    
+    createdFile.setMetadata({
+        contentType: file.mimetype
+    })
+
+    let writeStream = createdFile.createWriteStream({
         resumable   :false,
         gzip        :true
     })
 
     file.stream.pipe(writeStream)
+
+    writeStream.on('finish',()=>{
+        createdFile.makePublic();
+        req.filename    = file.originalname
+        req.gcs_id      = gcs_file_id
+        callback(null)
+    })
+    
+    writeStream.on('error',(err)=>{
+        createdFile.delete()
+        req.filename    = file.originalname
+        req.gcs_id      = gcs_file_id
+        callback(err)
+    })
 }
 
-function _removeFile(req,file,callback){
-
+async function _removeFile(req,file,callback){
+    
 }
 
 function StorageEngine(){}
