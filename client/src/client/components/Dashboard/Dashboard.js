@@ -28,6 +28,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Notification from '../Notification/Notification';
 import Course from '../Course/Course';
 import CoursesAll from '../CoursesAll/CoursesAll';
+import AssignmentsAll from '../AssignmentsAll/AssignmentsAll';
 
 
 
@@ -127,11 +128,11 @@ export default function Dashboard() {
   const [clickedCourse, setIndex] = React.useState(1);
 
   const [courseList, setCourses] = React.useState([
-    {courseName: 'Art of Computing', courseID: 'COMP101-01', courseSemestr: '2019/2020 Spring'}, 
-    {courseName: 'Algorithms and Data Structures', courseID: 'COMP203-02', courseSemestr: '2019/2020 Spring'},
-    {courseName: 'Exploring Profession', courseID: 'COMP104-01', courseSemestr: '2019/2020 Spring'},
-    {courseName: 'Object Oriented Programming', courseID: 'COMP112-02', courseSemestr: '2019/2020 Spring'},
-    {courseName: 'Algorithmic Thinking', courseID: 'COMP401-01', courseSemestr: '2019/2020 Spring'},
+    {courseName: 'Art of Computing', courseID: 'COMP101-01', courseSemestr: '2019/2020 Spring', courseStatus: "Active"}, 
+    {courseName: 'Algorithms and Data Structures', courseID: 'COMP203-02', courseSemestr: '2019/2020 Spring', courseStatus: "Active"},
+    {courseName: 'Exploring Profession', courseID: 'COMP104-01', courseSemestr: '2019/2020 Spring', courseStatus: "Active"},
+    {courseName: 'Object Oriented Programming', courseID: 'COMP112-02', courseSemestr: '2019/2020 Spring', courseStatus: "Active"},
+    {courseName: 'Algorithmic Thinking', courseID: 'COMP401-01', courseSemestr: '2019/2020 Spring', courseStatus: "Active"},
   ]);
   const [notifs, setNotifs] = React.useState([
     {notifType: 'Assigment Graded', notifBody: 'Simple Array' , notifDetail: 'Art of Computing - COMP101-01'},
@@ -231,7 +232,12 @@ export default function Dashboard() {
                       </List>
                     </Popover>
                     
-                    <IconButton color="inherit" aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
+                    <IconButton   
+                      color="inherit" 
+                      aria-controls="simple-menu" 
+                      aria-haspopup="true" 
+                      onClick={handleClick}
+                    >
                         <Avatar>
                             <PersonIcon />
                         </Avatar>
@@ -243,6 +249,14 @@ export default function Dashboard() {
                         keepMounted
                         open={Boolean(anchorEl)}
                         onClose={handleClose}
+                        anchorOrigin={{
+                          vertical: 'bottom',
+                          horizontal: 'left',
+                        }}
+                        transformOrigin={{
+                          vertical: 'top',
+                          horizontal: 'right',
+                        }}
                     >
                         <MenuItem onClick={handleClose}>My account</MenuItem>
                         <MenuItem onClick={handleClose}>Logout</MenuItem>
@@ -268,10 +282,12 @@ export default function Dashboard() {
                 <div className={classes.appBarSpacer} />
                 <Container maxWidth={false} className={classes.container}>
                     <Switch>
+
                         <Route path="/dashboard">
                           <CourseGrid courses={courseList} click={index => {setIndex(index)}}/>
                           <RightBar todos={toDoList} grades={gradeList}/>
                         </Route>
+
                         {courseList.map((course) => {
                             return(
                                 <Route path={`/courses/${course.courseID}`}>
@@ -283,9 +299,15 @@ export default function Dashboard() {
                         <Route path="/courses">
                             <CoursesAll  courses={courseList}/>
                         </Route>
+
+                        <Route path="/assignments" >
+                          <AssignmentsAll />
+                        </Route>
+
                         <Route exact path="/example">
                             <Sandbox id="editor1"/>
                         </Route>
+
                     </Switch>
                 </Container>
             </main>
