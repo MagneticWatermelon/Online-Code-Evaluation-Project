@@ -76,3 +76,8 @@ module.exports.getQuestions = (req,res,next)=>{
         return res.status(200).json(questions)
     })
 }
+
+module.exports.getGrade = (req,res,next)=>{
+    const assignmentID  = req.params.id
+    const studentID     = req.params.studentID
+}

@@ -10,7 +10,7 @@ module.exports.createCourse = (req, res, next)=>{
         if(err){
             return res.status(500).json({message:err})
         }
-        courseModel.associateInstructorWithCourse(course_id, instructor, (err)=>{
+        courseModel.addInstructorToCourse(course_id, instructor, (err)=>{
             if(err){return res.status(500).json({message:err})}
 
             return res.status(201).json({
@@ -69,7 +69,7 @@ module.exports.dropStudent = (req,res,next)=>{
 
 module.exports.addInstructor = (req, res, next)=>{
     let {courseID,instructorID} = req.params
-    courseModel.associateInstructorWithCourse(courseID,instructorID,(err)=>{
+    courseModel.addInstructorToCourse(courseID,instructorID,(err)=>{
         if(err){return res.status(500).json({message:err})}
         return res.status(200).json({message:'Instructor added to course'})
     })
@@ -139,4 +139,9 @@ module.exports.getResources = (req,res,next)=>{
         if(err){return res.status(500).json({message:err})}
         return res.status(200).json(resources)
     })
+}
+
+module.exports.getGrade = (req,res,next)=>{
+    const courseID  = req.params.id
+    const studentID = req.params.studentID
 }

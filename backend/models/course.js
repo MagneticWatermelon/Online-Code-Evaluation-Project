@@ -64,7 +64,7 @@ const createCourse = (course_code, year, term, name, callback)=>{
 /* Following function associates the given instructor with the course
    example callback call => callback(err)
  */
-const associateInstructorWithCourse = async (course_id, instructor_id, callback)=>{
+const addInstructorToCourse = (course_id, instructor_id, callback)=>{
    //check for duplicates
    CourseGiven.findOne({
       course_id: course_id,
@@ -340,16 +340,17 @@ const getAverageGrade = (student_id,callback)=>{
 
 
 module.exports.model = Course;
-module.exports.createCourse = createCourse;
-module.exports.associateInstructorWithCourse = associateInstructorWithCourse;
-module.exports.dropInstructorFromCourse = dropInstructorFromCourse;
-module.exports.addStudentToCourse = addStudentToCourse;
-module.exports.dropStudentFromCourse = dropStudentFromCourse;
-module.exports.getCourse = getCourse;
-module.exports.getAssignments = getAssignments;
-module.exports.getInstructors = getInstructors;
-module.exports.getStudents = getStudents;
-module.exports.deleteCourse = deleteCourse;
-module.exports.updateCourse = updateCourse;
-module.exports.getAnnouncements= getAnnouncements;
-module.exports.getResources = getResources;
+module.exports.createCourse               = createCourse;
+module.exports.addInstructorToCourse      = addInstructorToCourse;
+module.exports.dropInstructorFromCourse   = dropInstructorFromCourse;
+module.exports.addStudentToCourse         = addStudentToCourse;
+module.exports.dropStudentFromCourse      = dropStudentFromCourse;
+module.exports.getCourse                  = getCourse;
+module.exports.getAssignments             = getAssignments;
+module.exports.getInstructors             = getInstructors;
+module.exports.getStudents                = getStudents;
+module.exports.deleteCourse               = deleteCourse;
+module.exports.updateCourse               = updateCourse;
+module.exports.getAnnouncements           = getAnnouncements;
+module.exports.getResources               = getResources;
+module.exports.getAverageGrade            = getAverageGrade

@@ -40,4 +40,10 @@ router.get(
     assignmentController.validateUser, 
     assignmentController.getQuestions)
 
+router.get(
+    '/grade/:id/:studentID',
+    isAuth,
+    assignmentController.validateUser,
+    assignmentController.getGrade)
+    
 module.exports = router;

@@ -86,4 +86,11 @@ router.get(
     courseController.checkCourse,
     courseController.getResources)
 
+
+router.get(
+    '/grade/:id/:studentID', 
+    isAuth,
+    courseController.checkCourse,
+    courseController.getGrade)
+
 module.exports = router;
