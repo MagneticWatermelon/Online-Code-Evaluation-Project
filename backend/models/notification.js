@@ -80,6 +80,6 @@ const getNotification = (notification_id, callback)=>{
 
 module.exports.model = Notification
 
-module.exports.createNotification = createNotification;
-module.exports.getNotification = getNotification;
-module.exports.deleteNotification = deleteNotification;
+module.exports.createNotification   = createNotification;
+module.exports.getNotification      = getNotification;
+module.exports.deleteNotification   = deleteNotification;

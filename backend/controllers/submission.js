@@ -148,9 +148,19 @@ module.exports.validateUser     = (req,res,next)=>{
 
 
 module.exports.checkSubmissionLimit = (req,res,next)=>{
+    const questionID = req.params.questionID;
+    const userID     = req.user_id
 
-}
+    questionModel.getQuestion(questionID,(err, question)=>{
+        if(err){return res.status(500).json({message:err})}
 
-module.exports.checkSubmissionTime  = (req,res,next)=>{
+        questionModel.getSubmissions(questionID,userID,(err,submissions)=>{
+            if(err){return res.status(500).json({message:err})}
 
+            const submission_limit = question.submission_limit
+            if(submission_limit<submissions.length){return next()}
+
+            return res.status(403).json({message:'You exceeded submission limit'})
+        })
+    })
 }

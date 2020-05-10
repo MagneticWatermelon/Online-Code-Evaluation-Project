@@ -14,7 +14,6 @@ router.post(
     isAuth,
     isStudent,
     submissionController.checkQuestion,
-    submissionController.checkSubmissionTime,
     submissionController.checkSubmissionLimit,
     submissionController.createSubmission)
 

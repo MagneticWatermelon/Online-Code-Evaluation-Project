@@ -4,8 +4,7 @@ const Schema = mongoose.Schema;
 
 const Course_Taken_Schema = new Schema({
     student_id: {type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true},
-    course_id: {type: mongoose.Schema.Types.ObjectId, ref: 'Course', required: true},
-    grade: {type: Number, required: false, default: 0},
+    course_id: {type: mongoose.Schema.Types.ObjectId, ref: 'Course', required: true}
 }, {
     timestamps: true,
 });

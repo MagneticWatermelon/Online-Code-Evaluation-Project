@@ -46,7 +46,7 @@ const setFilename = (resource_id, file_name, callback)=>{
 
 module.exports.model = Resource;
 
-module.exports.addResource = addResource;
-module.exports.deleteResource = deleteResource;
-module.exports.getResource = getResource;
-module.exports.setFilename = setFilename;
+module.exports.addResource      = addResource;
+module.exports.deleteResource   = deleteResource;
+module.exports.getResource      = getResource;
+module.exports.setFilename      = setFilename;

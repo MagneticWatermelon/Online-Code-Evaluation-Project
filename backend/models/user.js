@@ -9,7 +9,7 @@ const userSchema = new Schema({
     name: {type: String, required: true},
     mail: {type: String, required: true},
     user_role: {type: Number, required: true}, 
-    profile_photo: {type: Buffer, required: false},
+    profile_photo: {type: String, required: false},
     password_hash: {type: String, required: true},
     date: {type: Date, default: Date.now}
 }, {
@@ -228,13 +228,13 @@ const getNotifications = (user_id, callback)=>{
 
 module.exports.model = User;
 
-module.exports.checkUser = checkUser;
-module.exports.addUser = addUser;
-module.exports.getUser = getUser;
-module.exports.updateUser = updateUser;
-module.exports.deleteUser = deleteUser;
-module.exports.addProfilePhoto = addProfilePhoto;
-module.exports.updatePassword  = updatePassword;
-module.exports.getGivenCourses = getGivenCourses;
-module.exports.getTakenCourses = getTakenCourses;
-module.exports.getNotifications= getNotifications;
+module.exports.checkUser        = checkUser;
+module.exports.addUser          = addUser;
+module.exports.getUser          = getUser;
+module.exports.updateUser       = updateUser;
+module.exports.deleteUser       = deleteUser;
+module.exports.addProfilePhoto  = addProfilePhoto;
+module.exports.updatePassword   = updatePassword;
+module.exports.getGivenCourses  = getGivenCourses;
+module.exports.getTakenCourses  = getTakenCourses;
+module.exports.getNotifications = getNotifications;

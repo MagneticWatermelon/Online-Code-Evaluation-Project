@@ -117,8 +117,6 @@ const addReceipent = (user_id, callback)=>{ //  DOES NOT FILLED !!!
     .catch(err => {
         return callback("Error while adding recipient");
     })
-
-
 }
 
 /* Following function updates the announcement and at the end of operation
@@ -153,8 +151,6 @@ const getComments = (announcement_id, callback)=>{
       })
     
 }
-
-
 
 module.exports.model = Announcement
 

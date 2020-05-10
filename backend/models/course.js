@@ -193,10 +193,6 @@ const getCourse = (course_id, callback)=>{
       .catch(err => {
          return callback("Error while getting the course", null);
       })
-    
-
-   
-
 }
 
 /* Returns the assignment ids from this course
