@@ -28,6 +28,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Notification from '../Notification/Notification';
 import Course from '../Course/Course';
 import CoursesAll from '../CoursesAll/CoursesAll';
+import AssignmentsAll from '../AssignmentsAll/AssignmentsAll';
 
 
 
@@ -281,10 +282,12 @@ export default function Dashboard() {
                 <div className={classes.appBarSpacer} />
                 <Container maxWidth={false} className={classes.container}>
                     <Switch>
+
                         <Route path="/dashboard">
                           <CourseGrid courses={courseList} click={index => {setIndex(index)}}/>
                           <RightBar todos={toDoList} grades={gradeList}/>
                         </Route>
+
                         {courseList.map((course) => {
                             return(
                                 <Route path={`/courses/${course.courseID}`}>
@@ -296,9 +299,15 @@ export default function Dashboard() {
                         <Route path="/courses">
                             <CoursesAll  courses={courseList}/>
                         </Route>
+
+                        <Route path="/assignments" >
+                          <AssignmentsAll />
+                        </Route>
+
                         <Route exact path="/example">
                             <Sandbox id="editor1"/>
                         </Route>
+
                     </Switch>
                 </Container>
             </main>
