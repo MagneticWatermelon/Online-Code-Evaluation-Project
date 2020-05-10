@@ -5,6 +5,7 @@ import { makeStyles, createMuiTheme, ThemeProvider } from '@material-ui/core/sty
 import CourseMenu from '../CourseMenu/CourseMenu';
 import CourseSummary from '../CourseSummary/CourseSummary';
 import RightBar from '../RightBar/RightBar';
+import CourseAnnouncements from '../CourseAnnouncements/CourseAnnouncements';
 
 
 
@@ -13,7 +14,6 @@ const useStyles = makeStyles((theme) => ({
       width: '100%',
       flexGrow: 1,
       marginTop: 10,
-      marginLeft: 10,
       marginRight: 10,
       display: 'inline-block',
     },
@@ -31,6 +31,7 @@ const useStyles = makeStyles((theme) => ({
     },
     content: {
         display: 'inline-flex',
+        width: '100%',
     }
   }));
 
@@ -72,7 +73,7 @@ export default function Course(props) {
 
                         <Switch>
                             <Route path={`/courses/${props.course.courseID}/announcements`}>
-                                
+                                <CourseAnnouncements course={props.course}/>
                             </Route>
 
                             <Route path={`/courses/${props.course.courseID}/assignments`}>
