@@ -38,13 +38,13 @@ export default function CourseAnnouncements(props) {
     return(
         <div className={classes.root}>
             <List className={classes.list}>
-                <ListItem alignItems="flex-start">
+                <ListItem alignItems="flex-start" component={RouterLink} to={`/courses/${props.course.courseID}/announcements/154`}>
                     <ListItemAvatar>
                         <Avatar />
                     </ListItemAvatar>
                     <ListItemText
                     primary={
-                        <Link component={RouterLink} to={`/courses/${props.course.courseID}/announcements/154`}>
+                        <Link>
                             {"Announcement Title"}
                         </Link>
                     }
@@ -80,12 +80,16 @@ export default function CourseAnnouncements(props) {
                     />
                 </ListItem>
                 <Divider component="li" />
-                <ListItem alignItems="flex-start">
+                <ListItem alignItems="flex-start" component={RouterLink} to={`/courses/${props.course.courseID}/announcements/154`}>
                     <ListItemAvatar>
                         <Avatar />
                     </ListItemAvatar>
                     <ListItemText
-                    primary="Announcement Title"
+                    primary={
+                        <Link>
+                            {"Announcement Title"}
+                        </Link>
+                    }
                     secondary={
                         <React.Fragment>
                             <Typography

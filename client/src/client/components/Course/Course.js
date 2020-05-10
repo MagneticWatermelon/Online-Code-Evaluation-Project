@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
     },
     content: {
         display: 'inline-flex',
-        width: 'calc(100% - 200px)',
+        width: '100%',
     }
   }));
 
