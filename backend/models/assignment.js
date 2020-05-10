@@ -154,9 +154,31 @@ const updateAssignment =  (assignment_id, title, release_date, due_date, explana
    
 }
 
+/* Following function computes the average grade for the given student
+    example callback call => callback(err, grade)
+
+        a = maximum submission score
+
+        b = question point
+
+            then
+        
+        some of scores      = sum(a*b) for all correct questions
+
+        potential scores    = sum(a*b) for all questions
+
+
+        student's gradde    = [(some of scores)/(potential scores)]*100
+
+ */
+const getGrade = (student_id, assignment_id, callback)=>{
+
+}
+
 module.exports.model = Assignment;
 module.exports.createAssignment = createAssignment;
 module.exports.getQuestions     = getQuestions;
 module.exports.getAssignment    = getAssignment;
-module.exports.updateAssignment  = updateAssignment;
+module.exports.updateAssignment = updateAssignment;
 module.exports.deleteAssignment = deleteAssignment;
+module.exports.getGrade         = getGrade;

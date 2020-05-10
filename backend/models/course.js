@@ -332,6 +332,12 @@ const getResources = (course_id, callback)=>{
 
 }
 
+/* Following function computes average grade of the student from all assignments
+ */
+const getAverageGrade = (student_id,callback)=>{
+
+}
+
 
 module.exports.model = Course;
 module.exports.createCourse = createCourse;

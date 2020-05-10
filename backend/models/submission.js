@@ -133,7 +133,6 @@ const updateEvaluation = (submission_id, evaluation, callback)=>{
     ).catch(
         err=>{return callback("Submission Id Error  in DB");}
     );
-    
 }
 module.exports.model = Submission;
 
