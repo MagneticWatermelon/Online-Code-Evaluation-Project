@@ -24,6 +24,7 @@ const submissionSchema = new Schema({
     example callback call => callback(err)
  */
 const Submission = mongoose.model('Submission', submissionSchema);
+
 const saveSubmission = (student_id, question_id, score, evaluation, files, language, comment, callback)=>{
     let submission_obj =  Submission({
         student_id:student_id,
@@ -55,16 +56,6 @@ const getSubmission = (submission_id, callback)=>{
 }
 
 /* Following function returns an array of json object
-
-    !! important
-
-    example :  [    {name:String, content:String}, // file1
-                    {name:String, content:String}  // file2
-                    .
-                    .
-                    .
-               ]
-
     example callback call => callback(err, files)
 */
 const getFiles = (submission_id, callback)=>{
@@ -135,11 +126,12 @@ const updateEvaluation = (submission_id, evaluation, callback)=>{
         err=>{return callback("Submission Id Error  in DB");}
     );
 }
+
 module.exports.model = Submission;
 
-module.exports.saveSubmission = saveSubmission;
-module.exports.getSubmission = getSubmission;
+module.exports.saveSubmission   = saveSubmission;
+module.exports.getSubmission    = getSubmission;
 module.exports.deleteSubmission = deleteSubmission;
-module.exports.updateScore = updateScore;
+module.exports.updateScore      = updateScore;
 module.exports.updateEvaluation = updateEvaluation;
-module.exports.getFiles = getFiles;
+module.exports.getFiles         = getFiles;

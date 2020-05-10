@@ -83,9 +83,6 @@ const getAssignment = (assignment_id, callback)=>{
        .catch(err => {
            return callback("Error occured", null);
        })
-    
-       
-    
 }
 
 /* following function takes assignment_id and returns an array of question ids
@@ -170,7 +167,7 @@ const updateAssignment =  (assignment_id, title, release_date, due_date, explana
 
         student's gradde    = [(some of scores)/(potential scores)]*100
 
- */
+*/
 const getGrade = (student_id, assignment_id, callback)=>{
 
 }

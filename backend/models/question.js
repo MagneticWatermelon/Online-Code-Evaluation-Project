@@ -20,13 +20,9 @@ const questionSchema = new Schema({
     timestamps: true,
 });
 const Question = mongoose.model('Question', questionSchema);
+
 /* Creates a new question
     example callback call => callback(err)
-
-    !! important
-      Here, the inputs is an array of array of strings
-        example inputs parameter => [ ['1.1','1.2'] , ['2.1','2.2'] , ['3.1','3.2'] ] // 3 test cases' inputs
-        example outputs parameter=> [ ['1.1','1.2'] , ['2.1','2.2'] , ['3.1','3.2'] ] // 3 test cases' outputs
  */
 const createQuestion =(assignment_id, title, explanation, submission_limit,points, inputs, outputs, callback)=>{
     let question  =  new Question({
@@ -126,14 +122,22 @@ const deleteQuestion = (question_id, callback)=>{
         err=>{
             return callback(err);
         }
-    );
-    
+    ); 
 }
+
+/*  Following function returns the submission ids from student
+    example callback call => callback(err, submission_ids)
+ */
+const getSubmissions = (question_id,student_id,callback)=>{
+
+}
+
 module.exports.model = Question;
 
-module.exports.createQuestion = createQuestion;
-module.exports.getQuestion = getQuestion;
-module.exports.setIOOfQuestion = setIOOfQuestion;
-module.exports.updateQuestion = updateQuestion;
-module.exports.deleteQuestion = deleteQuestion;
+module.exports.createQuestion   = createQuestion;
+module.exports.getQuestion      = getQuestion;
+module.exports.setIOOfQuestion  = setIOOfQuestion;
+module.exports.updateQuestion   = updateQuestion;
+module.exports.deleteQuestion   = deleteQuestion;
+module.exports.getSubmissions   = getSubmissions;
 
