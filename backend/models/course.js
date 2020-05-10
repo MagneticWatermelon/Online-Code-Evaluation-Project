@@ -3,8 +3,7 @@ const CourseGiven = require('./course_given');
 const CourseTaken = require('./course_taken');
 const Assignment = require('./assignment');
 const Announcement = require('./announcement');
-
-
+const Resources = require('./resource');
 const Schema = mongoose.Schema;
 
 const courseSchema = new Schema({
@@ -329,7 +328,18 @@ const getAnnouncements = (course_id, callback)=>{
    example callback call => callback(err, resource_ids)
  */
 const getResources = (course_id, callback)=>{
-
+   Course.findById(course_id).then(
+      res_obj=>{
+          if(!res_obj) return callback("Invalid ID",null);
+      Resources.find({course_id:course_id}).select({files:1,_id:0}).then((res_array)=>{
+          return callback(null,res_array);}
+      ).catch(
+          (err)=>{return callback("Resources cannot be selected from DB",null)}
+      )    
+      }
+  ).catch(
+      err=>{return callback("Getting Resources Problem from DB",null)}
+  );
 }
 
 /* Following function computes average grade of the student from all assignments

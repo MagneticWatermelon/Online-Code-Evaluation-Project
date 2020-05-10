@@ -38,10 +38,10 @@ const createQuestion =(assignment_id, title, explanation, submission_limit,point
             outputs:outputs,
             points:points
     });
-    question.validate().then(value=>{
+    question.validate().then((value)=>{
         question.save()
-        .then(callback(null))
-        .catch((err)=> callback("Saving question problem to DB"));
+        .then((value)=>{return callback(null)})
+        .catch((err)=> {return callback("Saving question problem to DB")})
     }
     ).catch(
         callback("Validation Error!!!!")
@@ -59,8 +59,9 @@ const getQuestion =  (question_id, callback)=>{
         if(!quest) return callback("QuestionID is not valid ",null);
         return callback(null,quest);
      }
- ).catch(
-    callback(err,null)
+ ).catch( (err)=>{
+     return callback(err,null)
+ }
  );
  
 }

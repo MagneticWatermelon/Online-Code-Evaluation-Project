@@ -71,10 +71,11 @@ const getFiles = (submission_id, callback)=>{
     Submission.findById(submission_id).then(
         File_obj=>{
             if(!File_obj) return callback("Invalid ID",null);
-            Submission.findById(submission_id).select({files:1,_id:0},(err)=>{
-                if(err) return callback("File cannot be selected from DB");
-            });
-            return callback(null,File_res);
+        Submission.findById(submission_id).select({files:1,_id:0}).then((File_res)=>{
+            return callback(null,File_res);}
+        ).catch(
+            (err)=>{return callback("File cannot be selected from DB",null)}
+        )    
         }
     ).catch(
         err=>{return callback("Getting FileObject Problem from DB",null)}
