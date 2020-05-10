@@ -3,7 +3,7 @@ import { Card, CardContent, Typography, Grid, IconButton} from '@material-ui/cor
 import {withStyles, makeStyles } from '@material-ui/core/styles';
 import Tooltip from '@material-ui/core/Tooltip';
 import { Link as RouterLink} from 'react-router-dom';
-import Link from '@material-ui/core/Link'
+import Link from '@material-ui/core/Link';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import FolderSharedIcon from '@material-ui/icons/FolderShared';
