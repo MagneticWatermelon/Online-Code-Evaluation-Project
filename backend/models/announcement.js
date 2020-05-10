@@ -22,13 +22,12 @@ const Announcement = mongoose.model('Announcement', announcementSchema);
 
     example callback call => callback(err,announcement)
  */
-const createAnnouncement = (instructor_id,course_id,title,explanation, recipients,callback)=>{ //recipients parameter added since it is set to be required in the schema
+const createAnnouncement = (instructor_id,course_id,title,explanation,callback)=>{ //recipients parameter added since it is set to be required in the schema
     Announcement.findOne({
         instructor_id: instructor_id,
         course_id: course_id,
         title: title,
-        explanation: explanation,
-        recipients: recipients
+        explanation: explanation
     })
     .then(flag => {
         if (!flag) {
@@ -37,13 +36,13 @@ const createAnnouncement = (instructor_id,course_id,title,explanation, recipient
                 course_id: course_id,
                 title: title,
                 explanation: explanation,
-                recipients: recipients
+                recipients: []
             });
             announce.validate()
             .then(check => {
                 announce.save()
                 .then(res => {
-                    return callback(null, announce);
+                    return callback(null, announce._id);
                 })
                 .catch(err => {
                     return callback("Announcement could not be created");
@@ -97,9 +96,9 @@ const getAnnouncement = (announcement_id, callback)=>{
 
       })
       .catch(err => {
+          console.log(err)
          return callback("Error while getting the Announcement", null);
       })
-    
 }
 
 /*  Following function adds the given user_id to the receipents
@@ -136,7 +135,7 @@ const updateAnnouncement = (announcement_id, title, explanation, callback)=>{
 /* Following function returns the comment ids made to given announcement
     example callback call => callback(err,comment_ids)
  */
-const getComments = (announcement_id)=>{
+const getComments = (announcement_id, callback)=>{
     Comment.find({
         announcement_id: announcement_id
     })

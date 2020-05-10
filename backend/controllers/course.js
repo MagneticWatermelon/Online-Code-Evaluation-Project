@@ -1,5 +1,6 @@
-const courseModel = require('../models/course')
-const userController = require('../controllers/user')
+const courseModel               = require('../models/course')
+const userController            = require('../controllers/user')
+const notificationController    = require('../controllers/notification')
 
 module.exports.createCourse = (req, res, next)=>{
 
@@ -21,27 +22,12 @@ module.exports.createCourse = (req, res, next)=>{
 }
 
 module.exports.getCourse = (req,res,next)=>{
-    if(![0,1,2].includes(req.user_role)){
-        return res.status(401).json({message:'Authentication required'})
-    }
-
     const courseID  = req.params.id
-    const role      = req.user_role;
-    const userID    = req.user_id;
-
-    userController.doesHaveCourse(courseID, userID, role)
-    .then(success=>{
-        courseModel.getCourse(courseID, (err, course)=>{
-            if(err){
-                return res.status(500).json({message:err})
-            }
-            return res.status(200).json(course)
-        })
-    })
-    .catch(err=>{
-            return res.status(403).json({message:'Permission denied'})
-    })
     
+    courseModel.getCourse(courseID, (err, course)=>{
+        if(err){return res.status(500).json({message:err})}
+        return res.status(200).json(course)
+    })
 }
 
 module.exports.updateCourse = (req, res, next)=>{
@@ -67,6 +53,7 @@ module.exports.addStudent = (req, res, next)=>{
     let {courseID,studentID} = req.params
     courseModel.addStudentToCourse(courseID,studentID,(err)=>{
         if(err){return res.status(500).json({message:err})}
+        notificationController.sendAddedToCourse(studentID,courseID)
         return res.status(200).json({message:'Student added to course'})
     })
 }
@@ -98,49 +85,37 @@ module.exports.dropInstructor = (req,res,next)=>{
 
 module.exports.getAssignments = (req,res,next)=>{
     let courseID    = req.params.id
-    let userID      = req.user_id
-    let role        = req.user_role
-    userController.doesHaveCourse(courseID,userID,role)
-    .then(success=>{
-
-        courseModel.getAssignments(courseID,(err,assignments)=>{
-            if(err){return res.status(500).json({message:err})}
-            return res.status(200).json(assignments)
-        })
-    })  
-    .catch(err=>{
-        return res.status(403).json({message:'Permission denied'})
-    })      
+    
+    courseModel.getAssignments(courseID,(err,assignments)=>{
+        if(err){return res.status(500).json({message:err})}
+        return res.status(200).json(assignments)
+    })
 }
 
 module.exports.getStudents = (req,res,next)=>{
     let courseID    = req.params.id
-    let userID      = req.user_id
-    let role        = req.user_role
-    userController.doesHaveCourse(courseID,userID,role)
-    .then(success=>{
-
-        courseModel.getStudents(courseID,(err,students)=>{
-            if(err){return res.status(500).json({message:err})}
-            return res.status(200).json(students)
-        })
-    })  
-    .catch(err=>{
-        return res.status(403).json({message:'Permission denied'})
+    courseModel.getStudents(courseID,(err,students)=>{
+        if(err){return res.status(500).json({message:err})}
+        return res.status(200).json(students)
     })
 }
 
 module.exports.getInstructors = (req,res,next)=>{
     let courseID    = req.params.id
+    
+    courseModel.getInstructors(courseID,(err,instructors)=>{
+        if(err){return res.status(500).json({message:err})}
+        return res.status(200).json(instructors)
+    })
+}
+
+module.exports.checkCourse = (req,res,next)=>{
+    let courseID    = req.params.id
     let userID      = req.user_id
     let role        = req.user_role
     userController.doesHaveCourse(courseID,userID,role)
     .then(success=>{
-
-        courseModel.getInstructors(courseID,(err,instructors)=>{
-            if(err){return res.status(500).json({message:err})}
-            return res.status(200).json(instructors)
-        })
+        next()
     })  
     .catch(err=>{
         return res.status(403).json({message:'Permission denied'})
@@ -149,9 +124,19 @@ module.exports.getInstructors = (req,res,next)=>{
 
 
 module.exports.getAnnouncements = (req,res,next)=>{
+    let courseID    = req.params.id
 
+    courseModel.getAnnouncements(courseID,(err, announcements)=>{
+        if(err){return res.status(500).json({message:err})}
+        return res.status(200).json(announcements)
+    })
 }
 
 module.exports.getResources = (req,res,next)=>{
+    let courseID    = req.params.id
 
+    courseModel.getResources(courseID,(err, resources)=>{
+        if(err){return res.status(500).json({message:err})}
+        return res.status(200).json(resources)
+    })
 }

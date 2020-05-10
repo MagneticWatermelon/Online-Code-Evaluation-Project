@@ -8,13 +8,44 @@ const router = express.Router();
 const questionController = require('../controllers/question')
 
 
-router.post('/create', isAuth, isInstructor, questionController.createQuestion)
-router.get('/get/:id', isAuth, questionController.getQuestion)
-router.post('/update/:id', isAuth, isInstructor, questionController.updateQuestion)
-router.delete('/delete/:id', isAuth, isInstructor, questionController.deleteQuestion)
+router.post(
+    '/create/:assignmentID', 
+    isAuth, 
+    isInstructor,
+    questionController.checkAssignment, 
+    questionController.createQuestion)
 
-router.post('/setIO/:id', isAuth, isInstructor, questionController.updateIO)
+router.get(
+    '/get/:id',
+    isAuth,
+    questionController.validateUser,
+    questionController.getQuestion)
 
-router.post('/execute/:id', isAuth, isInstructor, questionController.execute)
+router.post(
+    '/update/:id', 
+    isAuth, 
+    isInstructor,
+    questionController.validateUser, 
+    questionController.updateQuestion)
+
+router.delete(
+    '/delete/:id', 
+    isAuth, 
+    isInstructor,
+    questionController.validateUser, 
+    questionController.deleteQuestion)
+
+router.post(
+    '/setIO/:id', 
+    isAuth, 
+    isInstructor,
+    questionController.validateUser, 
+    questionController.updateIO)
+
+router.post(
+    '/execute/:id', 
+    isAuth, 
+    questionController.validateUser, 
+    questionController.execute)
 
 module.exports = router;

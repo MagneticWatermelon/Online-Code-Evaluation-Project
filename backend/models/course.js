@@ -345,3 +345,5 @@ module.exports.getInstructors = getInstructors;
 module.exports.getStudents = getStudents;
 module.exports.deleteCourse = deleteCourse;
 module.exports.updateCourse = updateCourse;
+module.exports.getAnnouncements= getAnnouncements;
+module.exports.getResources = getResources;

@@ -4,135 +4,100 @@ const Bundle            = require('../evaluator/bundle')
 const evaluator         = require('../evaluator/evaluator')
 
 module.exports.createQuestion = (req,res,next)=>{
-
-    const userid        = req.user_id
-    const role          = req.user_role
-    const assigmentID   = req.body.assignment_id
-
-    userController.doesHaveAssignment(assigmentID, userid, role)
-    .then(success=>{
-        const title         = req.body.title
-        const explanation   = req.body.explanation
-        const inputs        = req.body.inputs
-        const outputs       = req.body.outputs
-
-        questionModel.createQuestion(assigmentID,title, explanation, inputs, outputs, (err)=>{
-            if(err){return res.status(500).json({message: err})}
-            return res.status(201).json({message:'Question added to assignment'})
-        })
+    let {assigmentID, title, explanation, submission_limit, inputs, outputs} = req.body
+    questionModel.createQuestion(assigmentID,title, explanation,submission_limit, inputs, outputs, (err)=>{
+        if(err){return res.status(500).json({message: err})}
+        return res.status(201).json({message:'Question added to assignment'})
     })
-    .catch(err=>{
-        return res.status(403).json({message:'Permission denied'})
-    })
-
 }
 
 module.exports.getQuestion = (req,res,next)=>{
-    const userid     = req.user_id
-    const role       = req.user_role
     const questionID = req.params.id
-
-    userController.doesHaveQuestion(questionID,userid,role)
-    .then(success=>{
-        questionModel.getQuestion(questionID,(err, question)=>{
-            if(err){return res.status(500).json({message:err})}
-
-            return res.status(200).json(question)
-        })
-    })
-    .catch(err=>{
-        return res.status(403).json({message:'Permission denied'})
+    questionModel.getQuestion(questionID,(err, question)=>{
+        if(err){return res.status(500).json({message:err})}
+        return res.status(200).json(question)
     })
 }
 
 module.exports.updateQuestion = (req,res,next)=>{
-    const userid     = req.user_id
-    const role       = req.user_role
     const questionID = req.params.id
-
-    userController.doesHaveQuestion(questionID,userid,role)
-    .then(success=>{
-
-        const title         = req.body.title;
-        const explanation   = req.body.explanation;
-
-        questionModel.updateQuestion(questionID,title, explanation, (err)=>{
-            if(err){return res.status(500).json({message:err})}
-
-            return res.status(200).json({message:'Question updated succesfully'})
-        })
-    })
-    .catch(err=>{
-        return res.status(403).json({message:'Permission denied'})
+    let {title,explanation,submission_limit} = req.body
+    questionModel.updateQuestion(questionID,title, explanation,submission_limit, (err)=>{
+        if(err){return res.status(500).json({message:err})}
+        return res.status(200).json({message:'Question updated succesfully'})
     })
 }
 
 module.exports.deleteQuestion = (req,res,next)=>{
-    const userid     = req.user_id
-    const role       = req.user_role
     const questionID = req.params.id
-
-    userController.doesHaveQuestion(questionID,userid,role)
-    .then(success=>{
-
-        questionModel.deleteQuestion(questionID,(err)=>{
-            if(err){return res.status(500).json({message:err})}
-            return res.status(200).json({message:'Question deleted succesfully'})
-        })
-    })
-    .catch(err=>{
-        return res.status(403).json({message:'Permission denied'})
+    questionModel.deleteQuestion(questionID,(err)=>{
+        if(err){return res.status(500).json({message:err})}
+        return res.status(200).json({message:'Question deleted succesfully'})
     })
 }
 
 module.exports.updateIO = (req,res,next)=>{
-    const userid     = req.user_id
-    const role       = req.user_role
     const questionID = req.params.id
+    let {inputs,outputs} = req.body
+    questionModel.setIOOfQuestion(questionID,inputs, outputs,(err)=>{
+        if(err){return res.status(500).json({message:err})}
+        return res.status(200).json({message:'Inputs and outputs changed succesfully'})
+    })
+}
 
-    userController.doesHaveQuestion(questionID,userid,role)
-    .then(success=>{
-        const inputs = req.body.inputs
-        const outputs= req.body.outputs
-        questionModel.setIOOfQuestion(questionID,inputs, outputs,(err)=>{
+module.exports.execute = (req,res,next)=>{
+    const questionID = req.params.id
+    const userID     = req.user_id
+
+    let {language, files} = req.body
+
+    questionModel.getQuestion(questionID,(err, question)=>{
+        if(err){return res.status(404).json({message:err})}
+
+        const bundle = new Bundle(language,question.inputs,question.outputs)
+        bundle.addAll(files)
+
+        this.executeBundle(userID,bundle,(err, evaluation)=>{
             if(err){return res.status(500).json({message:err})}
-            return res.status(200).json({message:'Inputs and outputs changed succesfully'})
+            return res.status(200).json(evaluation)
         })
+    })
+}
+
+module.exports.executeBundle = (userID, bundle, callback)=>{
+    evaluator.evaluate(userID, bundle, (err, score, evaluation)=>{
+        if(err){return callback(err,null)}
+
+        return callback(null,{
+            score   :score,
+            results :evaluation
+        })
+    });
+}
+
+
+module.exports.checkAssignment = (req,res,next)=>{
+    const userID        = req.user_id
+    const assigmentID   = req.params.assigmentID
+    const role          = req.user_role
+
+    userController.doesHaveAssignment(assigmentID,userID,role)
+    .then(success=>{
+        next()
     })
     .catch(err=>{
         return res.status(403).json({message:'Permission denied'})
     })
 }
 
-module.exports.execute = (req,res,next)=>{
-    const userid     = req.user_id
-    const role       = req.user_role
-    const questionID = req.params.id
-
-    userController.doesHaveQuestion(questionID,userid,role)
-    .then(success=>{
-        questionModel.getQuestion(questionID,(err, question)=>{
-            if(err){return res.status(404).json({message:err})}
-
-            const lang      = req.body.language
-            const files     = req.body.files
-            const inputs    = question.inputs
-            const outputs   = question.outputs
-
-            const bundle = new Bundle(lang,inputs,outputs)
-            bundle.addAll(files)
-
-            evaluator.evaluate(userid, bundle, (err, score, evaluation)=>{
-                if(err){return res.status(500).json({message:err})}
-                return res.status(200).json({evaluation:{
-                    score   :score,
-                    results :evaluation
-                }})
-            });
-
-        })
-    })
+module.exports.validateUser = (req,re,next)=>{
+    const questionID    = req.params.id
+    const userID        = req.user_id
+    const role          = req.user_role
+    
+    userController.doesHaveQuestion(questionID, userID, role)
+    .then(success=>{next()})
     .catch(err=>{
-        return res.status(403).json({message:'Permission denied'})
+        return res.status(401).json({message:'Permission Denied'})
     })
 }

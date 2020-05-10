@@ -46,9 +46,25 @@ module.exports.getResource = (req,res,next)=>{
     
 }
 
+// needed update
 module.exports.validateUser = (req,res,next)=>{
-    /* get course id from resource id and check if the user has the course
-     */
+    const announcementID = req.params.id
+    const userID        = req.user_id
+    const role           = req.user_role
+
+    announcementModel.getAnnouncement(announcementID,(err, announcement)=>{
+        if(err){return res.status(500).json({message:'Internal server error'})}
+
+        const courseID = announcement.course_id
+
+        userController.doesHaveCourse(courseID,userID,role)
+        .then(success=>{
+            next()
+        })
+        .catch(err=>{
+            return res.status(403).json({message:'Permission denied'})
+        })
+    })
 }
 
 module.exports.deleteResource = (req,res,next)=>{

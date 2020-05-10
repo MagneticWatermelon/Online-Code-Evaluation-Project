@@ -19,7 +19,7 @@ const Assignment = mongoose.model('Assignment', assignmentSchema);
 
 /* Following function creates an assignment with given properties
 
-   example callback call => callback(err)
+   example callback call => callback(err , id)
  */
 const createAssignment = (course_id, instructor_id, title, release_date, due_date, explanation, weight, callback)=>{
     Assignment.findOne({
@@ -33,7 +33,7 @@ const createAssignment = (course_id, instructor_id, title, release_date, due_dat
     })
     .then(result => {
         if (result) {
-            return callback("This assignment already exists");
+            return callback("This assignment already exists",null);
         } else {
             const assignment = new Assignment({
                 course_id: course_id,
@@ -48,18 +48,18 @@ const createAssignment = (course_id, instructor_id, title, release_date, due_dat
             assignment.save()
             .then(result => {
                 if (!result) {
-                    return callback("Error while creating creating the assignment");
+                    return callback("Error while creating creating the assignment",null);
                 } else {
-                    return callback(null);
+                    return callback(null,assignment._id);
                 }
             })
             .catch(err => {
-                return callback("Error occured");
+                return callback("Error occured",null);
             })
         }
     })
     .catch(err => {
-        return callback("Error occured");
+        return callback("Error occured",null);
     })
    
     

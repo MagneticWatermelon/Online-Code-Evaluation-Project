@@ -9,14 +9,46 @@ const router = express.Router();
 const submissionController = require('../controllers/submission')
 
 
-router.post('/create', isAuth, isStudent, submissionController.createSubmission)
-router.get('/get/:id', isAuth, submissionController.getSubmission)
-router.delete('/delete/:id', isAuth, isInstructor, submissionController.deleteSubmission)
+router.post(
+    '/create/:questionID',
+    isAuth,
+    isStudent,
+    submissionController.checkQuestion,
+    submissionController.checkSubmissionTime,
+    submissionController.checkSubmissionLimit,
+    submissionController.createSubmission)
 
-router.get('/files/:id', isAuth, submissionController.getFiles)
+router.get(
+    '/get/:id',
+    isAuth,
+    submissionController.validateUser,
+    submissionController.getSubmission)
 
-router.post('/updateScore/:id', isAuth, isInstructor, submissionController.updateScore)
-router.post('/updateEvaluation/:id', isAuth, isInstructor, submissionController.updateEvaluation)
+router.delete(
+    '/delete/:id', 
+    isAuth, 
+    isInstructor,
+    submissionController.validateUser, 
+    submissionController.deleteSubmission)
 
+router.get(
+    '/files/:id', 
+    isAuth,
+    submissionController.validateUser, 
+    submissionController.getFiles)
+
+router.post(
+    '/updateScore/:id',
+    isAuth,
+    isInstructor,
+    submissionController.validateUser,
+    submissionController.updateScore)
+
+router.post(
+    '/updateEvaluation/:id',
+    isAuth,
+    isInstructor,
+    submissionController.validateUser,
+    submissionController.updateEvaluation)
 
 module.exports = router;

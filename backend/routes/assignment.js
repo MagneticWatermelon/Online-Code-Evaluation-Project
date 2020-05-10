@@ -7,11 +7,37 @@ const router = express.Router();
 
 const assignmentController = require('../controllers/assigment')
 
-router.post('/create', isAuth, isInstructor, assignmentController.createAssignment)
-router.get('/get/:id', isAuth, assignmentController.getAssignment)
-router.post('/update/:id', isAuth, isInstructor, assignmentController.updateAssignment)
-router.delete('/delete/:id', isAuth, isInstructor, assignmentController.deleteAssignment)
+router.post(
+    '/create/:courseID', 
+    isAuth, 
+    isInstructor,
+    assignmentController.checkCourse,
+    assignmentController.createAssignment)
 
-router.get('/questions/:id', isAuth, assignmentController.getQuestions)
+router.get(
+    '/get/:id', 
+    isAuth,
+    assignmentController.validateUser, 
+    assignmentController.getAssignment)
+
+router.post(
+    '/update/:id',
+    isAuth,
+    isInstructor,
+    assignmentController.validateUser,
+    assignmentController.updateAssignment)
+
+router.delete(
+    '/delete/:id', 
+    isAuth, 
+    isInstructor,
+    assignmentController.validateUser, 
+    assignmentController.deleteAssignment)
+
+router.get(
+    '/questions/:id',
+    isAuth,
+    assignmentController.validateUser, 
+    assignmentController.getQuestions)
 
 module.exports = router;

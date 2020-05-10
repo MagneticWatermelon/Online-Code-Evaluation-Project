@@ -222,7 +222,7 @@ course_taken.findOne({student_id:student_id}).then(
 
     example callback call => callback(err, notification_ids)
  */
-const getNotifications = (req,res,next)=>{
+const getNotifications = (user_id, callback)=>{
 
 }
 
