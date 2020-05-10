@@ -14,7 +14,6 @@ const useStyles = makeStyles((theme) => ({
       width: '100%',
       flexGrow: 1,
       marginTop: 10,
-      marginLeft: 10,
       marginRight: 10,
       display: 'inline-block',
     },
