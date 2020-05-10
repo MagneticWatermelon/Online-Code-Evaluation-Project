@@ -34,94 +34,59 @@ const useStyles = makeStyles((theme) => ({
 
 export default function CourseAnnouncements(props) {
     const classes = useStyles();
+    const test = [1,2,3,4,5];
 
     return(
         <div className={classes.root}>
             <List className={classes.list}>
-                <ListItem alignItems="flex-start" component={RouterLink} to={`/courses/${props.course.courseID}/announcements/154`}>
-                    <ListItemAvatar>
-                        <Avatar />
-                    </ListItemAvatar>
-                    <ListItemText
-                    primary={
-                        <Link>
-                            {"Announcement Title"}
-                        </Link>
-                    }
-                    secondary={
-                        <React.Fragment>
-                            <Typography
-                                component="p"
-                                variant="body2"
-                                className={classes.instructor}
-                                color="textPrimary"
-                            >
-                                Instructor Name
-                            </Typography>
-                            <Typography
-                                component="span"
-                                variant="body2"
-                                className={classes.date}
-                                color="textSecondary"
-                            >
-                                Date
-                            </Typography>
-                            <Typography
-                                component="p"
-                                variant="body2"
-                                className={classes.body}
-                                color="textSecondary"
-                                noWrap={true}
-                            >
-                                Announcement body
-                            </Typography>
-                        </React.Fragment>
-                    }
-                    />
-                </ListItem>
-                <Divider component="li" />
-                <ListItem alignItems="flex-start" component={RouterLink} to={`/courses/${props.course.courseID}/announcements/154`}>
-                    <ListItemAvatar>
-                        <Avatar />
-                    </ListItemAvatar>
-                    <ListItemText
-                    primary={
-                        <Link>
-                            {"Announcement Title"}
-                        </Link>
-                    }
-                    secondary={
-                        <React.Fragment>
-                            <Typography
-                                component="p"
-                                variant="body2"
-                                className={classes.instructor}
-                                color="textPrimary"
-                            >
-                                Instructor Name
-                            </Typography>
-                            <Typography
-                                component="span"
-                                variant="body2"
-                                className={classes.date}
-                                color="textSecondary"
-                            >
-                                Date
-                            </Typography>
-                            <Typography
-                                component="p"
-                                variant="body2"
-                                className={classes.body}
-                                color="textSecondary"
-                                noWrap={true}
-                            >
-                                Announcement body
-                            </Typography>
-                        </React.Fragment>
-                    }
-                    />
-                </ListItem>
-                <Divider component="li" />
+                {test.map((val) => {
+                    return(
+                        <div>
+                            <ListItem alignItems="flex-start" component={RouterLink} to={`/courses/${props.course.courseID}/announcements/${150 + val}`}>
+                                <ListItemAvatar>
+                                    <Avatar />
+                                </ListItemAvatar>
+                                <ListItemText
+                                primary={
+                                    <Link>
+                                        {"Announcement Title"}
+                                    </Link>
+                                }
+                                secondary={
+                                    <React.Fragment>
+                                        <Typography
+                                            component="p"
+                                            variant="body2"
+                                            className={classes.instructor}
+                                            color="textPrimary"
+                                        >
+                                            Instructor Name
+                                        </Typography>
+                                        <Typography
+                                            component="span"
+                                            variant="body2"
+                                            className={classes.date}
+                                            color="textSecondary"
+                                        >
+                                            Date
+                                        </Typography>
+                                        <Typography
+                                            component="p"
+                                            variant="body2"
+                                            className={classes.body}
+                                            color="textSecondary"
+                                            noWrap={true}
+                                        >
+                                            Announcement body
+                                        </Typography>
+                                    </React.Fragment>
+                                }
+                                />
+                            </ListItem>
+                            <Divider component="li" />
+                        </div>
+                    );
+                })}
             </List>
         </div>
     );
