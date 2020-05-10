@@ -48,11 +48,12 @@ export default function AssignmentsAll() {
     ];
 
     const options = {
-    filterType: 'checkbox',
-    pagination: false,
-    selectableRowsHeader: false,
-    selectableRows: 'none',
-    onRowClick: () => {console.log('clicked')}
+        filterType: 'checkbox',
+        pagination: true,
+        selectableRowsHeader: false,
+        selectableRows: 'none',
+        rowsPerPageOptions: [5,10,20],
+        onRowClick: () => {console.log('clicked')}
     };
 
     const useStyles = makeStyles((theme) => ({

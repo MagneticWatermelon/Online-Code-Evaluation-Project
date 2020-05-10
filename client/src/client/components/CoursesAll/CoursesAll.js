@@ -1,51 +1,69 @@
 import React from 'react';
 import { TableContainer, Table, TableBody, TableRow, TableCell } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { Link as RouterLink, Switch, Route} from 'react-router-dom';
-import Course from '../Course/Course';
+import { Link as RouterLink} from 'react-router-dom';
+import { Link } from '@material-ui/core';
+import MUIDataTable from 'mui-datatables';
+
 
 
 
 export default function CoursesAll(props) {
 
-    const [data, setData] = React.useState(props.courses);
+    const [courses, setData] = React.useState(props.courses);
+
+    const columns = [
+        {label :"Name", name: 'courseName', options: {
+            filter: false,
+            sort: true,
+            customBodyRender: (value, tableData, updateValue) => {
+                console.log(tableData);
+                return (
+                    <Link component={RouterLink} to={`courses/${tableData.rowData[1]}`}>
+                        {value}
+                    </Link>
+                )
+            }
+           }}, 
+        {label :"Course ID", name: 'courseID', options: {
+            filter: false,
+            sort: false,
+           }},  
+        {label :"Semestr", name: 'courseSemestr', options: {
+            filter: true,
+            sort: false,
+           }}, 
+        {label :"Status", name: 'courseStatus', options: {
+            filter: true,
+            sort: false,
+           }},
+    ];
+
+    const options = {
+        filterType: 'checkbox',
+        pagination: true,
+        selectableRowsHeader: false,
+        selectableRows: 'none',
+        rowsPerPageOptions: [5,10,20],
+        onRowClick: () => {console.log('clicked')}
+    };
 
     const useStyles = makeStyles((theme) => ({
         root: {
-          marginTop: 25,
+          width: '100%',
         },
-        firstColumn: {
-          width: 400,
-        }
       }));
     
     const styles = useStyles();
 
     return(
-        <TableContainer className={styles.root}>
-            <Table>
-                <TableBody>
-                    {data.map((course) => (
-                        <TableRow key={course.courseName}>
-                            <TableCell component={RouterLink} to={`/courses/${course.courseID}`} scope="row" align='center' className={styles.firstColumn}>
-                                {course.courseName}
-                            </TableCell>
-                            <TableCell align="left">{course.courseID}</TableCell>
-                            <TableCell align="left">{course.courseSemestr}</TableCell>
-                            <TableCell align="left">Active</TableCell>
-                        </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
-            <Switch>
-                {data.map((course) => {
-                    return(
-                        <Route path={`/courses/${course.courseID}`}>
-                            <Course course={course} />
-                        </Route>
-                    );
-                })}
-            </Switch>
-        </TableContainer>
+        <div className={styles.root}>
+            <MUIDataTable
+                title={"All Courses"}
+                data={courses}
+                columns={columns}
+                options={options}
+            />
+        </div>
     );
 }

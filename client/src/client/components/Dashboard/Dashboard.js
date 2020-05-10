@@ -128,11 +128,11 @@ export default function Dashboard() {
   const [clickedCourse, setIndex] = React.useState(1);
 
   const [courseList, setCourses] = React.useState([
-    {courseName: 'Art of Computing', courseID: 'COMP101-01', courseSemestr: '2019/2020 Spring'}, 
-    {courseName: 'Algorithms and Data Structures', courseID: 'COMP203-02', courseSemestr: '2019/2020 Spring'},
-    {courseName: 'Exploring Profession', courseID: 'COMP104-01', courseSemestr: '2019/2020 Spring'},
-    {courseName: 'Object Oriented Programming', courseID: 'COMP112-02', courseSemestr: '2019/2020 Spring'},
-    {courseName: 'Algorithmic Thinking', courseID: 'COMP401-01', courseSemestr: '2019/2020 Spring'},
+    {courseName: 'Art of Computing', courseID: 'COMP101-01', courseSemestr: '2019/2020 Spring', courseStatus: "Active"}, 
+    {courseName: 'Algorithms and Data Structures', courseID: 'COMP203-02', courseSemestr: '2019/2020 Spring', courseStatus: "Active"},
+    {courseName: 'Exploring Profession', courseID: 'COMP104-01', courseSemestr: '2019/2020 Spring', courseStatus: "Active"},
+    {courseName: 'Object Oriented Programming', courseID: 'COMP112-02', courseSemestr: '2019/2020 Spring', courseStatus: "Active"},
+    {courseName: 'Algorithmic Thinking', courseID: 'COMP401-01', courseSemestr: '2019/2020 Spring', courseStatus: "Active"},
   ]);
   const [notifs, setNotifs] = React.useState([
     {notifType: 'Assigment Graded', notifBody: 'Simple Array' , notifDetail: 'Art of Computing - COMP101-01'},
