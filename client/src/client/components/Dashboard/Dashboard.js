@@ -231,7 +231,12 @@ export default function Dashboard() {
                       </List>
                     </Popover>
                     
-                    <IconButton color="inherit" aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
+                    <IconButton   
+                      color="inherit" 
+                      aria-controls="simple-menu" 
+                      aria-haspopup="true" 
+                      onClick={handleClick}
+                    >
                         <Avatar>
                             <PersonIcon />
                         </Avatar>
@@ -243,6 +248,14 @@ export default function Dashboard() {
                         keepMounted
                         open={Boolean(anchorEl)}
                         onClose={handleClose}
+                        anchorOrigin={{
+                          vertical: 'bottom',
+                          horizontal: 'left',
+                        }}
+                        transformOrigin={{
+                          vertical: 'top',
+                          horizontal: 'right',
+                        }}
                     >
                         <MenuItem onClick={handleClose}>My account</MenuItem>
                         <MenuItem onClick={handleClose}>Logout</MenuItem>
