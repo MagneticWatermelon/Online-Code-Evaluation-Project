@@ -44,18 +44,24 @@ const createAssignment = (course_id, instructor_id, title, release_date, due_dat
                 explanation: explanation,
                 weight: weight,
             });
-            assignment.validate();
-            assignment.save()
-            .then(result => {
-                if (!result) {
-                    return callback("Error while creating creating the assignment",null);
-                } else {
-                    return callback(null,assignment._id);
-                }
+            assignment.validate()
+            .then(success=>{
+                assignment.save()
+                .then(result => {
+                    if (!result) {
+                        return callback("Error while creating creating the assignment",null);
+                    } else {
+                        return callback(null,assignment._id);
+                    }
+                })
+                .catch(err => {
+                    return callback("Error occured",null);
+                })
             })
-            .catch(err => {
-                return callback("Error occured",null);
+            .catch(err=>{
+                return callback('Assignment cannot be created',null)
             })
+            
         }
     })
     .catch(err => {

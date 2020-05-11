@@ -8,13 +8,12 @@ module.exports.addResourceToDB= (req,res,next)=>{
     const filename      = req.filename
     const gcs_id        = req.gcs_id
 
-    resourceModel.addResource(courseID,instructorID,filename,gcs_id,(err)=>{
+    resourceModel.addResource(courseID,instructorID,filename,gcs_id,(err,id)=>{
         if(err){
             gcsHandler.deleteFile(gcs_id);
-            return res.status(500).json({message:'Cannot add resource'})
+            return res.status(500).json({message:err})
         }
-
-        return res.status(201).json({message:'Resource added o course'})
+        return res.status(201).json({message:'Resource added to course',resource_id:id})
     })
 }
 
@@ -35,27 +34,27 @@ module.exports.checkCourse = (req,res,next)=>{
 
 
 module.exports.getResource = (req,res,next)=>{
-
-    const gcs_id    = 'FVL0NMLyH' // resourceModel.getResource().gcs_id
-    const filename  = 'test.txt'  // resourceModel.getResource().filename
-
-    gcsHandler.generateSignedURL(gcs_id, filename)
-    .then(url=>{
+    const resourceID = req.params.id
+    resourceModel.getResource(resourceID,(err, resource)=>{
+        if(err){return res.status(404).json({message:'Resource not found'})}
+        const gcs_id    = resource.gcs_id
+        const filename  = resource.file_name
+        gcsHandler.generateSignedURL(gcs_id, filename)
+        .then(url=>{
         res.redirect(url)
+        })
     })
-    
 }
 
-// needed update
 module.exports.validateUser = (req,res,next)=>{
-    const announcementID = req.params.id
+    const resourceID    = req.params.id
     const userID        = req.user_id
-    const role           = req.user_role
+    const role          = req.user_role
 
-    announcementModel.getAnnouncement(announcementID,(err, announcement)=>{
-        if(err){return res.status(500).json({message:'Internal server error'})}
+    resourceModel.getResource(resourceID,(err, resource)=>{
+        if(err){return res.status(404).json({message:'The resource not found'})}
 
-        const courseID = announcement.course_id
+        const courseID = resource.course_id
 
         userController.doesHaveCourse(courseID,userID,role)
         .then(success=>{
@@ -68,14 +67,18 @@ module.exports.validateUser = (req,res,next)=>{
 }
 
 module.exports.deleteResource = (req,res,next)=>{
-    
-    const gcs_id    = 'FVL0NMLyH' // resourceModel.getResource().gcs_id
-    
-    gcsHandler.deleteFile(gcs_id)
-    .then(success=>{
-        return res.status(200).json({message:'File deleted succesfully'})
-    })
-    .catch(err=>{
-        return res.status(500).json({message:'Deletion failed'})
+    const resourceID = req.params.id
+    resourceModel.getResource(resourceID,(err, resource)=>{
+        if(err){return res.status(404).json({message:'The resource not found'})}
+        const gcs_id = resource.gcs_id
+        gcsHandler.deleteFile(gcs_id)
+        .then(success=>{
+            resourceModel.deleteResource(resourceID,()=>{})
+            return res.status(200).json({message:'File deleted succesfully'})
+        })
+        .catch(err=>{
+            resourceModel.deleteResource(resourceID,()=>{})
+            return res.status(500).json({message:'Deletion failed'})
+        })
     })
 }

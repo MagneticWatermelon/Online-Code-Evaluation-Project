@@ -91,11 +91,11 @@ const addUser = (name, mail, user_role, password, callback)=>{
     example callback call => callback(err, userAsJson)
  */
 const getUser = (user_id, callback)=>{
-    User.findOne({_id:user_id})
-    .then(usr=>{
-        if(!usr) return callback("invalid UserId");
-        
-        return  callback(null,usr);
+    let promise = User.findById(user_id)
+    promise
+    .then(user=>{
+        if(user){return callback(null,user)}
+        return callback('User not found', null)
     })
 }
 
@@ -223,7 +223,7 @@ course_taken.findOne({student_id:student_id}).then(
     example callback call => callback(err, notification_ids)
  */
 const getNotifications = (user_id, callback)=>{
-
+    
 }
 
 module.exports.model = User;

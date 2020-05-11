@@ -16,10 +16,6 @@ async function _uploadFile (req, file, callback){
     const gcs_file_id = shortid.generate() 
     
     const createdFile = Bucket.file(gcs_file_id)
-    
-    createdFile.setMetadata({
-        contentType: file.mimetype
-    })
 
     let writeStream = createdFile.createWriteStream({
         resumable   :false,

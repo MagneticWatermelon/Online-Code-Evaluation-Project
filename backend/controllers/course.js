@@ -7,9 +7,7 @@ module.exports.createCourse = (req, res, next)=>{
     let {code, name, instructor, term, year} = req.body
 
     courseModel.createCourse(code,year,term,name, (err,course_id)=>{
-        if(err){
-            return res.status(500).json({message:err})
-        }
+        if(err){return res.status(500).json({message:err})}
         courseModel.addInstructorToCourse(course_id, instructor, (err)=>{
             if(err){return res.status(500).json({message:err})}
 
@@ -134,9 +132,8 @@ module.exports.getAnnouncements = (req,res,next)=>{
 
 module.exports.getResources = (req,res,next)=>{
     let courseID    = req.params.id
-
     courseModel.getResources(courseID,(err, resources)=>{
-        if(err){return res.status(500).json({message:err})}
+        if(err){return res.status(404).json({message:err})}
         return res.status(200).json(resources)
     })
 }

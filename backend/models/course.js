@@ -3,7 +3,7 @@ const CourseGiven = require('./course_given');
 const CourseTaken = require('./course_taken');
 const Assignment = require('./assignment');
 const Announcement = require('./announcement');
-const Resources = require('./resource');
+const Resource = require('./resource');
 const Schema = mongoose.Schema;
 
 const courseSchema = new Schema({
@@ -41,7 +41,7 @@ const createCourse = (course_code, year, term, name, callback)=>{
       .then(result=>{
          course.save()
          .then(result=>{
-            return callback(null, cors._id)
+            return callback(null, course._id)
          })
          .catch(err=>{
             console.log(err)
@@ -131,25 +131,25 @@ const addStudentToCourse = (course_id, student_id, callback)=>{
       student_id: student_id
    })
    .then(flag=>{
-      if (flag){
-         return callback("Duplicate error");
-      } else {
+      if (flag){return callback(null);}
+      else {
          course_taken = new CourseTaken({
             student_id: student_id,
             course_id: course_id
          });
-         course_taken.validate();
-         course_taken.save()
-         .then(result => {
-            return callback(null)
+         course_taken.validate()
+         .then(()=>{
+            console.log(isValidated)
+            course_taken.save()
+            .then(result => {
+               return callback(null)
+            })
+            .catch(err=>{
+               return callback(err);
+            });
          })
-         .catch(err=>{
-            return callback("Error while inserting data");
-         });
       }
    })
-   
-   
 }
 
 /* Drops student from course
@@ -289,7 +289,7 @@ const updateCourse =  (course_id, title, course_code, term, year, callback)=>{
          })
          .then(result => {
             if (!result) {
-               return callback("Course could not be updated");
+               return callback(result);
             } else {
                return callback(null);
             }
@@ -324,18 +324,21 @@ const getAnnouncements = (course_id, callback)=>{
    example callback call => callback(err, resource_ids)
  */
 const getResources = (course_id, callback)=>{
-   Course.findById(course_id).then(
-      res_obj=>{
-          if(!res_obj) return callback("Invalid ID",null);
-      Resources.find({course_id:course_id}).select({files:1,_id:0}).then((res_array)=>{
-          return callback(null,res_array);}
-      ).catch(
-          (err)=>{return callback("Resources cannot be selected from DB",null)}
-      )    
-      }
-  ).catch(
-      err=>{return callback("Getting Resources Problem from DB",null)}
-  );
+   Course.findById(course_id)
+   .then(course=>{
+      if(!course){return callback('Course id is invalid',null)}
+      Resource.model.find({course_id:course_id})
+      .select()
+      .then(resources=>{
+         return callback(null,resources)
+      })
+      .catch(err=>{
+         return callback('Cannot get course\'s resources',null)
+      })
+   })
+   .catch(err=>{
+      return callback('Course id is invalid',null)
+   })
 }
 
 /* Following function computes average grade of the student from all assignments

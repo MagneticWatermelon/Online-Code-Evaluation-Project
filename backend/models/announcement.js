@@ -126,15 +126,30 @@ const addReceipent = (user_id, callback)=>{ //  DOES NOT FILLED !!!
         example callback call => callback(err)
  */
 const updateAnnouncement = (announcement_id, title, explanation, callback)=>{
-    // update announcement
-    // delete recipients
+
+    Announcement.findByIdAndUpdate(announcement_id, {
+        $set:{
+            title: title,
+            explanation: explanation
+        }
+     })
+     .then(result => {
+         if (!result) {
+             return callback("Announcement could not be updated");
+         } else {
+             return callback(null);
+         }
+     })
+     .catch(err => {
+         return callback("Error occured");
+     })
 }
 
 /* Following function returns the comment ids made to given announcement
     example callback call => callback(err,comment_ids)
  */
 const getComments = (announcement_id, callback)=>{
-    Comment.find({
+    Comment.model.find({
         announcement_id: announcement_id
     })
     

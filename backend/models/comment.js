@@ -76,21 +76,14 @@ const deleteComment = (comment_id, callback)=>{
     example callback call => callback(err, comment)
  */
 const getComment    = (comment_id,callback)=>{
-    Comment.find({
-        comment_id: comment_id
+    Comment.findById(comment_id)
+    .then(comment=>{
+        if(!comment){return callback('Not found',null)}
+        return callback(null,comment)
     })
-    .select({"_id": 0})
-    .then(res => {
-        if (!res) {
-            return callback("Comment could not found", null);
-        } else {
-            return callback(null, res);
-        }
+    .catch(err=>{
+        return callback('Comment not found',null)
     })
-    .catch(err => {
-        return callback("Error happened", null); 
-    })
-
 }
 
 

@@ -16,7 +16,7 @@ module.exports.createUser = (req,res,next)=>{
 module.exports.deleteUser = (req,res,next)=>{
     const userid = req.params.id
     userModel.deleteUser(userid,(err)=>{
-        if(err){return res.status(500).json({message:err})}
+        if(err){return res.status(404).json({message:err})}
         return res.status(200).json({message:'User succesfully deleted'})
     })
 }
@@ -24,7 +24,7 @@ module.exports.deleteUser = (req,res,next)=>{
 module.exports.getUser = (req,res,next)=>{
     const userid = req.params.id
     userModel.getUser(userid, (err, user)=>{
-        if(err){return res.status(500).json({message:err})}
+        if(err){return res.status(404).json({message:err})}
         return res.status(200).json(user)
     })
 }
@@ -34,6 +34,7 @@ module.exports.updatePassword = (req,res,next)=>{
     let {mail, old_password, new_password} = req.body
     
     userModel.checkUser(mail, old_password,(err,user_id)=>{
+        if(err){return res.status(404).json({message:'User not found'})}
         if(!err && user_id){
             userModel.updatePassword(givenID, new_password,(err)=>{
                 if(err){return res.status(500).json({message:'Cannot update password'})}
@@ -53,18 +54,15 @@ module.exports.addProfilePhoto = (req,res,next)=>{
 }
 
 module.exports.getCourses = (req,res,next)=>{
-
     const givenID   = req.params.id
-
     userModel.getUser(givenID,(err, user)=>{
-        if(err){return res.status(500).json({message:err})}
+        if(err){return res.status(404).json({message:err})}
         
         const role      = user.user_role
-
         const getCourses = role==1 ? userModel.getGivenCourses : userModel.getTakenCourses;
         
-        getCourses(userid, (err, course_ids)=>{
-            if(err){return res.status(500).json({message:'Cannot get courses of the user'})}
+        getCourses(givenID, (err, course_ids)=>{
+            if(err){return res.status(404).json({message:'Cannot get courses of the user'})}
     
             return res.status(200).json({courses:course_ids})
         })
@@ -75,7 +73,7 @@ module.exports.getCourses = (req,res,next)=>{
 module.exports.getNotifications = (req,res,next)=>{
     const givenID   = req.params.id
     userModel.getNotifications(givenID,(err, noitifications)=>{
-        if(err){return res.status(500).json({message:'Inernal server error'})}
+        if(err){return res.status(404).json({message:'Notifications not found'})}
         return res.status(200).json(noitifications)
     })
 }
@@ -86,7 +84,7 @@ module.exports.checkUser = (req,res,next)=>{
     const userID  = req.user_id
     const role    = req.user_role
 
-    if(givenID==userID || role==2){
+    if(givenID.toString()==userID.toString() || role==2){
         next()
     }
     else{

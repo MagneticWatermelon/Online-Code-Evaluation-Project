@@ -19,19 +19,25 @@ const Resource = mongoose.model('Resource', resourceSchema);
     example callback call => callback(err, resource_id)
 */
 const addResource   = (course_id, instructor_id, file_name, gcs_id, callback)=>{
- let res_obj = new Resource({
+    let resource = new Resource({
         course_id: course_id,
         instructor_id: instructor_id,
         file_name: file_name,
-        gcs_id:gcs_id
- }).validate().then(value=>{
-    res_obj.save()
-    .then((value)=>{return callback(null);})
-    .catch((err)=> {return callback("Saving resources problem to DB")});
-}
-).catch(
-    callback("Validation Error!!!!")
-);
+        gcs_id:gcs_id});
+    
+    resource.validate()
+    .then(success=>{
+        resource.save()
+        .then(success=>{
+            return callback(null, resource._id)
+        })
+        .catch(err=>{
+            return callback(err,null)
+        })
+    })
+    .catch(err=>{
+        return callback(err,null)
+    })
 }
 
 /* Following function deletes the resource

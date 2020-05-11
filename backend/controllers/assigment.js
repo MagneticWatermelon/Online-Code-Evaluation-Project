@@ -11,7 +11,7 @@ module.exports.createAssignment = (req,res,next)=>{
     assignmentModel.createAssignment(courseID,instructor_id,title,release_date,due_date,explanation,weight, (err, id)=>{
         if(err){return res.status(500).json({message:err})}
         notificationConroller.sendAssignmentCreated(id)
-        return res.status(201).json({message:'Assignement Created Succesfully'})
+        return res.status(201).json({message:'Assignement Created Succesfully',assignment_id:id})
     })
 }
 

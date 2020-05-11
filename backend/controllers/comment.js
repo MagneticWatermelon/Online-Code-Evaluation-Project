@@ -35,7 +35,7 @@ module.exports.updateComment = (req,res,next)=>{
     const commentID     = req.params.id
     const comment       = req.body.comment
 
-    commentModel.updateComment(commentID,comment,()=>{
+    commentModel.updateComment(commentID,comment,(err)=>{
         if(err){return res.status(500).json({message:err})}
         return res.status(200).json({message:'Comment updated'})
     })
@@ -65,12 +65,12 @@ module.exports.validateReadPermission = (req, res, next)=>{
     const role          = req.user_role
 
     commentModel.getComment(commentID,(err, comment)=>{
-        if(err){return res.status(500).json({message:'Internal server error'})}
+        if(err){return res.status(404).json({message:err})}
 
         const announcementID = comment.announcement_id
 
         announcementModel.getAnnouncement(announcementID,(err, announcement)=>{
-            if(err){return res.status(500).json({message:'Internal server error'})}
+            if(err){return res.status(404).json({message:err})}
     
             const courseID = announcement.course_id
     

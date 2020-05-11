@@ -8,7 +8,7 @@ module.exports.createAnnouncement = (req,res,next)=>{
     const explanation   = req.body.explanation
 
     announcementModel.createAnnouncement(instructorID,courseID,title,explanation,(err, announcementID)=>{
-        if(err){return res.status(500).json({message:'Internal server error'})}
+        if(err){return res.status(500).json({message:err})}
         return res.status(201).json({message:'Announcement created',id:announcementID})
     })
 
@@ -18,7 +18,7 @@ module.exports.getAnnouncement = (req,res,next)=>{
     const announcementID = req.params.id
 
     announcementModel.getAnnouncement(announcementID,(err, announcement)=>{
-        if(err){return res.status(500).json({message:err})}
+        if(err){return res.status(404).json({message:err})}
         return res.status(200).json(announcement)
     })
 }
@@ -53,7 +53,7 @@ module.exports.validateUser = (req,res,next)=>{
     const role           = req.user_role
 
     announcementModel.getAnnouncement(announcementID,(err, announcement)=>{
-        if(err){return res.status(500).json({message:'Internal server error'})}
+        if(err){return res.status(404).json({message:'Internal server error'})}
 
         const courseID = announcement.course_id
 
@@ -82,7 +82,7 @@ module.exports.getComments = (req,res,next)=>{
     const announcementID = req.params.id
 
     announcementModel.getComments(announcementID,(err, comments)=>{
-        if(err){return res.status(500).json({message:err})}
+        if(err){return res.status(404).json({message:err})}
         return res.status(200).json(comments)
     })
 }
