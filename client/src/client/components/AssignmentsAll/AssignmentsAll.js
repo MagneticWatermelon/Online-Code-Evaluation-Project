@@ -53,6 +53,8 @@ export default function AssignmentsAll() {
         selectableRowsHeader: false,
         selectableRows: 'none',
         rowsPerPageOptions: [5,10,20],
+        print: false,
+        download: false,
         onRowClick: () => {console.log('clicked')}
     };
 
