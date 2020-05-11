@@ -29,6 +29,7 @@ import Notification from '../Notification/Notification';
 import Course from '../Course/Course';
 import CoursesAll from '../CoursesAll/CoursesAll';
 import AssignmentsAll from '../AssignmentsAll/AssignmentsAll';
+import SubmissionsAll from '../SubmissionsAll/SubmissionsAll';
 
 
 
@@ -302,6 +303,10 @@ export default function Dashboard() {
 
                         <Route path="/assignments" >
                           <AssignmentsAll />
+                        </Route>
+
+                        <Route path="/submissions" >
+                          <SubmissionsAll />
                         </Route>
 
                         <Route exact path="/example">

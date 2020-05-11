@@ -33,8 +33,8 @@ export default function AssignmentsAll() {
             filter: false,
             sort: false,
            }},
-        {name: 'courseID', options: {display: 'false'}},
-        {name: 'assignID', options: {display: 'false'}},
+        {name: 'courseID', options: {display: 'false',  filter: false, sort: false}},
+        {name: 'assignID', options: {display: 'false',  filter: false, sort: false}},
     ];
 
     const data = [
