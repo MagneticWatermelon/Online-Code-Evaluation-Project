@@ -49,9 +49,19 @@ export default function CourseMenu(props) {
                 <ListItem 
                     button 
                     component={RouterLink} 
-                    to={`/courses/${props.course.courseID}/grades`}
+                    to={`/courses/${props.course.courseID}/submissions`}
                     selected={selectedIndex === 2}
                     onClick={(event) => handleListItemClick(event, 2)}
+                >
+                    <ListItemText primary='Submissions' />
+                </ListItem>
+
+                <ListItem 
+                    button 
+                    component={RouterLink} 
+                    to={`/courses/${props.course.courseID}/grades`}
+                    selected={selectedIndex === 3}
+                    onClick={(event) => handleListItemClick(event, 3)}
                 >
                     <ListItemText primary='Grades' />
                 </ListItem>
@@ -60,8 +70,8 @@ export default function CourseMenu(props) {
                     button 
                     component={RouterLink} 
                     to={`/courses/${props.course.courseID}/files`}
-                    selected={selectedIndex === 3}
-                    onClick={(event) => handleListItemClick(event, 3)}
+                    selected={selectedIndex === 4}
+                    onClick={(event) => handleListItemClick(event, 4)}
                 >
                     <ListItemText primary='Resources' />
                 </ListItem>

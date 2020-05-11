@@ -7,6 +7,7 @@ import CourseSummary from '../CourseSummary/CourseSummary';
 import RightBar from '../RightBar/RightBar';
 import CourseAnnouncements from '../CourseAnnouncements/CourseAnnouncements';
 import CourseAssignments from '../CourseAssignments/CourseAssignments';
+import CourseSubmissions from '../CourseSubmissions/CourseSubmissions';
 
 
 
@@ -75,6 +76,10 @@ export default function Course(props) {
                         <Switch>
                             <Route path={`/courses/${props.course.courseID}/announcements`}>
                                 <CourseAnnouncements course={props.course}/>
+                            </Route>
+
+                            <Route path={`/courses/${props.course.courseID}/submissions`}>
+                                <CourseSubmissions course={props.course} />
                             </Route>
 
                             <Route path={`/courses/${props.course.courseID}/assignments`}>
