@@ -57,6 +57,7 @@ export default function CourseSubmissions(props) {
         pagination: true,
         selectableRowsHeader: false,
         selectableRows: 'none',
+        rowsPerPage: 5,
         rowsPerPageOptions: [5,10,20],
         print: false,
         download: false,
