@@ -310,7 +310,7 @@ export default function Dashboard() {
                         </Route>
 
                         <Route exact path="/example">
-                            <Sandbox id="editor1"/>
+                            <Sandbox sessionId={10}/>
                         </Route>
 
                     </Switch>
