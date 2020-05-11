@@ -6,6 +6,7 @@ import CourseMenu from '../CourseMenu/CourseMenu';
 import CourseSummary from '../CourseSummary/CourseSummary';
 import RightBar from '../RightBar/RightBar';
 import CourseAnnouncements from '../CourseAnnouncements/CourseAnnouncements';
+import CourseAssignments from '../CourseAssignments/CourseAssignments';
 
 
 
@@ -77,7 +78,7 @@ export default function Course(props) {
                             </Route>
 
                             <Route path={`/courses/${props.course.courseID}/assignments`}>
-                                
+                                <CourseAssignments course={props.course} />
                             </Route>
 
                             <Route path={`/courses/${props.course.courseID}/grades`}>
