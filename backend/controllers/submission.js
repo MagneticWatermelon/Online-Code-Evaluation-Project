@@ -3,6 +3,7 @@ const userController        = require('../controllers/user')
 const questionController    = require('../controllers/question')
 const questionModel         = require('../models/question')
 const notificationController= require('../controllers/notification')
+const Bundle                = require('../evaluator/bundle')
 
 module.exports.createSubmission = (req,res,next)=>{
     const studentID = req.user_id
@@ -15,7 +16,7 @@ module.exports.createSubmission = (req,res,next)=>{
         const bundle = new Bundle(language,question.inputs,question.outputs)
         bundle.addAll(files)
 
-        questionController.executeBundle(userID,bundle,(executionError, evaluation)=>{
+        questionController.executeBundle(studentID,bundle,(executionError, evaluation)=>{
             if(executionError){
                 submissionModel.saveSubmission(studentID,questionID,0,null,files,language,comment,(err)=>{
                     if(err){return res.status(500).json({message:err})}
@@ -32,7 +33,7 @@ module.exports.createSubmission = (req,res,next)=>{
                     studentID,
                     questionID,
                     evaluation.score,
-                    evaluation.results,
+                    evaluation.results.map(result=>{`{status:${result.status},output:${result.output}}`}),
                     files,
                     language,
                     comment,(err)=>{

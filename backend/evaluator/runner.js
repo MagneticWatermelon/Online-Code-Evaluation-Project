@@ -24,16 +24,15 @@ docker = new Docker({host:hostIP, port:hostPort});
 /*function for building the image
 */
 async function buildImage(bundle, options){
-    
+
     let tar = targenerator.fromBundle(bundle)
     
-    let stream = await docker.buildImage(tar,options)
-    
     let success = await new Promise((resolve,reject)=>{
-        docker.modem.followProgress(stream, 
-            (err, res) => err ? reject(false) : resolve(true));
+        docker.buildImage(tar,options,(err,stream)=>{
+            if(err){return reject(false)}
+            docker.modem.followProgress(stream,(err,res)=>{err ? reject(false) : resolve(true)})
+        })
     })
-
     return success;
 }
 

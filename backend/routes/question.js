@@ -9,10 +9,10 @@ const questionController = require('../controllers/question')
 
 
 router.post(
-    '/create/:assignmentID', 
-    isAuth, 
+    '/create/:assignmentID',
+    isAuth,
     isInstructor,
-    questionController.checkAssignment, 
+    questionController.checkAssignment,
     questionController.createQuestion)
 
 router.get(
@@ -23,7 +23,7 @@ router.get(
 
 router.post(
     '/update/:id', 
-    isAuth, 
+    isAuth,
     isInstructor,
     questionController.validateUser, 
     questionController.updateQuestion)
@@ -36,7 +36,7 @@ router.delete(
     questionController.deleteQuestion)
 
 router.post(
-    '/setIO/:id', 
+    '/setIO/:id',
     isAuth, 
     isInstructor,
     questionController.validateUser, 
@@ -47,5 +47,11 @@ router.post(
     isAuth, 
     questionController.validateUser, 
     questionController.execute)
+
+router.get(
+    '/submissions/:id/:studentID',
+    isAuth,
+    questionController.validateUser,
+    questionController.getSubmissions)
 
 module.exports = router;

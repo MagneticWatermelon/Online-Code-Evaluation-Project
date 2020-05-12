@@ -1,20 +1,9 @@
 const notificationModel = require('../models/notification')
-const userController    = require('../controllers/user')
-
-module.exports.createNotification = (req,res,next)=>{
-    let {studentID, assignmentID}   = req.params 
-    let {title, explanation}        = req.body
-
-    notificationModel.createNotification(studentID,assignmentID,title,explanation,(err,id)=>{
-        if(err){return res.status(500).json({message:err})}
-        return res.status(201).json({message:'Notification created', id:id})
-    })
-}
 
 module.exports.getNotification = (req,res,next)=>{
     const notificationID = req.params.id
     notificationModel.getNotification(notificationID,(err,notification)=>{
-        if(err){return res.status(500).json({message:err})}
+        if(err){return res.status(404).json({message:err})}
         return res.status(200).json(notification)
     })
 }
@@ -30,10 +19,11 @@ module.exports.deleteNotification = (req,res,next)=>{
 module.exports.validateUser = (req,res,next)=>{
     const userID            = req.user_id
     const notificationID    = req.params.id
+    const role              = req.user_role
 
     notificationModel.getNotification(notificationID,(err, notification)=>{
-        if(err){return res.status(500).json({message:err})}
-        if(notification.student_id == userID){
+        if(err){return res.status(404).json({message:err})}
+        if(notification.student_id == userID || role==2){
             next()
         }
         else{
@@ -42,23 +32,9 @@ module.exports.validateUser = (req,res,next)=>{
     })
 }
 
-module.exports.checkAssignment = (req,res,next)=>{
-    const userID        = req.user_id
-    const assignmentID  = req.params.assignmentID
+module.createNotification = (assignmentID, title, explanation, ...receipents)=>{
 
-    userController.doesHaveAssignment(assignmentID,userID)
-    .then(success=>{
-        next()
-    })
-    .catch(err=>{
-        return res.status(403).json({message:'Permission denied'})
-    })
 }
-
-module.exports.automaticNotification = (studentID, assignmentID, title, explanation)=>{
-    notificationModel.createNotification(studentID,assignmentID,title,explanation,(err,id)=>{})
-}
-
 
 module.exports.sendGradeUpdated = (studentID,submissionID)=>{
     

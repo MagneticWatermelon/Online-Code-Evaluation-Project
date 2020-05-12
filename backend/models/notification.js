@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const Assignment = require('./assignment');
 
 
 const Schema = mongoose.Schema;
@@ -65,14 +64,14 @@ const deleteNotification = (notification_id,callback)=>{
  */
 const getNotification = (notification_id, callback)=>{
     Notification.findById(notification_id)
- .then(
+    .then(
      not_obj=>{
         if(!not_obj) return callback("NotificationID is not valid ",null);
         return callback(null,not_obj);
      }
  ).catch(
      err=>{
-    callback(err,null)}
+    callback('Invalid notification ID',null)}
  );
 }
 

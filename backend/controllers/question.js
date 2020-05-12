@@ -4,17 +4,20 @@ const Bundle            = require('../evaluator/bundle')
 const evaluator         = require('../evaluator/evaluator')
 
 module.exports.createQuestion = (req,res,next)=>{
-    let {assigmentID, title, explanation, submission_limit,points, inputs, outputs} = req.body
-    questionModel.createQuestion(assigmentID,title, explanation,submission_limit,points, inputs, outputs, (err)=>{
+    let {title, explanation, submission_limit,points, inputs, outputs} = req.body
+    const assignmentID = req.params.assignmentID
+
+    console.log(req.body)
+    questionModel.createQuestion(assignmentID,title, explanation,submission_limit,points, inputs, outputs, (err, id)=>{
         if(err){return res.status(500).json({message: err})}
-        return res.status(201).json({message:'Question added to assignment'})
+        return res.status(201).json({message:'Question added to assignment',question_id:id})
     })
 }
 
 module.exports.getQuestion = (req,res,next)=>{
     const questionID = req.params.id
     questionModel.getQuestion(questionID,(err, question)=>{
-        if(err){return res.status(500).json({message:err})}
+        if(err){return res.status(404).json({message:err})}
         return res.status(200).json(question)
     })
 }
@@ -67,18 +70,26 @@ module.exports.execute = (req,res,next)=>{
 module.exports.executeBundle = (userID, bundle, callback)=>{
     evaluator.evaluate(userID, bundle, (err, score, evaluation)=>{
         if(err){return callback(err,null)}
-
         return callback(null,{
-            score   :score,
+            score   :Number.parseInt((score*100).toPrecision(3)),
             results :evaluation
         })
     });
 }
 
+module.exports.getSubmissions = (req,res,next)=>{
+    const questionID = req.params.id
+    const studentID  = req.params.studentID
+
+    questionModel.getSubmissions(questionID,studentID,(err, submissions)=>{
+        if(err){return res.status(404).json({message:err})}
+        return res.status(200).json(submissions)
+    })
+}
 
 module.exports.checkAssignment = (req,res,next)=>{
     const userID        = req.user_id
-    const assigmentID   = req.params.assigmentID
+    const assigmentID   = req.params.assignmentID
     const role          = req.user_role
 
     userController.doesHaveAssignment(assigmentID,userID,role)
