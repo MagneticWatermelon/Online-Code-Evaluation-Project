@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Submission = require('./submission').model;
 
 const Schema = mongoose.Schema;
 
@@ -22,7 +23,7 @@ const questionSchema = new Schema({
 const Question = mongoose.model('Question', questionSchema);
 
 /* Creates a new question
-    example callback call => callback(err)
+    example callback call => callback(err, question_id)
  */
 const createQuestion =(assignment_id, title, explanation, submission_limit,points, inputs, outputs, callback)=>{
     let question  =  new Question({
@@ -36,12 +37,12 @@ const createQuestion =(assignment_id, title, explanation, submission_limit,point
     });
     question.validate().then((value)=>{
         question.save()
-        .then((value)=>{return callback(null)})
-        .catch((err)=> {return callback("Saving question problem to DB")})
+        .then((value)=>{return callback(null, question._id)})
+        .catch((err)=> {return callback("Saving question problem to DB",null)})
     }
-    ).catch(
-        callback("Validation Error!!!!")
-    );
+    ).catch(err=>{
+        callback(err, null)
+    });
    
 }
 
@@ -49,17 +50,15 @@ const createQuestion =(assignment_id, title, explanation, submission_limit,point
     example callback call => callback(err, question)
 */
 const getQuestion =  (question_id, callback)=>{
- Question.findById(question_id)
- .then(
-     quest=>{
-        if(!quest) return callback("QuestionID is not valid ",null);
-        return callback(null,quest);
-     }
- ).catch( (err)=>{
-     return callback(err,null)
- }
- );
- 
+    Question.findById(question_id)
+    .then(question=>{
+        if(!question){return callback('Question not found',null)}
+        return callback(null,question)
+    })
+    .catch(err=>{
+        console.log(err)
+        return callback('Question not found', null)
+    })
 }
 
 /* Updates inputs and outputs of the question
@@ -89,25 +88,18 @@ const setIOOfQuestion =(question_id, inputs, outputs, callback)=>{
     example callback call => callback(err)
  */
 const updateQuestion = (question_id, title, explanation,submission_limit,points,callback)=>{
-    Question.findById(question_id)
-    .then(
-        quest=>{
-           if(!quest) return callback("QuestionID is not valid ");
-           Question.findByIdAndUpdate(question_id,{$set:{
-            title:title,
-            explanation:explanation,
-            submission_limit:submission_limit,
-            points:points
-        },
-    },(err)=>{if(err) return callback("Update problem to DB")});
-   return callback(null);
-        }
-    ).catch(
-        err=>{
-            return callback(err);
-        }
-    );
-
+    Question.findByIdAndUpdate(question_id,{$set:{
+        title:title,
+        explanation:explanation,
+        submission_limit:submission_limit,
+        points:points
+    }})
+    .then(success=>{
+        return callback(null)
+    })
+    .catch(err=>{
+        return callback('Update operation failed')
+    })
 }
 
 /* Deletes the question
@@ -129,7 +121,19 @@ const deleteQuestion = (question_id, callback)=>{
     example callback call => callback(err, submission_ids)
  */
 const getSubmissions = (question_id,student_id,callback)=>{
-
+    Submission
+        .find({student_id: student_id,question_id:question_id})
+        .select({"_id": 0})
+        .then(result => {
+            if (!result) {
+                return callback("Submissions could not found", null);
+            } else {
+                return callback(null, result);
+            }
+        })
+        .catch(err => {
+            return callback("Error occured", null);
+        })
 }
 
 module.exports.model = Question;

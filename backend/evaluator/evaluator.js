@@ -5,13 +5,12 @@ const runner = require('./runner')
 /*function for building and generating outputs from the code
 */
 async function getOutputs(bundle, imageName){
-
     let buildsuccess = await runner.buildImage(bundle,{t:imageName})
-
+        
     if(!buildsuccess){throw 'compilation error!'}
-
+        
     let results      = await runner.getOutputs(imageName,bundle.getInputs())
-
+        
     return results;
 }
 

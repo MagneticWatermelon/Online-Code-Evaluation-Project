@@ -7,11 +7,11 @@ const submissionSchema = new Schema({
     question_id: {type: mongoose.Schema.Types.ObjectId, ref: 'Question', required: true},    
     score:{type:Number, required: true}, // added
     evaluation:[{
-        status  : String, // 'correct' or 'wrong'
-        outputs : Array,  // student's outputs => ['o1','o2'.....]
+        status : String, // 'correct' or 'wrong'
+        output : Array,  // student's output => ['o1','o2'.....]
     }],//added
 
-    files:  [{nameofFile:String,subimittedcode:String}],   // should be changed to files
+    files:  [{name:String,content:String}],   // should be changed to files
 
     language:{type:String, required:true}, // added
     date: {type: Date, default: Date.now},    
@@ -26,7 +26,7 @@ const submissionSchema = new Schema({
 const Submission = mongoose.model('Submission', submissionSchema);
 
 const saveSubmission = (student_id, question_id, score, evaluation, files, language, comment, callback)=>{
-    let submission_obj =  Submission({
+    let submission =  new Submission({
         student_id:student_id,
         question_id,question_id,
         score:score,
@@ -35,9 +35,16 @@ const saveSubmission = (student_id, question_id, score, evaluation, files, langu
         language: language,
         comment:comment
     });
-    submission_obj.save()
-    .then(callback(null))
-    .catch((err)=> callback("Saving question problem to DB"));
+
+    submission.validate()
+    .then(success=>{
+        submission.save()
+        .then(callback(null))
+        .catch((err)=> callback('Cannot save submission'));
+    })
+    .catch(err=>{
+        return callback('Validation failed')
+    })
 }
 
 /* Returns the submission as a json object
