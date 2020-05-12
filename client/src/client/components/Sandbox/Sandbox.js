@@ -6,9 +6,14 @@ import OutputArea from '../OutputArea/OutputArea';
 import './SandBox.css';
 import Editor from '@monaco-editor/react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Tabs, Tab} from '@material-ui/core';
+import { Tabs, Tab, IconButton, Grow, Typography} from '@material-ui/core';
 import PropTypes from 'prop-types';
-
+import FolderIcon from '@material-ui/icons/Folder';
+import TreeView from '@material-ui/lab/TreeView';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import TreeItem from '@material-ui/lab/TreeItem';
+import CloseIcon from '@material-ui/icons/Close';
 
 
 
@@ -16,7 +21,24 @@ export default function Sandbox(props) {
 
     const [value, setValue] = React.useState(0);
 
-    
+    const editorRef = useRef();
+
+    const handleChange = (event) => {
+        editorRef.current.layout();
+    };
+
+    function handleEditorDidMount(_, editor) {
+        editorRef.current = editor;
+        listenEditorChanges();
+        
+    }
+
+    function listenEditorChanges() {
+        editorRef.current.onDidChangeModelContent(ev => {
+            console.log(props);
+            sessionStorage.setItem(props.sessionId, editorRef.current.getValue());
+        });
+    }
 
     const useStyles = makeStyles((theme) => ({
         root: {
@@ -24,9 +46,15 @@ export default function Sandbox(props) {
           height: '100%',
         },
         header: {
-            height: 20,
+            height: 48,
             width: '100%',
             display: 'inline-flex',
+        },
+        tabsTypo: {
+            textTransform: 'lowercase',
+        },
+        tabs: {
+            display: 'inline'
         },
         tabpanel: {
             height: '100%',
@@ -35,9 +63,7 @@ export default function Sandbox(props) {
 
     const styles = useStyles();
 
-    const handleChange = (event) => {
-        
-    };
+    
 
     const handleTabChange = (event, newValue) => {
         setValue(newValue);
@@ -46,20 +72,7 @@ export default function Sandbox(props) {
     function TabPanel(props) {
         const { children, value, index, ...other } = props;
 
-        const editorRef = useRef();
-
-        function handleEditorDidMount(_, editor) {
-            editorRef.current = editor;
-            listenEditorChanges();
-            
-        }
-    
-        function listenEditorChanges() {
-            editorRef.current.onDidChangeModelContent(ev => {
-                console.log(props);
-                sessionStorage.setItem(props.sessionId, editorRef.current.getValue());
-            });
-        }
+        
       
         return (
           <div
@@ -148,13 +161,18 @@ export default function Sandbox(props) {
         index: PropTypes.any.isRequired,
         value: PropTypes.any.isRequired,
       };
-
+    
+    const arr = ['main.java','test.java', 'example.js', 'index.java'];
+    
     return (
         <SplitPane split='vertical' onChange={handleChange}>
             <ProblemArea />
             <Pane minSize="10%">
                 <div className={styles.root}>
                     <div className={styles.header}>
+                        <IconButton>
+                            <FolderIcon />
+                        </IconButton>
                         <Tabs
                             value={value}
                             onChange={handleTabChange}
@@ -163,18 +181,29 @@ export default function Sandbox(props) {
                             variant="scrollable"
                             scrollButtons="auto"
                         >
-                            <Tab
-                                label="test1"
-                            />
-                            <Tab
-                                label="test2"
-                            />
-                            <Tab
-                                label="test3"
-                            />
-                            <Tab
-                                label="test4"
-                            />
+                            {arr.map((name) => {
+                                return(
+                                    <Tab
+                                        label={
+                                            <div className={styles.tabs}>
+                                                <Typography
+                                                    component='span'
+                                                    variant='body2'
+                                                    className={styles.tabsTypo}
+                                                >
+                                                    {name}
+                                                </Typography>
+                                                <IconButton
+                                                    size='small'
+                                                    edge='end'
+                                                >
+                                                    <CloseIcon />
+                                                </IconButton>
+                                            </div>
+                                        }
+                                    />
+                                );
+                            })}
                         </Tabs>
                     </div>
                     <TabPanel value={value} index={0} sessionId={props.sessionId + 0}/>
