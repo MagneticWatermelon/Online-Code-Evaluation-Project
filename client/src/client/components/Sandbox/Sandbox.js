@@ -6,7 +6,7 @@ import OutputArea from '../OutputArea/OutputArea';
 import './SandBox.css';
 import Editor from '@monaco-editor/react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Tabs, Tab, IconButton, Grow, Typography} from '@material-ui/core';
+import { Tabs, Tab, IconButton, Grow, Typography, Collapse} from '@material-ui/core';
 import PropTypes from 'prop-types';
 import FolderIcon from '@material-ui/icons/Folder';
 import TreeView from '@material-ui/lab/TreeView';
@@ -14,6 +14,8 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import TreeItem from '@material-ui/lab/TreeItem';
 import CloseIcon from '@material-ui/icons/Close';
+import { green, blueGrey } from '@material-ui/core/colors';
+import FolderOutlinedIcon from '@material-ui/icons/FolderOutlined';
 
 
 
@@ -42,6 +44,12 @@ export default function Sandbox(props) {
 
     const useStyles = makeStyles((theme) => ({
         root: {
+            display: 'inline-flex',
+            width: '100%',
+            height: '100%',
+            backgroundColor: '#202124'
+        },
+        editor: {
           width: '100%',
           height: '100%',
         },
@@ -49,6 +57,7 @@ export default function Sandbox(props) {
             height: 48,
             width: '100%',
             display: 'inline-flex',
+            backgroundColor: '#202124'
         },
         tabsTypo: {
             textTransform: 'lowercase',
@@ -58,6 +67,10 @@ export default function Sandbox(props) {
         },
         tabpanel: {
             height: '100%',
+            backgroundColor: '#202124',
+        },
+        scrollButtons: {
+            color: blueGrey[100],
         },
       }));
 
@@ -68,6 +81,10 @@ export default function Sandbox(props) {
     const handleTabChange = (event, newValue) => {
         setValue(newValue);
     };
+
+    const handleFolderOpen = () => {
+        setChecked((prev) => !prev);
+      };
 
     function TabPanel(props) {
         const { children, value, index, ...other } = props;
@@ -91,6 +108,7 @@ export default function Sandbox(props) {
                     editorDidMount={handleEditorDidMount}
                     width='100%'
                     height='100%'
+                    loading=''
                     options={{
                             "acceptSuggestionOnCommitCharacter": true,
                             "acceptSuggestionOnEnter": "on",
@@ -162,6 +180,8 @@ export default function Sandbox(props) {
         value: PropTypes.any.isRequired,
       };
     
+    const [checked, setChecked] = React.useState(false);
+    
     const arr = ['main.java','test.java', 'example.js', 'index.java'];
     
     return (
@@ -169,48 +189,57 @@ export default function Sandbox(props) {
             <ProblemArea />
             <Pane minSize="10%">
                 <div className={styles.root}>
-                    <div className={styles.header}>
-                        <IconButton>
-                            <FolderIcon />
-                        </IconButton>
-                        <Tabs
-                            value={value}
-                            onChange={handleTabChange}
-                            indicatorColor="primary"
-                            textColor="primary"
-                            variant="scrollable"
-                            scrollButtons="auto"
-                        >
-                            {arr.map((name) => {
-                                return(
-                                    <Tab
-                                        label={
-                                            <div className={styles.tabs}>
-                                                <Typography
-                                                    component='span'
-                                                    variant='body2'
-                                                    className={styles.tabsTypo}
-                                                >
-                                                    {name}
-                                                </Typography>
-                                                <IconButton
-                                                    size='small'
-                                                    edge='end'
-                                                >
-                                                    <CloseIcon />
-                                                </IconButton>
-                                            </div>
-                                        }
-                                    />
-                                );
-                            })}
-                        </Tabs>
+                    {checked && 
+                    <div>
+                        Hello
                     </div>
-                    <TabPanel value={value} index={0} sessionId={props.sessionId + 0}/>
-                    <TabPanel value={value} index={1} sessionId={props.sessionId + 1}/>
-                    <TabPanel value={value} index={2} sessionId={props.sessionId + 2}/>
-                    <TabPanel value={value} index={3} sessionId={props.sessionId + 3}/>
-                </div>                
+                    }
+                    <div className={styles.editor}>
+                        <div className={styles.header}>
+                            <IconButton onClick={handleFolderOpen}>
+                                <FolderOutlinedIcon style={{ color: blueGrey[100] }} />
+                            </IconButton>
+                            <Tabs
+                                value={value}
+                                onChange={handleTabChange}
+                                indicatorColor="primary"
+                                textColor="primary"
+                                variant="scrollable"
+                                scrollButtons="auto"
+                                classes={{scrollButtons: styles.scrollButtons}}
+                            >
+                                {arr.map((name) => {
+                                    return(
+                                        <Tab
+                                            label={
+                                                <div className={styles.tabs}>
+                                                    <Typography
+                                                        component='span'
+                                                        variant='body2'
+                                                        className={styles.tabsTypo}
+                                                        style={{ color: blueGrey[100] }}
+                                                    >
+                                                        {name}
+                                                    </Typography>
+                                                    <IconButton
+                                                        size='small'
+                                                        edge='end'
+                                                    >
+                                                        <CloseIcon  style={{ color: blueGrey[100] }}/>
+                                                    </IconButton>
+                                                </div>
+                                            }
+                                        />
+                                    );
+                                })}
+                            </Tabs>
+                        </div>
+                        <TabPanel value={value} index={0} sessionId={props.sessionId + 0}/>
+                        <TabPanel value={value} index={1} sessionId={props.sessionId + 1}/>
+                        <TabPanel value={value} index={2} sessionId={props.sessionId + 2}/>
+                        <TabPanel value={value} index={3} sessionId={props.sessionId + 3}/>
+                    </div>
+                </div>               
             </Pane>
             <OutputArea />
         </SplitPane>
