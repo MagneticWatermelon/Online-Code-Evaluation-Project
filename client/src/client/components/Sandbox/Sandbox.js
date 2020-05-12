@@ -71,6 +71,7 @@ export default function Sandbox(props) {
         },
         scrollButtons: {
             color: blueGrey[100],
+            width: 30,
         },
       }));
 
@@ -196,8 +197,8 @@ export default function Sandbox(props) {
                     }
                     <div className={styles.editor}>
                         <div className={styles.header}>
-                            <IconButton onClick={handleFolderOpen}>
-                                <FolderOutlinedIcon style={{ color: blueGrey[100] }} />
+                            <IconButton onClick={handleFolderOpen} style={{paddingRight: 0 }}>
+                                <FolderOutlinedIcon style={{ color: blueGrey[100]}} />
                             </IconButton>
                             <Tabs
                                 value={value}
