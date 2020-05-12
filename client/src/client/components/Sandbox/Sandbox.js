@@ -6,15 +6,8 @@ import OutputArea from '../OutputArea/OutputArea';
 import './SandBox.css';
 import Editor from '@monaco-editor/react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Tabs, Tab, IconButton} from '@material-ui/core';
+import { Tabs, Tab} from '@material-ui/core';
 import PropTypes from 'prop-types';
-import AddIcon from '@material-ui/icons/Add';
-import TreeView from '@material-ui/lab/TreeView';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import TreeItem from '@material-ui/lab/TreeItem';
-import FolderIcon from '@material-ui/icons/Folder';
-import Grow from '@material-ui/core/Grow';
 
 
 
@@ -31,7 +24,7 @@ export default function Sandbox(props) {
           height: '100%',
         },
         header: {
-            height: 54,
+            height: 20,
             width: '100%',
             display: 'inline-flex',
         },
@@ -40,10 +33,8 @@ export default function Sandbox(props) {
         },
       }));
 
-    
-
     const styles = useStyles();
-    
+
     const handleChange = (event) => {
         
     };
@@ -65,7 +56,7 @@ export default function Sandbox(props) {
     
         function listenEditorChanges() {
             editorRef.current.onDidChangeModelContent(ev => {
-                console.log(children);
+                console.log(props);
                 sessionStorage.setItem(props.sessionId, editorRef.current.getValue());
             });
         }
@@ -164,16 +155,13 @@ export default function Sandbox(props) {
             <Pane minSize="10%">
                 <div className={styles.root}>
                     <div className={styles.header}>
-                        <IconButton>
-                            <FolderIcon  />
-                        </IconButton>
                         <Tabs
                             value={value}
                             onChange={handleTabChange}
                             indicatorColor="primary"
                             textColor="primary"
                             variant="scrollable"
-                            scrollButtons='auto'
+                            scrollButtons="auto"
                         >
                             <Tab
                                 label="test1"
@@ -188,9 +176,6 @@ export default function Sandbox(props) {
                                 label="test4"
                             />
                         </Tabs>
-                        <IconButton>
-                            <AddIcon />
-                        </IconButton>
                     </div>
                     <TabPanel value={value} index={0} sessionId={props.sessionId + 0}/>
                     <TabPanel value={value} index={1} sessionId={props.sessionId + 1}/>
