@@ -1,4 +1,4 @@
-import React , { useRef}from 'react';
+import React , { useRef }from 'react';
 import SplitPane from 'react-split-pane';
 import Pane from 'react-split-pane'
 import ProblemArea from '../ProblemArea/ProblemArea';
@@ -8,14 +8,28 @@ import Editor from '@monaco-editor/react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Tabs, Tab, IconButton, Grow, Typography, Collapse} from '@material-ui/core';
 import PropTypes from 'prop-types';
-import FolderIcon from '@material-ui/icons/Folder';
 import TreeView from '@material-ui/lab/TreeView';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import TreeItem from '@material-ui/lab/TreeItem';
 import CloseIcon from '@material-ui/icons/Close';
-import { green, blueGrey } from '@material-ui/core/colors';
+import { blueGrey } from '@material-ui/core/colors';
 import FolderOutlinedIcon from '@material-ui/icons/FolderOutlined';
+
+
+function debounce(func, wait) {
+    let timeout;
+    return function() {
+      const context = this;
+      const args = arguments;
+      const later = function() {
+        timeout = null;
+        func.apply(context, args);
+      };
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+    };
+  };
 
 
 
@@ -26,7 +40,8 @@ export default function Sandbox(props) {
     const editorRef = useRef();
 
     const handleChange = (event) => {
-        editorRef.current.layout();
+        sessionStorage.setItem('splitPos', event);
+        debounce(editorRef.current.layout(), 300);
     };
 
     function handleEditorDidMount(_, editor) {
@@ -37,7 +52,6 @@ export default function Sandbox(props) {
 
     function listenEditorChanges() {
         editorRef.current.onDidChangeModelContent(ev => {
-            console.log(props);
             sessionStorage.setItem(props.sessionId, editorRef.current.getValue());
         });
     }
@@ -59,6 +73,19 @@ export default function Sandbox(props) {
             display: 'inline-flex',
             backgroundColor: '#202124'
         },
+        folder: {
+            height: 240,
+            flexGrow: 1,
+            maxWidth: 400,
+            color: blueGrey[100],
+            paddingLeft: 10,
+            paddingTop: 10,
+            paddingRight: 10,
+        },
+        monacoDiv: {
+            width: '100%',
+            height: 'calc(100% - 100px)',
+        },
         tabsTypo: {
             textTransform: 'lowercase',
         },
@@ -77,8 +104,6 @@ export default function Sandbox(props) {
 
     const styles = useStyles();
 
-    
-
     const handleTabChange = (event, newValue) => {
         setValue(newValue);
     };
@@ -90,8 +115,6 @@ export default function Sandbox(props) {
     function TabPanel(props) {
         const { children, value, index, ...other } = props;
 
-        
-      
         return (
           <div
             role="tabpanel"
@@ -187,12 +210,35 @@ export default function Sandbox(props) {
     
     return (
         <SplitPane split='vertical' onChange={handleChange}>
-            <ProblemArea />
-            <Pane minSize="10%">
+
+            <Pane initialSize={sessionStorage.getItem('splitPos').split(',')[0]}>
+                <ProblemArea />
+            </Pane>
+            
+            <Pane minSize="10%" initialSize={sessionStorage.getItem('splitPos').split(',')[1]}>
                 <div className={styles.root}>
                     {checked && 
                     <div>
-                        Hello
+                    <TreeView
+                        className={styles.folder}
+                        defaultCollapseIcon={<ExpandMoreIcon />}
+                        defaultExpandIcon={<ChevronRightIcon />}
+                    >
+                        <TreeItem nodeId="1" label="Applications">
+                            <TreeItem nodeId="2" label="Calendar" />
+                            <TreeItem nodeId="3" label="Chrome" />
+                            <TreeItem nodeId="4" label="Webstorm" />
+                        </TreeItem>
+                        <TreeItem nodeId="5" label="Documents">
+                            <TreeItem nodeId="10" label="OSS" />
+                            <TreeItem nodeId="6" label="Material-UI">
+                            <TreeItem nodeId="7" label="src">
+                                <TreeItem nodeId="8" label="index.js" />
+                                <TreeItem nodeId="9" label="tree-view.js" />
+                            </TreeItem>
+                            </TreeItem>
+                        </TreeItem>
+                    </TreeView>
                     </div>
                     }
                     <div className={styles.editor}>
@@ -235,14 +281,20 @@ export default function Sandbox(props) {
                                 })}
                             </Tabs>
                         </div>
-                        <TabPanel value={value} index={0} sessionId={props.sessionId + 0}/>
-                        <TabPanel value={value} index={1} sessionId={props.sessionId + 1}/>
-                        <TabPanel value={value} index={2} sessionId={props.sessionId + 2}/>
-                        <TabPanel value={value} index={3} sessionId={props.sessionId + 3}/>
+                        <div className={styles.monacoDiv}>
+                            <TabPanel value={value} index={0} sessionId={props.sessionId + 0}/>
+                            <TabPanel value={value} index={1} sessionId={props.sessionId + 1}/>
+                            <TabPanel value={value} index={2} sessionId={props.sessionId + 2}/>
+                            <TabPanel value={value} index={3} sessionId={props.sessionId + 3}/>
+                        </div>
                     </div>
                 </div>               
             </Pane>
-            <OutputArea />
+
+            <Pane initialSize={sessionStorage.getItem('splitPos').split(',')[2]}>
+                <OutputArea />
+            </Pane>
+            
         </SplitPane>
     );
 }
