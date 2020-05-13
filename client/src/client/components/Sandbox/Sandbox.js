@@ -1,4 +1,4 @@
-import React , { useRef }from 'react';
+import React , { useRef, useEffect }from 'react';
 import SplitPane from 'react-split-pane';
 import Pane from 'react-split-pane'
 import ProblemArea from '../ProblemArea/ProblemArea';
@@ -35,7 +35,18 @@ function debounce(func, wait) {
 
 export default function Sandbox(props) {
 
+    if(sessionStorage.getItem('splitPos') == null) {
+        sessionStorage.setItem('splitPos', '33%,33%,33%');
+    }
+    
+    const arr = ['main.java'];
+    
     const [value, setValue] = React.useState(0);
+    const [treeFiles, setTreeFiles] = React.useState([]);
+    const [fileTabs , setFileTabs] = React.useState(arr);
+    const [currEditorId, setEditor] = React.useState('');
+
+    
 
     const editorRef = useRef();
 
@@ -44,17 +55,23 @@ export default function Sandbox(props) {
         debounce(editorRef.current.layout(), 300);
     };
 
-    function handleEditorDidMount(_, editor) {
-        editorRef.current = editor;
-        listenEditorChanges();
-        
+    const handleFolderClick = (event) => {
+        event.preventDefault();
+        let fileName = event.currentTarget.innerHTML;
+        let index = fileTabs.indexOf(fileName);
+        if(index < 0) {
+            fileTabs.push(fileName);
+        }
+        handleTabChange(event, index);
     }
 
-    function listenEditorChanges() {
-        editorRef.current.onDidChangeModelContent(ev => {
-            sessionStorage.setItem(props.sessionId, editorRef.current.getValue());
-        });
-    }
+    const handleCloseClick = (event) => {
+        let tab = event.currentTarget.parentElement.parentElement.parentElement.tabIndex;
+        let temp = fileTabs;
+        temp.splice(tab, 1);
+        setFileTabs(temp);
+        handleTabChange(event, tab);
+    };
 
     const useStyles = makeStyles((theme) => ({
         root: {
@@ -105,6 +122,10 @@ export default function Sandbox(props) {
     const styles = useStyles();
 
     const handleTabChange = (event, newValue) => {
+        if(value == newValue) {
+            setValue(-1);
+            return;
+        }
         setValue(newValue);
     };
 
@@ -114,6 +135,18 @@ export default function Sandbox(props) {
 
     function TabPanel(props) {
         const { children, value, index, ...other } = props;
+
+        function handleEditorDidMount(_, editor) {
+            editorRef.current = editor;
+            listenEditorChanges();
+            
+        }
+    
+        function listenEditorChanges() {
+            editorRef.current.onDidChangeModelContent(ev => {
+                sessionStorage.setItem(props.sessionId, editorRef.current.getValue());
+            });
+        }
 
         return (
           <div
@@ -206,8 +239,6 @@ export default function Sandbox(props) {
     
     const [checked, setChecked] = React.useState(false);
     
-    const arr = ['main.java','test.java', 'example.js', 'index.java'];
-    
     return (
         <SplitPane split='vertical' onChange={handleChange}>
 
@@ -224,19 +255,11 @@ export default function Sandbox(props) {
                         defaultCollapseIcon={<ExpandMoreIcon />}
                         defaultExpandIcon={<ChevronRightIcon />}
                     >
-                        <TreeItem nodeId="1" label="Applications">
-                            <TreeItem nodeId="2" label="Calendar" />
-                            <TreeItem nodeId="3" label="Chrome" />
-                            <TreeItem nodeId="4" label="Webstorm" />
-                        </TreeItem>
-                        <TreeItem nodeId="5" label="Documents">
-                            <TreeItem nodeId="10" label="OSS" />
-                            <TreeItem nodeId="6" label="Material-UI">
-                            <TreeItem nodeId="7" label="src">
-                                <TreeItem nodeId="8" label="index.js" />
-                                <TreeItem nodeId="9" label="tree-view.js" />
-                            </TreeItem>
-                            </TreeItem>
+                        <TreeItem nodeId="1" label="files">
+                            <TreeItem nodeId="2" label="main.java" onLabelClick={handleFolderClick}/>
+                            <TreeItem nodeId="3" label="func.java" onLabelClick={handleFolderClick}/>
+                            <TreeItem nodeId="4" label="bar.java" onLabelClick={handleFolderClick}/>
+                            <TreeItem nodeId="5" label="foo.java" onLabelClick={handleFolderClick}/>
                         </TreeItem>
                     </TreeView>
                     </div>
@@ -252,12 +275,13 @@ export default function Sandbox(props) {
                                 indicatorColor="primary"
                                 textColor="primary"
                                 variant="scrollable"
-                                scrollButtons="auto"
+                                scrollButtons="on"
                                 classes={{scrollButtons: styles.scrollButtons}}
                             >
-                                {arr.map((name) => {
+                                {fileTabs.map((name, index) => {
                                     return(
                                         <Tab
+                                            tabIndex={index}
                                             label={
                                                 <div className={styles.tabs}>
                                                     <Typography
@@ -271,6 +295,7 @@ export default function Sandbox(props) {
                                                     <IconButton
                                                         size='small'
                                                         edge='end'
+                                                        onClick={handleCloseClick}
                                                     >
                                                         <CloseIcon  style={{ color: blueGrey[100] }}/>
                                                     </IconButton>
@@ -282,10 +307,11 @@ export default function Sandbox(props) {
                             </Tabs>
                         </div>
                         <div className={styles.monacoDiv}>
-                            <TabPanel value={value} index={0} sessionId={props.sessionId + 0}/>
-                            <TabPanel value={value} index={1} sessionId={props.sessionId + 1}/>
-                            <TabPanel value={value} index={2} sessionId={props.sessionId + 2}/>
-                            <TabPanel value={value} index={3} sessionId={props.sessionId + 3}/>
+                        {fileTabs.map((name, index) => {
+                                return(
+                                    <TabPanel value={value} index={index} sessionId={name} />
+                                );
+                            })}
                         </div>
                     </div>
                 </div>               
