@@ -39,21 +39,31 @@ export default function Sandbox(props) {
         sessionStorage.setItem('splitPos', '33%,33%,33%');
     }
     
-    const arr = ['main.java','test.java', 'example.js', 'index.java'];
+    const arr = ['test.java', 'example.js', 'index.java'];
     
     const [value, setValue] = React.useState(0);
     const [treeFiles, setTreeFiles] = React.useState([]);
     const [fileTabs , setFileTabs] = React.useState(arr);
+    const [currEditorId, setEditor] = React.useState('');
 
     
 
     const editorRef = useRef();
-    const tabs = useRef();
 
     const handleChange = (event) => {
         sessionStorage.setItem('splitPos', event);
         debounce(editorRef.current.layout(), 300);
     };
+
+    const handleFolderClick = (event) => {
+        event.preventDefault();
+        let fileName = event.currentTarget.innerHTML;
+        let index = fileTabs.indexOf(fileName);
+        if(index < 0) {
+            fileTabs.push(fileName);
+        }
+        handleTabChange(event, index);
+    }
 
     const handleCloseClick = (event) => {
         let tab = event.currentTarget.parentElement.parentElement.parentElement.tabIndex;
@@ -62,18 +72,6 @@ export default function Sandbox(props) {
         setFileTabs(temp);
         handleTabChange(event, tab);
     };
-
-    function handleEditorDidMount(_, editor) {
-        editorRef.current = editor;
-        listenEditorChanges();
-        
-    }
-
-    function listenEditorChanges() {
-        editorRef.current.onDidChangeModelContent(ev => {
-            sessionStorage.setItem(props.sessionId, editorRef.current.getValue());
-        });
-    }
 
     const useStyles = makeStyles((theme) => ({
         root: {
@@ -137,6 +135,18 @@ export default function Sandbox(props) {
 
     function TabPanel(props) {
         const { children, value, index, ...other } = props;
+
+        function handleEditorDidMount(_, editor) {
+            editorRef.current = editor;
+            listenEditorChanges();
+            
+        }
+    
+        function listenEditorChanges() {
+            editorRef.current.onDidChangeModelContent(ev => {
+                sessionStorage.setItem(props.sessionId, editorRef.current.getValue());
+            });
+        }
 
         return (
           <div
@@ -246,7 +256,7 @@ export default function Sandbox(props) {
                         defaultExpandIcon={<ChevronRightIcon />}
                     >
                         <TreeItem nodeId="1" label="files">
-                            <TreeItem nodeId="2" label="main.java" />
+                            <TreeItem nodeId="2" label="main.java" onLabelClick={handleFolderClick}/>
                         </TreeItem>
                     </TreeView>
                     </div>
@@ -257,7 +267,6 @@ export default function Sandbox(props) {
                                 <FolderOutlinedIcon style={{ color: blueGrey[100]}} />
                             </IconButton>
                             <Tabs
-                                action={tabs}
                                 value={value}
                                 onChange={handleTabChange}
                                 indicatorColor="primary"
@@ -295,10 +304,11 @@ export default function Sandbox(props) {
                             </Tabs>
                         </div>
                         <div className={styles.monacoDiv}>
-                            <TabPanel value={value} index={0} sessionId={props.sessionId + 0}/>
-                            <TabPanel value={value} index={1} sessionId={props.sessionId + 1}/>
-                            <TabPanel value={value} index={2} sessionId={props.sessionId + 2}/>
-                            <TabPanel value={value} index={3} sessionId={props.sessionId + 3}/>
+                        {fileTabs.map((name, index) => {
+                                return(
+                                    <TabPanel value={value} index={index} sessionId={name} />
+                                );
+                            })}
                         </div>
                     </div>
                 </div>               
