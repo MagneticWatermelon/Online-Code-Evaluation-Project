@@ -39,7 +39,7 @@ export default function Sandbox(props) {
         sessionStorage.setItem('splitPos', '33%,33%,33%');
     }
     
-    const arr = ['test.java', 'example.js', 'index.java'];
+    const arr = ['main.java'];
     
     const [value, setValue] = React.useState(0);
     const [treeFiles, setTreeFiles] = React.useState([]);
@@ -257,6 +257,9 @@ export default function Sandbox(props) {
                     >
                         <TreeItem nodeId="1" label="files">
                             <TreeItem nodeId="2" label="main.java" onLabelClick={handleFolderClick}/>
+                            <TreeItem nodeId="3" label="func.java" onLabelClick={handleFolderClick}/>
+                            <TreeItem nodeId="4" label="bar.java" onLabelClick={handleFolderClick}/>
+                            <TreeItem nodeId="5" label="foo.java" onLabelClick={handleFolderClick}/>
                         </TreeItem>
                     </TreeView>
                     </div>

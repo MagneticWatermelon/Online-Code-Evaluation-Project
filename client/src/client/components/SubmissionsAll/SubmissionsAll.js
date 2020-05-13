@@ -12,7 +12,6 @@ export default function SubmissionsAll() {
             filter: false,
             sort: true,
             customBodyRender: (value, tableData, updateValue) => {
-                console.log(tableData);
                 return (
                     <Link component={RouterLink} to={`courses/${tableData.rowData[5]}/assignments/${tableData.rowData[6]}/submissions/${tableData.rowData[7]}`}>
                         {value}

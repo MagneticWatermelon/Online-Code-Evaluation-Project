@@ -12,7 +12,6 @@ export default function CourseAssignments(props) {
             filter: false,
             sort: true,
             customBodyRender: (value, tableData, updateValue) => {
-                console.log(tableData);
                 return (
                     <Link component={RouterLink} to={`/courses/${props.course.courseID}/assignments/${tableData.rowData[4]}`}>
                         {value}
