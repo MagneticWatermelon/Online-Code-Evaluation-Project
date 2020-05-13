@@ -87,18 +87,14 @@ const deleteAnnouncement = (announcement_id,callback)=>{
  */
 const getAnnouncement = (announcement_id, callback)=>{
     Announcement.findById(announcement_id)
-      .then(result => {
-         if (!result) {
-            return callback("Announcement could not found", null);
-         } else {
-            return callback(null, result);
-         }
-
-      })
-      .catch(err => {
-          console.log(err)
-         return callback("Error while getting the Announcement", null);
-      })
+    .then(announcement=>{
+        if(!announcement){return callback('Announcement not found',null)}
+        return callback(null,announcement)
+    })
+    .catch(err=>{
+        console.log(err)
+        return callback('Announcement not found',null)
+    })
 }
 
 /*  Following function adds the given user_id to the receipents

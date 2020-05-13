@@ -1,7 +1,7 @@
 const express = require('express');
 
-const isInstructor     = require('../middleware/isInstructor')
-const isAuth        = require('../middleware/isAuth')
+const isInstructor      = require('../middleware/isInstructor')
+const isAuth            = require('../middleware/isAuth')
 
 const router = express.Router();
 

@@ -123,7 +123,7 @@ const deleteQuestion = (question_id, callback)=>{
 const getSubmissions = (question_id,student_id,callback)=>{
     Submission
         .find({student_id: student_id,question_id:question_id})
-        .select({_id: 0})
+        .select()
         .then(result => {
             if (!result) {
                 return callback("Submissions could not found", null);

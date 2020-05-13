@@ -37,16 +37,13 @@ module.exports.validateUser = (req,re,next)=>{
     userController.doesHaveAssignment(req,assignmentID, userID, role)
     .then(success=>{next()})
     .catch(err=>{
-        return res.status(401).json({message:'Permission Denied'})
+        return res.status(403).json({message:'Permission Denied'})
     })
 }
 
 module.exports.getAssignment = (req,res,next)=>{
-    const assignmentID = req.params.id
-    assignmentModel.getAssignment(assignmentID,(err,assignment)=>{
-        if(err){return res.status(500).json({message:err})}
-        return res.status(200).json(assignment)
-    })
+    if(req.assignment){return res.status(200).json(req.assignment)}
+    return res.status(404).json({message:'Assignment not found'})
 }
 
 module.exports.updateAssignment = (req,res,next)=>{
@@ -80,4 +77,8 @@ module.exports.getQuestions = (req,res,next)=>{
 module.exports.getGrade = (req,res,next)=>{
     const assignmentID  = req.params.id
     const studentID     = req.params.studentID
+    assignmentModel.getGrade(studentID,assignmentID,(err,grade)=>{
+        if(err){return res.status(404).json({message:err})}
+        return res.status(200).json({grade:grade})
+    })
 }

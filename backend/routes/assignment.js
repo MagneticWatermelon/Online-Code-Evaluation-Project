@@ -8,7 +8,7 @@ const router = express.Router();
 const assignmentController = require('../controllers/assigment')
 
 router.post(
-    '/create/:courseID', 
+    '/create/:courseID',
     isAuth, 
     isInstructor,
     assignmentController.checkCourse,

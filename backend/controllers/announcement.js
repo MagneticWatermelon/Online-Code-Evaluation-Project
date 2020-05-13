@@ -11,16 +11,10 @@ module.exports.createAnnouncement = (req,res,next)=>{
         if(err){return res.status(500).json({message:err})}
         return res.status(201).json({message:'Announcement created',id:announcementID})
     })
-
 }
 
 module.exports.getAnnouncement = (req,res,next)=>{
-    const announcementID = req.params.id
-
-    announcementModel.getAnnouncement(announcementID,(err, announcement)=>{
-        if(err){return res.status(404).json({message:err})}
-        return res.status(200).json(announcement)
-    })
+    res.status(200).json(req.announcement)
 }
 
 module.exports.deleteAnnouncement = (req,res,next)=>{
@@ -53,10 +47,12 @@ module.exports.validateUser = (req,res,next)=>{
     const role           = req.user_role
 
     announcementModel.getAnnouncement(announcementID,(err, announcement)=>{
-        if(err){return res.status(404).json({message:'Internal server error'})}
+        if(err){return res.status(404).json({message:'Announcement not found'})}
 
         const courseID = announcement.course_id
 
+        req.announcement = announcement
+        
         userController.doesHaveCourse(req,courseID,userID,role)
         .then(success=>{
             next()
