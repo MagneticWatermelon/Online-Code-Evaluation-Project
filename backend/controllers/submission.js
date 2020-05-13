@@ -6,48 +6,41 @@ const notificationController= require('../controllers/notification')
 const Bundle                = require('../evaluator/bundle')
 
 module.exports.createSubmission = (req,res,next)=>{
-    const studentID = req.user_id
-    const questionID= req.params.questionID
+    const   studentID   = req.user_id
+    let     question    = req.question
     let {files,language,comment} = req.body
 
-    questionModel.getQuestion(questionID,(err, question)=>{
-        if(err){return res.status(404).json({message:err})}
+    const bundle  = new Bundle(language,question.inputs,question.outputs)
+    bundle.addAll(files)
 
-        const bundle = new Bundle(language,question.inputs,question.outputs)
-        bundle.addAll(files)
-
-        questionController.executeBundle(studentID,bundle,(executionError, evaluation)=>{
-            if(executionError){
-                console.log(executionError)
-                submissionModel.saveSubmission(studentID,questionID,0,null,files,language,comment,(err)=>{
-                    if(err){return res.status(500).json({message:err})}
-                    return res.status(200).json({
-                        message:'Code execution failed',
-                        error:executionError,
-                        score:0
-                    })
+    questionController.executeBundle(studentID,bundle,(executionError, evaluation)=>{
+        if(executionError){
+            submissionModel.saveSubmission(studentID,question,0,{},files,language,comment,(err)=>{
+                if(err){return res.status(500).json({message:'Cannot save submission'})}
+                return res.status(417).json({
+                    message:'Code execution failed',
+                    results:executionError,
+                    score:0
                 })
-            }
-            else{
-                submissionModel.saveSubmission(
-                    studentID,
-                    questionID,
-                    evaluation.score,
-                    evaluation.results.map(result=>{`{status:${result.status},output:${result.output}}`}),
-                    files,
-                    language,
-                    comment,(err)=>{
-                        if(err){return res.status(500).json({message:err})}
-                        return res.status(200).json({
-                            message:'Code executed succesfully',
-                            score  :evaluation.score,
-                            results:evaluation.results
-                        })
-                    }
-                )
-
-            }
-        })
+            })
+        }
+        else{
+            submissionModel.saveSubmission(
+                studentID,
+                question._id,
+                evaluation.score,
+                evaluation.results,
+                files,
+                language,
+                comment,(err)=>{
+                    if(err){return res.status(500).json({message:'Cannot save submission'})}
+                    return res.status(200).json({
+                        message:'Code executed succesfully',
+                        score  :evaluation.score,
+                        results:evaluation.results
+                    })
+            })
+        }
     })
 }
 
@@ -80,7 +73,7 @@ module.exports.updateScore = (req,res,next)=>{
     const new_score    = req.body.score
     submissionModel.updateScore(submissionID,new_score,(err)=>{
         if(err){return res.status(500).json({message:err})}
-        notificationController.sendGradeUpdated(studentID, submissionID)
+        notificationController.sendGradeUpdated(submissionID)
         return res.status(200).json({message:'Grade updated'})
     })
 }
@@ -90,12 +83,12 @@ module.exports.updateEvaluation = (req,res,next)=>{
     const new_evaluation    = req.body.evaluation
     const studentID         = req.user_id
     
-    const correctCount      = 0
+    let correctCount      = 0
     for(result of new_evaluation){
         if(result.status == 'correct'){correctCount++;}
     }
 
-    const new_score = correctCount/new_evaluation.length
+    const new_score = (correctCount/new_evaluation.length)*100
 
     submissionModel.updateEvaluation(submissionID,new_evaluation,(err)=>{
         if(err){return res.status(500).json({message:err})}
@@ -103,7 +96,7 @@ module.exports.updateEvaluation = (req,res,next)=>{
         submissionModel.updateScore(submissionID,new_score,(err)=>{
             if(err){return res.status(500).json({message:err})}
             notificationController.sendGradeUpdated(studentID, submissionID)
-            return res.status(200).json({message:'Grade updated'})
+            return res.status(200).json({message:'Evaluation updated'})
         })
     })
 }
@@ -113,7 +106,7 @@ module.exports.checkQuestion    = (req,res,next)=>{
     const questionID= req.params.questionID
     const userID    = req.user_id
     const role      = req.user_role
-    userController.doesHaveQuestion(questionID,userID,role)
+    userController.doesHaveQuestion(req,questionID,userID,role)
     .then(success=>{
         next()
     })
@@ -135,7 +128,7 @@ module.exports.validateUser     = (req,res,next)=>{
         else{
             const questionID = submission.question_id
 
-            userController.doesHaveQuestion(questionID,userID,role)
+            userController.doesHaveQuestion(req,questionID,userID,role)
             .then(success=>{
                 next()
             })
@@ -151,17 +144,11 @@ module.exports.validateUser     = (req,res,next)=>{
 module.exports.checkSubmissionLimit = (req,res,next)=>{
     const questionID = req.params.questionID;
     const userID     = req.user_id
+    const limit      = req.question.submission_limit
 
-    questionModel.getQuestion(questionID,(err, question)=>{
+    questionModel.getSubmissions(questionID,userID,(err,submissions)=>{
         if(err){return res.status(500).json({message:err})}
-
-        questionModel.getSubmissions(questionID,userID,(err,submissions)=>{
-            if(err){return res.status(500).json({message:err})}
-
-            const submission_limit = question.submission_limit
-            if(submission_limit<submissions.length){return next()}
-
-            return res.status(403).json({message:'You exceeded submission limit'})
-        })
+        if(limit<submissions.length){return next()}
+        return res.status(403).json({message:'You exceeded submission limit'})
     })
 }

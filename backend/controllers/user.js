@@ -92,7 +92,7 @@ module.exports.checkUser = (req,res,next)=>{
     }
 }
 
-module.exports.doesHaveCourse = (course_id, userid, role)=>{
+module.exports.doesHaveCourse = (req,course_id, userid, role)=>{
     return new Promise((resolve,reject)=>{
 
         if(role==2){return resolve(true)}
@@ -113,7 +113,7 @@ module.exports.doesHaveCourse = (course_id, userid, role)=>{
     })
 }
 
-module.exports.doesHaveAssignment = (assignmentID, userid, role)=>{
+module.exports.doesHaveAssignment = (req,assignmentID, userid, role)=>{
     return new Promise((resolve,reject)=>{
         
         assignmentModel.getAssignment(assignmentID, (err, assignment)=>{
@@ -121,7 +121,9 @@ module.exports.doesHaveAssignment = (assignmentID, userid, role)=>{
 
             const course = assignment.course_id
 
-            this.doesHaveCourse(course, userid, role)
+            req.assignment = assignment;
+
+            this.doesHaveCourse(req,course, userid, role)
             .then(success=>{return resolve(true)})
             .catch(err=>{return reject(false)})
         })
@@ -129,14 +131,15 @@ module.exports.doesHaveAssignment = (assignmentID, userid, role)=>{
     })
 }
 
-module.exports.doesHaveQuestion = (questionID, userid, role)=>{
+module.exports.doesHaveQuestion = (req,questionID, userid, role)=>{
     return new Promise((resolve, reject)=>{
         questionModel.getQuestion(questionID, (err, question)=>{
             if(err){return reject(false)}
-
             const assignment = question.assignment_id
 
-            this.doesHaveAssignment(assignment, userid, role)
+            req.question = question
+
+            this.doesHaveAssignment(req,assignment, userid, role)
             .then(success => {return resolve(true)})
             .catch(err=>{return reject(false)})
         })

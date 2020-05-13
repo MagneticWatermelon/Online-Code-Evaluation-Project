@@ -36,7 +36,7 @@ module.createNotification = (assignmentID, title, explanation, ...receipents)=>{
 
 }
 
-module.exports.sendGradeUpdated = (studentID,submissionID)=>{
+module.exports.sendGradeUpdated = (submissionID)=>{
     
 }
 

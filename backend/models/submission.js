@@ -102,36 +102,24 @@ const deleteSubmission = (submission_id, callback)=>{
     example callback call => callback(err)
  */
 const updateScore = (submission_id, score, callback)=>{
-    Submission.findById(submission_id).then(
-        updateScore=>{
-            if(!updated_Score) return callback("ID is not valid ");
-            Submission.findByIdAndUpdate(submission_id,{$set:{
-                score:score,
-            },
-        },(err)=>{if(err) return callback("Update problem to DB")});
-        return  callback(null);
-        }
-    ).catch(
-        err=>{return callback("SubmissionId Problem");}
-    );
+    Submission.findByIdAndUpdate(submission_id,{$set:{
+        score:score
+    }},(err,submission)=>{
+        if(err){return callback(err)}
+        return callback(null)
+    })
 }
 
 /* Updates the evaluation
     example callback call => callback(err)
  */
 const updateEvaluation = (submission_id, evaluation, callback)=>{
-    Submission.findById(submission_id).then(
-        updateEvaluatin_obj=>{
-            if(!updateEvaluatin_obj) return callback("ID is not valid ");
-            Submission.findByIdAndUpdate(submission_id,{$set:{
-                    evaluation:evaluation,
-                },
-            },(err)=>{if(err) return callback("Update problem to DB")});
-            return  callback(null);
-        }
-    ).catch(
-        err=>{return callback("Submission Id Error  in DB");}
-    );
+    Submission.findByIdAndUpdate(submission_id,{$set:{
+        evaluation:evaluation
+    }},(err,submission)=>{
+        if(err){return callback(err)}
+        return callback(null)
+    })
 }
 
 module.exports.model = Submission;

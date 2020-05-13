@@ -74,7 +74,7 @@ module.exports.validateReadPermission = (req, res, next)=>{
     
             const courseID = announcement.course_id
     
-            userController.doesHaveCourse(courseID,userID,role)
+            userController.doesHaveCourse(req,courseID,userID,role)
             .then(success=>{
                 next()
             })
@@ -96,7 +96,7 @@ module.exports.checkAnnouncement = (req,res,next)=>{
 
         const courseID = announcement.course_id
 
-        userController.doesHaveCourse(courseID,userID,role)
+        userController.doesHaveCourse(req,courseID,userID,role)
         .then(success=>{
             next()
         })

@@ -20,7 +20,7 @@ module.exports.checkCourse = (req,res,next)=>{
     const courseID = req.params.courseID
     const role     = req.user_role
 
-    userController.doesHaveCourse(courseID,userID,role)
+    userController.doesHaveCourse(req,courseID,userID,role)
     .then(success=>{
         next()
     })
@@ -34,7 +34,7 @@ module.exports.validateUser = (req,re,next)=>{
     const userID        = req.user_id
     const role          = req.user_role
     
-    userController.doesHaveAssignment(assignmentID, userID, role)
+    userController.doesHaveAssignment(req,assignmentID, userID, role)
     .then(success=>{next()})
     .catch(err=>{
         return res.status(401).json({message:'Permission Denied'})

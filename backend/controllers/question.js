@@ -92,7 +92,7 @@ module.exports.checkAssignment = (req,res,next)=>{
     const assigmentID   = req.params.assignmentID
     const role          = req.user_role
 
-    userController.doesHaveAssignment(assigmentID,userID,role)
+    userController.doesHaveAssignment(req,assigmentID,userID,role)
     .then(success=>{
         next()
     })
@@ -106,7 +106,7 @@ module.exports.validateUser = (req,re,next)=>{
     const userID        = req.user_id
     const role          = req.user_role
     
-    userController.doesHaveQuestion(questionID, userID, role)
+    userController.doesHaveQuestion(req,questionID, userID, role)
     .then(success=>{next()})
     .catch(err=>{
         return res.status(401).json({message:'Permission Denied'})

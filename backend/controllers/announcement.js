@@ -38,7 +38,7 @@ module.exports.checkCourse = (req,res,next)=>{
     const userID   = req.user_id
     const role     = req.user_role
 
-    userController.doesHaveCourse(courseID,userID,role)
+    userController.doesHaveCourse(req,courseID,userID,role)
     .then(success=>{
         next();
     })
@@ -57,7 +57,7 @@ module.exports.validateUser = (req,res,next)=>{
 
         const courseID = announcement.course_id
 
-        userController.doesHaveCourse(courseID,userID,role)
+        userController.doesHaveCourse(req,courseID,userID,role)
         .then(success=>{
             next()
         })

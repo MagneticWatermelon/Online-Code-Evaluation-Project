@@ -111,7 +111,7 @@ module.exports.checkCourse = (req,res,next)=>{
     let courseID    = req.params.id
     let userID      = req.user_id
     let role        = req.user_role
-    userController.doesHaveCourse(courseID,userID,role)
+    userController.doesHaveCourse(req,courseID,userID,role)
     .then(success=>{
         next()
     })  
