@@ -18,6 +18,7 @@ module.exports.createSubmission = (req,res,next)=>{
 
         questionController.executeBundle(studentID,bundle,(executionError, evaluation)=>{
             if(executionError){
+                console.log(executionError)
                 submissionModel.saveSubmission(studentID,questionID,0,null,files,language,comment,(err)=>{
                     if(err){return res.status(500).json({message:err})}
                     return res.status(200).json({
@@ -27,7 +28,6 @@ module.exports.createSubmission = (req,res,next)=>{
                     })
                 })
             }
-
             else{
                 submissionModel.saveSubmission(
                     studentID,

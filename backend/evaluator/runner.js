@@ -5,6 +5,7 @@
 module.exports.buildImage   = buildImage;
 module.exports.getOutputs   = getOutputs;
 module.exports.runCode      = runCode;
+module.exports.removeImage  = removeImage;
 
 const Docker        = require('dockerode')
 const Readable      = require('stream').Readable;
@@ -25,21 +26,22 @@ docker = new Docker({host:hostIP, port:hostPort});
 */
 async function buildImage(bundle, options){
 
-    let tar = targenerator.fromBundle(bundle)
+    let tar     = targenerator.fromBundle(bundle)
     
-    let success = await new Promise((resolve,reject)=>{
-        docker.buildImage(tar,options,(err,stream)=>{
-            if(err){return reject(false)}
-            docker.modem.followProgress(stream,(err,res)=>{err ? reject(false) : resolve(true)})
-        })
+    let stream  = await docker.buildImage(tar,options)
+
+    await new Promise((resolve,reject)=>{
+        docker.modem.followProgress(stream,(err,res)=>{err ? reject() : resolve()})
     })
+    
+    let success = await checkImage(options.t)
     return success;
 }
 
 async function runCode(bundle, imagename){
     let tag = `${imagename}test`;
     let buildsucess = await buildImage(bundle,{t:tag})
-    if(!buildsucess){throw 'compilation error!'}
+    if(!buildsucess){throw 'Compilation Error'}
 
     let output = await testInput(tag,null)
 
@@ -69,7 +71,7 @@ async function testInput(imagename, testcase){
     await new Promise((resolve,reject)=>{
         
         container.logs({follow:true,stdout:true,stderr:true},(err,stream)=>{
-            if(err){reject('cannot get logs from container')}
+            if(err){return reject('cannot get logs from container')}
             
             container.modem.demuxStream(stream, logStream, logStream);
             
@@ -98,11 +100,31 @@ async function getOutputs(imagename, inputs){
             outputs.push(output)
         }
         catch(e){
-            outputs.push([])
+            outputs.push(['Error ocurred'])
         }
     }
 
     return outputs;
+}
+
+function checkImage(imagename){
+    return new Promise((resolve,reject)=>{
+        docker.getImage(imagename).inspect()
+        .then(image=>{resolve(true)})
+        .catch(err=>{resolve(false)})
+    })
+}
+
+function removeImage(imagename){
+    return new Promise((resolve,reject)=>{
+        docker.getImage(imagename).remove({force:true})
+        .then(success=>{
+            resolve()
+        })
+        .catch(err=>{
+            resolve()
+        })
+    })
 }
 
 /*function for attaching inputs to the container

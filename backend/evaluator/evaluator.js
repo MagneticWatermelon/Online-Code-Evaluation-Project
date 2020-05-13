@@ -5,12 +5,14 @@ const runner = require('./runner')
 /*function for building and generating outputs from the code
 */
 async function getOutputs(bundle, imageName){
-    let buildsuccess = await runner.buildImage(bundle,{t:imageName})
-        
-    if(!buildsuccess){throw 'compilation error!'}
+    let buildsuccess = await runner.buildImage(bundle,{t:imageName,forcerm:true})
+    
+    if(!buildsuccess){throw 'Compilation Error'}
         
     let results      = await runner.getOutputs(imageName,bundle.getInputs())
-        
+    
+    await runner.removeImage(imageName)
+    
     return results;
 }
 
@@ -24,11 +26,7 @@ async function evaluate(userid, bundle, callback){
 
         let evaluation  = [];
         let score       = 0.0;
-        let length      = answers.length;
-
-        if(length != outputs.length){
-            throw 'outputs\' length is not valid'
-        }
+        let length      = Math.min(answers.length,outputs.length);
 
         for(let a = 0 ; a < length ; a++){
 
