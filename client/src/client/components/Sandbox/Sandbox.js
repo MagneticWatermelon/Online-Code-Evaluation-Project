@@ -1,4 +1,4 @@
-import React , { useRef}from 'react';
+import React , { useRef }from 'react';
 import SplitPane from 'react-split-pane';
 import Pane from 'react-split-pane'
 import ProblemArea from '../ProblemArea/ProblemArea';
@@ -6,9 +6,30 @@ import OutputArea from '../OutputArea/OutputArea';
 import './SandBox.css';
 import Editor from '@monaco-editor/react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Tabs, Tab} from '@material-ui/core';
+import { Tabs, Tab, IconButton, Grow, Typography, Collapse} from '@material-ui/core';
 import PropTypes from 'prop-types';
+import TreeView from '@material-ui/lab/TreeView';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import TreeItem from '@material-ui/lab/TreeItem';
+import CloseIcon from '@material-ui/icons/Close';
+import { blueGrey } from '@material-ui/core/colors';
+import FolderOutlinedIcon from '@material-ui/icons/FolderOutlined';
 
+
+function debounce(func, wait) {
+    let timeout;
+    return function() {
+      const context = this;
+      const args = arguments;
+      const later = function() {
+        timeout = null;
+        func.apply(context, args);
+      };
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+    };
+  };
 
 
 
@@ -16,51 +37,84 @@ export default function Sandbox(props) {
 
     const [value, setValue] = React.useState(0);
 
-    
+    const editorRef = useRef();
+
+    const handleChange = (event) => {
+        sessionStorage.setItem('splitPos', event);
+        debounce(editorRef.current.layout(), 300);
+    };
+
+    function handleEditorDidMount(_, editor) {
+        editorRef.current = editor;
+        listenEditorChanges();
+        
+    }
+
+    function listenEditorChanges() {
+        editorRef.current.onDidChangeModelContent(ev => {
+            sessionStorage.setItem(props.sessionId, editorRef.current.getValue());
+        });
+    }
 
     const useStyles = makeStyles((theme) => ({
         root: {
+            display: 'inline-flex',
+            width: '100%',
+            height: '100%',
+            backgroundColor: '#202124'
+        },
+        editor: {
           width: '100%',
           height: '100%',
         },
         header: {
-            height: 20,
+            height: 48,
             width: '100%',
             display: 'inline-flex',
+            backgroundColor: '#202124'
+        },
+        folder: {
+            height: 240,
+            flexGrow: 1,
+            maxWidth: 400,
+            color: blueGrey[100],
+            paddingLeft: 10,
+            paddingTop: 10,
+            paddingRight: 10,
+        },
+        monacoDiv: {
+            width: '100%',
+            height: 'calc(100% - 100px)',
+        },
+        tabsTypo: {
+            textTransform: 'lowercase',
+        },
+        tabs: {
+            display: 'inline'
         },
         tabpanel: {
             height: '100%',
+            backgroundColor: '#202124',
+        },
+        scrollButtons: {
+            color: blueGrey[100],
+            width: 30,
         },
       }));
 
     const styles = useStyles();
 
-    const handleChange = (event) => {
-        
-    };
-
     const handleTabChange = (event, newValue) => {
         setValue(newValue);
     };
 
+    const handleFolderOpen = () => {
+        setChecked((prev) => !prev);
+      };
+
     function TabPanel(props) {
         const { children, value, index, ...other } = props;
 
-        const editorRef = useRef();
-
-        function handleEditorDidMount(_, editor) {
-            editorRef.current = editor;
-            listenEditorChanges();
-            
-        }
-    
-        function listenEditorChanges() {
-            editorRef.current.onDidChangeModelContent(ev => {
-                console.log(props);
-                sessionStorage.setItem(props.sessionId, editorRef.current.getValue());
-            });
-        }
-      
         return (
           <div
             role="tabpanel"
@@ -78,6 +132,7 @@ export default function Sandbox(props) {
                     editorDidMount={handleEditorDidMount}
                     width='100%'
                     height='100%'
+                    loading=''
                     options={{
                             "acceptSuggestionOnCommitCharacter": true,
                             "acceptSuggestionOnEnter": "on",
@@ -148,42 +203,98 @@ export default function Sandbox(props) {
         index: PropTypes.any.isRequired,
         value: PropTypes.any.isRequired,
       };
-
+    
+    const [checked, setChecked] = React.useState(false);
+    
+    const arr = ['main.java','test.java', 'example.js', 'index.java'];
+    
     return (
         <SplitPane split='vertical' onChange={handleChange}>
-            <ProblemArea />
-            <Pane minSize="10%">
-                <div className={styles.root}>
-                    <div className={styles.header}>
-                        <Tabs
-                            value={value}
-                            onChange={handleTabChange}
-                            indicatorColor="primary"
-                            textColor="primary"
-                            variant="scrollable"
-                            scrollButtons="auto"
-                        >
-                            <Tab
-                                label="test1"
-                            />
-                            <Tab
-                                label="test2"
-                            />
-                            <Tab
-                                label="test3"
-                            />
-                            <Tab
-                                label="test4"
-                            />
-                        </Tabs>
-                    </div>
-                    <TabPanel value={value} index={0} sessionId={props.sessionId + 0}/>
-                    <TabPanel value={value} index={1} sessionId={props.sessionId + 1}/>
-                    <TabPanel value={value} index={2} sessionId={props.sessionId + 2}/>
-                    <TabPanel value={value} index={3} sessionId={props.sessionId + 3}/>
-                </div>                
+
+            <Pane initialSize={sessionStorage.getItem('splitPos').split(',')[0]}>
+                <ProblemArea />
             </Pane>
-            <OutputArea />
+            
+            <Pane minSize="10%" initialSize={sessionStorage.getItem('splitPos').split(',')[1]}>
+                <div className={styles.root}>
+                    {checked && 
+                    <div>
+                    <TreeView
+                        className={styles.folder}
+                        defaultCollapseIcon={<ExpandMoreIcon />}
+                        defaultExpandIcon={<ChevronRightIcon />}
+                    >
+                        <TreeItem nodeId="1" label="Applications">
+                            <TreeItem nodeId="2" label="Calendar" />
+                            <TreeItem nodeId="3" label="Chrome" />
+                            <TreeItem nodeId="4" label="Webstorm" />
+                        </TreeItem>
+                        <TreeItem nodeId="5" label="Documents">
+                            <TreeItem nodeId="10" label="OSS" />
+                            <TreeItem nodeId="6" label="Material-UI">
+                            <TreeItem nodeId="7" label="src">
+                                <TreeItem nodeId="8" label="index.js" />
+                                <TreeItem nodeId="9" label="tree-view.js" />
+                            </TreeItem>
+                            </TreeItem>
+                        </TreeItem>
+                    </TreeView>
+                    </div>
+                    }
+                    <div className={styles.editor}>
+                        <div className={styles.header}>
+                            <IconButton onClick={handleFolderOpen} style={{paddingRight: 0 }}>
+                                <FolderOutlinedIcon style={{ color: blueGrey[100]}} />
+                            </IconButton>
+                            <Tabs
+                                value={value}
+                                onChange={handleTabChange}
+                                indicatorColor="primary"
+                                textColor="primary"
+                                variant="scrollable"
+                                scrollButtons="auto"
+                                classes={{scrollButtons: styles.scrollButtons}}
+                            >
+                                {arr.map((name) => {
+                                    return(
+                                        <Tab
+                                            label={
+                                                <div className={styles.tabs}>
+                                                    <Typography
+                                                        component='span'
+                                                        variant='body2'
+                                                        className={styles.tabsTypo}
+                                                        style={{ color: blueGrey[100] }}
+                                                    >
+                                                        {name}
+                                                    </Typography>
+                                                    <IconButton
+                                                        size='small'
+                                                        edge='end'
+                                                    >
+                                                        <CloseIcon  style={{ color: blueGrey[100] }}/>
+                                                    </IconButton>
+                                                </div>
+                                            }
+                                        />
+                                    );
+                                })}
+                            </Tabs>
+                        </div>
+                        <div className={styles.monacoDiv}>
+                            <TabPanel value={value} index={0} sessionId={props.sessionId + 0}/>
+                            <TabPanel value={value} index={1} sessionId={props.sessionId + 1}/>
+                            <TabPanel value={value} index={2} sessionId={props.sessionId + 2}/>
+                            <TabPanel value={value} index={3} sessionId={props.sessionId + 3}/>
+                        </div>
+                    </div>
+                </div>               
+            </Pane>
+
+            <Pane initialSize={sessionStorage.getItem('splitPos').split(',')[2]}>
+                <OutputArea />
+            </Pane>
+            
         </SplitPane>
     );
 }
