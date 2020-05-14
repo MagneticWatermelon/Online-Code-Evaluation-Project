@@ -1,4 +1,6 @@
-const mongoose = require('mongoose');
+const mongoose      = require('mongoose');
+const Grade         = require('../models/grade')
+const Question      = require('../models/question')
 
 const Schema = mongoose.Schema;
 
@@ -39,7 +41,7 @@ const saveSubmission = (student_id, question_id, score, evaluation, files, langu
     submission.validate()
     .then(success=>{
         submission.save()
-        .then(callback(null))
+        .then(success=>{updateGrade(submission);callback(null)})
         .catch((err)=> callback('Cannot save submission'));
     })
     .catch(err=>{
@@ -91,7 +93,8 @@ const deleteSubmission = (submission_id, callback)=>{
             Submission.findByIdAndDelete(submission_id,(err)=>{if(err)return callback("Delete Problem in DB")},(err)=>{
                 if(err) {return callback("FindByIDandDelete code Problem");}
             });
-            return   callback(null);
+            updateGrade(submisson_delete)
+            return callback(null);
         }
     ).catch(
                 err=>{return callback("SubmissionID problem in DB")}
@@ -106,7 +109,8 @@ const updateScore = (submission_id, score, callback)=>{
         score:score
     }},(err,submission)=>{
         if(err){return callback(err)}
-        return callback(null)
+        callback(null)
+        updateGrade(submission)
     })
 }
 
@@ -118,7 +122,18 @@ const updateEvaluation = (submission_id, evaluation, callback)=>{
         evaluation:evaluation
     }},(err,submission)=>{
         if(err){return callback(err)}
+        updateGrade(submission)
         return callback(null)
+    })
+}
+
+const updateGrade = async (submission)=>{
+    Question.model
+    .findById(submission.question_id)        
+    .then(question=>{
+        if(question){
+            Grade.updateGrade(submission.student_id,question.assignment_id)
+        }
     })
 }
 

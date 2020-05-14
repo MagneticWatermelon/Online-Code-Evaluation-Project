@@ -4,7 +4,7 @@ const CourseTaken = require('./course_taken');
 const Assignment = require('./assignment');
 const Announcement = require('./announcement');
 const Resource = require('./resource');
-const Question = require('./question');
+const Grade    = require('./grade');
 const Schema = mongoose.Schema;
 
 const courseSchema = new Schema({
@@ -349,16 +349,15 @@ const getAverageGrade = (student_id, course_id, callback)=>{
    .find({course_id:course_id})
    .select({_id:1, weight:1})
    .then(assignments=>{
-      console.log(assignments)
+
       let gradePromises = assignments.map(async function(assignment){
-         let score   = await Assignment.getGradePromise(student_id,assignment._id)
+         let score   = await Grade.getGrade(student_id,assignment._id)
          let weight  = assignment.weight
          let item    = {'score':score,'weight':weight};
          return item;
       })
       Promise.all(gradePromises)
       .then(grades=>{
-         console.log(grades)
          let averageGrade = grades.map(function(grade){
             if(grade.score){return ((grade.score*grade.weight)/100)}
             return 0;
