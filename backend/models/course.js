@@ -347,37 +347,31 @@ const getResources = (course_id, callback)=>{
 const getAverageGrade = (student_id, course_id, callback)=>{
    Assignment.model
    .find({course_id:course_id})
-   .select({_id:1,weight:weight})
+   .select({_id:1, weight:1})
    .then(assignments=>{
-      let average = assignments.map(async (assignment)=>{
-         (await getAssignmentGrade(student_id,assignment._id)*assignment.weight)/100
-      }).reduce((a,b)=>a+b,0)
-      return callback(null,average)
-   })
-   .catch(err=>{
-      return callback('Grade cannot be calculated', null)
-   })
-   const getAssignmentGrade = async (student_id, assignment_id)=>{
-      return Question.model
-      .find({assignment_id:assignment_id})
-      .select({_id:1,points:1})
-      .then(questions=>{
-         
-         let total = questions.reduce((a,b)=>a.points+b.points,0)
-         
-         let score = questions.map(q=>{
-            return Submission.find({question_id:q._id,student_id:student_id})
-            .select({score:1})
-            .then(scores=>{return (Math.max(scores)*q.points)/total})
-            .catch(err=>{return 0})
-         }).reduce((a,b)=>a+b,0)
-         
-         return score/total;
+      console.log(assignments)
+      let gradePromises = assignments.map(async function(assignment){
+         let score   = await Assignment.getGradePromise(student_id,assignment._id)
+         let weight  = assignment.weight
+         let item    = {'score':score,'weight':weight};
+         return item;
+      })
+      Promise.all(gradePromises)
+      .then(grades=>{
+         console.log(grades)
+         let averageGrade = grades.map(function(grade){
+            if(grade.score){return ((grade.score*grade.weight)/100)}
+            return 0;
+         }).reduce((a,b)=>(a+b))
+         return callback(null,Math.round(averageGrade))
       })
       .catch(err=>{
-         return 0;
+         return callback('Grade cannot be calculated',null)
       })
-   }
+   })
+   .catch(err=>{
+      return callback('Grade cannot be calculated',null)
+   })
 }
 
 
