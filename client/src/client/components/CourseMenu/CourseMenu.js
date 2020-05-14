@@ -15,7 +15,7 @@ export default function CourseMenu(props) {
 
     const useStyles = makeStyles((theme) => ({
         root: {
-          width: 'fit-content'
+          width: 'fit-content',
         }
       }));
     
@@ -30,7 +30,7 @@ export default function CourseMenu(props) {
                     button 
                     component={RouterLink} 
                     to={`/courses/${props.course.courseID}/announcements`}
-                    selected={selectedIndex === 0}
+                    selected={selectedIndex === 0 || window.location.pathname === `/courses/${props.course.courseID}/announcements`}
                     onClick={(event) => handleListItemClick(event, 0)}
                 >
                     <ListItemText primary='Announcements' />
@@ -40,7 +40,7 @@ export default function CourseMenu(props) {
                     button 
                     component={RouterLink} 
                     to={`/courses/${props.course.courseID}/assignments`}
-                    selected={selectedIndex === 1}
+                    selected={selectedIndex === 1 || window.location.pathname === `/courses/${props.course.courseID}/assignments`}
                     onClick={(event) => handleListItemClick(event, 1)}
                 >
                     <ListItemText primary='Assignments' />
@@ -50,7 +50,7 @@ export default function CourseMenu(props) {
                     button 
                     component={RouterLink} 
                     to={`/courses/${props.course.courseID}/submissions`}
-                    selected={selectedIndex === 2}
+                    selected={selectedIndex === 2  || window.location.pathname === `/courses/${props.course.courseID}/submissions`}
                     onClick={(event) => handleListItemClick(event, 2)}
                 >
                     <ListItemText primary='Submissions' />
@@ -60,7 +60,7 @@ export default function CourseMenu(props) {
                     button 
                     component={RouterLink} 
                     to={`/courses/${props.course.courseID}/grades`}
-                    selected={selectedIndex === 3}
+                    selected={selectedIndex === 3  || window.location.pathname === `/courses/${props.course.courseID}/grades`}
                     onClick={(event) => handleListItemClick(event, 3)}
                 >
                     <ListItemText primary='Grades' />
@@ -70,7 +70,7 @@ export default function CourseMenu(props) {
                     button 
                     component={RouterLink} 
                     to={`/courses/${props.course.courseID}/files`}
-                    selected={selectedIndex === 4}
+                    selected={selectedIndex === 4  || window.location.pathname === `/courses/${props.course.courseID}/files`}
                     onClick={(event) => handleListItemClick(event, 4)}
                 >
                     <ListItemText primary='Resources' />

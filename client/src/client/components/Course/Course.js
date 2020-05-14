@@ -1,6 +1,6 @@
 import React from 'react';
-import { List, ListItem, ListItemText, Typography, Container, Divider, Box } from '@material-ui/core';
-import { Switch, Route, Link, BrowserRouter as Router} from 'react-router-dom';
+import { Typography, Divider } from '@material-ui/core';
+import { Switch, Route} from 'react-router-dom';
 import { makeStyles, createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import CourseMenu from '../CourseMenu/CourseMenu';
 import CourseSummary from '../CourseSummary/CourseSummary';
@@ -8,6 +8,8 @@ import RightBar from '../RightBar/RightBar';
 import CourseAnnouncements from '../CourseAnnouncements/CourseAnnouncements';
 import CourseAssignments from '../CourseAssignments/CourseAssignments';
 import CourseSubmissions from '../CourseSubmissions/CourseSubmissions';
+import CourseGrades from '../CourseGrades/CourseGrades';
+import CourseFiles from '../CourseFiles/CourseFiles';
 
 
 
@@ -54,6 +56,8 @@ overrides: {
 
 export default function Course(props) {
 
+    const [todos, setToDos] = React.useState(props.todos);
+
     const styles = useStyles();
 
     return(
@@ -87,16 +91,16 @@ export default function Course(props) {
                             </Route>
 
                             <Route path={`/courses/${props.course.courseID}/grades`}>
-                                
+                                <CourseGrades course={props.course} />
                             </Route>
 
                             <Route path={`/courses/${props.course.courseID}/files`}>
-                                
+                                <CourseFiles course={props.course} />
                             </Route>
 
                             <Route path={`/courses/:courseID`}>
                                 <CourseSummary />
-                                <RightBar todos={[]} grades={[]}/>
+                                <RightBar todos={todos} grades={[]}/>
                             </Route>
                         </Switch>
                     </div>

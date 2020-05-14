@@ -47,40 +47,36 @@ export default function CourseAnnouncements(props) {
                                     <Avatar />
                                 </ListItemAvatar>
                                 <ListItemText
-                                primary={
-                                    <Link>
-                                        {"Announcement Title"}
-                                    </Link>
-                                }
-                                secondary={
-                                    <React.Fragment>
-                                        <Typography
-                                            component="p"
-                                            variant="body2"
-                                            className={classes.instructor}
-                                            color="textPrimary"
-                                        >
-                                            Instructor Name
+                                    primary={<Link>{"Announcement Title"}</Link>}
+                                    secondary={
+                                        <React.Fragment>
+                                            <Typography
+                                                component="span"
+                                                variant="body2"
+                                                className={classes.instructor}
+                                                color="textPrimary"
+                                            >
+                                                Instructor Name
                                         </Typography>
-                                        <Typography
-                                            component="span"
-                                            variant="body2"
-                                            className={classes.date}
-                                            color="textSecondary"
-                                        >
-                                            Date
+                                            <Typography
+                                                component="span"
+                                                variant="body2"
+                                                className={classes.date}
+                                                color="textSecondary"
+                                            >
+                                                Date
                                         </Typography>
-                                        <Typography
-                                            component="p"
-                                            variant="body2"
-                                            className={classes.body}
-                                            color="textSecondary"
-                                            noWrap={true}
-                                        >
-                                            Announcement body
+                                            <Typography
+                                                component="p"
+                                                variant="body2"
+                                                className={classes.body}
+                                                color="textSecondary"
+                                                noWrap={true}
+                                            >
+                                                Announcement body
                                         </Typography>
-                                    </React.Fragment>
-                                }
+                                        </React.Fragment>
+                                    }
                                 />
                             </ListItem>
                             <Divider component="li" />
