@@ -141,4 +141,8 @@ module.exports.getResources = (req,res,next)=>{
 module.exports.getGrade = (req,res,next)=>{
     const courseID  = req.params.id
     const studentID = req.params.studentID
+    courseModel.getAverageGrade(studentID,courseID,(err,grade)=>{
+        if(err){return res.status(404).json({message:err})}
+        return res.status(200).json({grade:grade})
+    })
 }
