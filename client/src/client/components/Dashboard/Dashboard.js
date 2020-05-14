@@ -292,7 +292,7 @@ export default function Dashboard() {
                         {courseList.map((course) => {
                             return(
                                 <Route path={`/courses/${course.courseID}`}>
-                                    <Course course={course} />
+                                    <Course course={course} todos={toDoList}/>
                                 </Route>
                             );
                         })}

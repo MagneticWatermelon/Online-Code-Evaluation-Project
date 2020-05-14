@@ -44,7 +44,6 @@ export default function Sandbox(props) {
     const [value, setValue] = React.useState(0);
     const [treeFiles, setTreeFiles] = React.useState([]);
     const [fileTabs , setFileTabs] = React.useState(arr);
-    const [currEditorId, setEditor] = React.useState('');
 
     
 
