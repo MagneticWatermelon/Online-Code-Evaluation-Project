@@ -183,21 +183,35 @@ const getGrade = (student_id, assignment_id, callback)=>{
 
         let total = questions.map(q=>q.points).reduce((a,b)=>(a+b))
 
-        //
-        let score = questions.map(async(q)=>{
-            return await Submission.model.find({question_id:q._id,student_id:student_id})
-            .select({score:1})
-            .then(scores=>{return (Math.max(scores)*q.points)/total})
-            .catch(err=>{return 0})
-        }).reduce((a,b)=>a+b,0)
-        
-        let grade = score/total
+        new Promise((resolve,reject)=>{
 
-        return callback(null,grade)
-    })
-    .catch(err=>{
-        console.log(err)
-        return callback('Cannot get grade',null)
+            let scores = questions.map((question)=> new Promise((resolve,reject)=>{
+                Submission.model.find({question_id:question._id,student_id:student_id})
+                .select({score:1})
+                .then(submissions=>{
+                    if(!submissions){return resolve(0)}
+                    if(submissions.length==0){return resolve(0)}
+                    let max   = Math.max(...submissions.map(s=>s.score))
+                    let score = (max*question.points)/100 
+                    resolve(score)
+                })
+                .catch(err=>reject(0))
+            }))
+            resolve(scores)
+        })
+        .then(scores=>{
+            Promise.all(scores)
+            .then(results=>{
+                console.log(results)
+                let gained_scores = results.reduce((a,b)=>(a+b))
+                let grade = (gained_scores/total)*100
+                return callback(null,grade.toFixed())
+            })
+            .catch(err=>{
+                console.log(err)
+                return callback('Cannot calculate grade',null)
+            })
+        })
     })
 }
 
