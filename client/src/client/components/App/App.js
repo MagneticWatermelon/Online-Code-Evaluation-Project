@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './App.css';
-import { MemoryRouter as Router, Route, Switch } from 'react-router';
+import { MemoryRouter as Router, Route, Switch, Redirect } from 'react-router';
 import { Link as RouterLink } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import SignIn from '../SignIn/SignIn';
@@ -25,12 +25,24 @@ const useStyles = makeStyles((theme) => ({
 
 
 function App() {
-const classes = useStyles();
+  const classes = useStyles();
+
+  const [token, setToken] = React.useState('');
+  const [authed, authorize] = React.useState(false);
+
+  useEffect(() => {
+    if(token) {
+      authorize(true);
+      console.log(token);
+    }
+  }, [token]);
 
   return (
     <Router>
       <CssBaseline />
-      <Route exact path="/" component={SignIn} />
+      <Route exact path="/">
+        {authed ? <Redirect to="/dashboard" /> : <SignIn tokenize={(token) => {setToken(token)}} />}
+      </Route>
       <Route exact path="/dashboard" component={Dashboard} />
     </Router>
   );

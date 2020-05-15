@@ -12,7 +12,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { Link as RouterLink } from 'react-router-dom';
-
+import axios from 'axios';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -35,7 +35,36 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SignIn() {
+export default function SignIn(props) {
+
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
+
+  const handleEmailChange = (event) => {
+    setEmail(event.target.value)
+  }
+
+  const handlePasswordChange = (event) => {
+    setPassword(event.target.value)
+  }
+
+  const handleAuth = (event) => {
+    event.preventDefault();
+    console.log(`Email: ${email} Password: ${password}`);
+    let body = {
+      mail: email,
+      password: password
+    };
+    console.log(body);
+    axios.post('http://localhost:8080/auth/login', body).then(function (response) {
+      console.log(response.data.token);
+      props.tokenize(response.data.token);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  }
+
   const classes = useStyles();
 
   return (
@@ -59,6 +88,7 @@ export default function SignIn() {
               name="email"
               autoComplete="email"
               autoFocus
+              onChange={handleEmailChange}
             />
             <TextField
               variant="outlined"
@@ -69,6 +99,7 @@ export default function SignIn() {
               label="Password"
               type="password"
               id="password"
+              onChange={handlePasswordChange}
               autoComplete="current-password"
             />
             <FormControlLabel
@@ -83,6 +114,7 @@ export default function SignIn() {
               className={classes.submit}
               component={RouterLink} 
               to="/dashboard"
+              onClick={handleAuth}
             >
               Sign In
             </Button>
