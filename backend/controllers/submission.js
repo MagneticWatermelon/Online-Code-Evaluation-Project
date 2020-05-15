@@ -15,7 +15,7 @@ module.exports.createSubmission = (req,res,next)=>{
 
     questionController.executeBundle(studentID,bundle,(executionError, evaluation)=>{
         if(executionError){
-            submissionModel.saveSubmission(studentID,question,0,{},files,language,comment,(err)=>{
+            submissionModel.saveSubmission(studentID,question,0,{},files,language,comment,(err,submissionID)=>{
                 if(err){return res.status(500).json({message:'Cannot save submission'})}
                 return res.status(417).json({
                     message:'Code execution failed',
@@ -32,7 +32,7 @@ module.exports.createSubmission = (req,res,next)=>{
                 evaluation.results,
                 files,
                 language,
-                comment,(err)=>{
+                comment,(err,submissionID)=>{
                     if(err){return res.status(500).json({message:'Cannot save submission'})}
                     return res.status(200).json({
                         message:'Code executed succesfully',
@@ -81,7 +81,6 @@ module.exports.updateScore = (req,res,next)=>{
 module.exports.updateEvaluation = (req,res,next)=>{
     const submissionID      = req.params.id
     const new_evaluation    = req.body.evaluation
-    const studentID         = req.user_id
     
     let correctCount      = 0
     for(result of new_evaluation){
@@ -95,7 +94,7 @@ module.exports.updateEvaluation = (req,res,next)=>{
 
         submissionModel.updateScore(submissionID,new_score,(err)=>{
             if(err){return res.status(500).json({message:err})}
-            notificationController.sendGradeUpdated(studentID, submissionID)
+            notificationController.sendGradeUpdated(submissionID)
             return res.status(200).json({message:'Evaluation updated'})
         })
     })

@@ -2,6 +2,7 @@ const notificationModel = require('../models/notification')
 const submissionModel   = require('../models/submission')
 const questionModel     = require('../models/question')
 const assignmentModel   = require('../models/assignment')
+const courseModel       = require('../models/course')
 
 module.exports.getNotification = (req,res,next)=>{
     const notificationID = req.params.id
@@ -35,15 +36,35 @@ module.exports.validateUser = (req,res,next)=>{
     })
 }
 
-module.exports.sendNotification = (assignmentID, title, explanation, ...receipents)=>{
-    receipents.forEach(user_id=>{
-        notificationModel.createNotification(user_id,assignmentID,title,explanation,(err,id)=>{
-            console.log('notification created ' + id)
+module.exports.sendNotification = async (assignmentID, title, explanation, detail, ...receipents)=>{
+    assignmentModel.model
+    .findById(assignmentID)
+    .select({course_id:1})
+    .then(assignment=>{
+        if(!assignment){return}
+        courseModel.model
+        .findById(assignment.course_id)
+        .select({course_code:1})
+        .then(course=>{
+            if(!course){return}
+            const courseCode = course.course_code
+            receipents.forEach(user_id=>{
+                notificationModel.createNotification(
+                    user_id,
+                    assignmentID,
+                    courseCode,
+                    title,
+                    explanation,
+                    detail,
+                    (err,id)=>{})
+            })
         })
+        .catch(err=>{console.log(err)})
     })
+    .catch(err=>{console.log(err)})
 }
 
-module.exports.sendGradeUpdated = (submissionID)=>{
+module.exports.sendGradeUpdated = async (submissionID)=>{
     submissionModel.model
     .findById(submissionID)
     .select({question_id:1, student_id:1})
@@ -62,7 +83,8 @@ module.exports.sendGradeUpdated = (submissionID)=>{
                     this.sendNotification(
                         assignment._id,
                         'Grade Changed',
-                        `${assignment.title}\n${grade}`,
+                        `${assignment.title}`,
+                        `${grade}`,
                         studentID)
                 })
             })
@@ -79,17 +101,18 @@ module.exports.sendGradeUpdated = (submissionID)=>{
     })
 }
 
-module.exports.sendAssignmentCreated = (assignmentID)=>{
-
-
-}
-
-module.exports.sendAssignmentGraded = (studentID, assignmentID)=>{
-
-
-}
-
-module.exports.sendAddedToCourse    = (studentID, courseID)=>{
-
-
+module.exports.sendAssignmentCreated = async (assignmentID)=>{
+    assignmentModel.getAssignment(assignmentID,(err,assignment)=>{
+        if(err){return;}
+        courseModel.getStudents(assignment.course_id,(err, students)=>{
+            if(err){return;}
+            let receipents = students.map(s=>s.student_id)
+            this.sendNotification(
+                assignmentID,
+                'Assignment Created',
+                `${assignment.title}`,
+                ``,
+                ...receipents)
+        })
+    })
 }

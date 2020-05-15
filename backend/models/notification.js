@@ -6,8 +6,10 @@ const Schema = mongoose.Schema;
 const notificationSchema = new Schema({
     student_id: {type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true},
     assignment_id: {type: mongoose.Schema.Types.ObjectId, ref: 'Assignment', required: true},
+    course:{type: String, required:true},
     title: {type: String, required:true},
-    explanation: {type:String, required:true},
+    explanation:{type: String, required:true},
+    detail: {type:String, required:false},
     active: {type: Boolean, default:true,required:false}
 }, {
     timestamps: true,
@@ -20,13 +22,14 @@ const Notification = mongoose.model('Notification', notificationSchema);
 
     example callback call => callback(err,notification_id)
  */
-const createNotification = (student_id,assignment_id,title,explanation,callback)=>{
+const createNotification = (student_id,assignment_id,course,title,explanation,detail,callback)=>{
     let not_obj = new  Notification({
         student_id:student_id,
         assignment_id:assignment_id,
+        course:course,
         title:title,
         explanation:explanation,
-        active:true
+        detail:detail
     });
     not_obj.validate().then( value=>{
         not_obj.save()
