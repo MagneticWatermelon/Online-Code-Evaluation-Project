@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -30,7 +30,8 @@ import Course from '../Course/Course';
 import CoursesAll from '../CoursesAll/CoursesAll';
 import AssignmentsAll from '../AssignmentsAll/AssignmentsAll';
 import SubmissionsAll from '../SubmissionsAll/SubmissionsAll';
-
+import CircularProgress from '@material-ui/core/CircularProgress';
+import axios from 'axios';
 
 
 const drawerWidth = 240;
@@ -118,7 +119,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Dashboard() {
+let arr = [{courseName: 'Art of Computing', courseID: 'COMP101-01', courseSemestr: '2019/2020 Spring', courseStatus: "Active"}];
+
+export default function Dashboard(props) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -127,14 +130,21 @@ export default function Dashboard() {
   const [title, setTitle] = React.useState('Dashboard');
   const [count, setCount] = React.useState(2);
   const [clickedCourse, setIndex] = React.useState(1);
+  const [courseIDs, setCourses] = React.useState([]);
+  const [courseList, setCourseList] = React.useState([]);
+  const [dataLoaded, setLoaded] = React.useState(false);
 
-  const [courseList, setCourses] = React.useState([
-    {courseName: 'Art of Computing', courseID: 'COMP101-01', courseSemestr: '2019/2020 Spring', courseStatus: "Active"}, 
-    {courseName: 'Algorithms and Data Structures', courseID: 'COMP203-02', courseSemestr: '2019/2020 Spring', courseStatus: "Active"},
-    {courseName: 'Exploring Profession', courseID: 'COMP104-01', courseSemestr: '2019/2020 Spring', courseStatus: "Active"},
-    {courseName: 'Object Oriented Programming', courseID: 'COMP112-02', courseSemestr: '2019/2020 Spring', courseStatus: "Active"},
-    {courseName: 'Algorithmic Thinking', courseID: 'COMP401-01', courseSemestr: '2019/2020 Spring', courseStatus: "Active"},
-  ]);
+  async function getCourseIDs() {
+    let data = await axios.get(`http://localhost:8080/user/courses/${props.userId}`, {headers: {"Authorization" : `Bearer ${props.token}`}})
+    console.log(data);
+    data.map((obj) => {
+      let course = await axios.get(`http://localhost:8080/course/get/${obj.course_id}`, {headers: {"Authorization" : `Bearer ${props.token}`}});
+      courseList.push(course);
+    })
+    console.log(courseList);
+  }
+
+  useEffect(getCourseIDs, []);
   const [notifs, setNotifs] = React.useState([
     {notifType: 'Assigment Graded', notifBody: 'Simple Array' , notifDetail: 'Art of Computing - COMP101-01'},
     {notifType: 'Assigment Graded', notifBody: 'LCS' , notifDetail: 'Algorithmic Thinking - COMP401-01'},
@@ -285,13 +295,17 @@ export default function Dashboard() {
                     <Switch>
 
                         <Route path="/dashboard">
-                          <CourseGrid courses={courseList} click={index => {setIndex(index)}}/>
+                          {dataLoaded ? 
+                            (<CourseGrid courses={courseList} click={index => {setIndex(index)}}/>)
+                          :
+                          (<CircularProgress />)
+                          }
                           <RightBar todos={toDoList} grades={gradeList}/>
                         </Route>
 
                         {courseList.map((course) => {
                             return(
-                                <Route path={`/courses/${course.courseID}`}>
+                                <Route path={`/courses/${course.course_code}`}>
                                     <Course course={course} todos={toDoList}/>
                                 </Route>
                             );

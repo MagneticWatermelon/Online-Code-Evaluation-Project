@@ -50,15 +50,14 @@ export default function SignIn(props) {
 
   const handleAuth = (event) => {
     event.preventDefault();
-    console.log(`Email: ${email} Password: ${password}`);
     let body = {
       mail: email,
       password: password
     };
-    console.log(body);
     axios.post('http://localhost:8080/auth/login', body).then(function (response) {
-      console.log(response.data.token);
       props.tokenize(response.data.token);
+      props.id(response.data.user_id);
+      props.role(response.data.user_role);
     })
     .catch(function (error) {
       console.log(error);

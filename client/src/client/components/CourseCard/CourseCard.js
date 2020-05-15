@@ -63,27 +63,27 @@ export default function CourseCard(props) {
     const [index, setIndex] = React.useState(props.index);
 
     return (
-        <Link component={RouterLink} to={`courses/${props.course.courseID}`} onClick={() => props.click(index)}>
+        <Link component={RouterLink} to={`courses/${props.course.course_code}`} onClick={() => props.click(index)}>
           <Card className={styles.root}>    
               <CardContent className={styles.content}>
                   <div className={styles.divcolor}>
                       
                   </div>
 
-                  <HtmlTooltip title={props.course.courseName} placement='top-end'>
+                  <HtmlTooltip title={props.course.name} placement='top-end'>
                     <Typography gutterBottom variant="h5" className={styles.info}>
-                        {props.course.courseName}
+                        {props.course.name}
                     </Typography>
                   </HtmlTooltip>
 
 
                   <Typography component="p" variant="body2" className={styles.detail}>
-                      {props.course.courseID}
+                      {props.course.course_code}
                   </Typography>
 
 
                   <Typography component="p" variant="body2" className={styles.detail}>
-                      {props.course.courseSemestr}
+                      {props.course.term}
                   </Typography>
                   <Grid
                     container
@@ -92,25 +92,25 @@ export default function CourseCard(props) {
                     alignItems="center"
                   >
                       <Grid item>
-                        <IconButton component={RouterLink} to={`/courses/${props.course.courseID}/announcements`}>
+                        <IconButton component={RouterLink} to={`/courses/${props.course.course_code}/announcements`}>
                           <NotificationsIcon />
                         </IconButton>
                       </Grid>
 
                       <Grid item>
-                        <IconButton component={RouterLink} to={`/courses/${props.course.courseID}/assignments`}>
+                        <IconButton component={RouterLink} to={`/courses/${props.course.course_code}/assignments`}>
                           <AssignmentIcon />
                         </IconButton>
                       </Grid>
 
                       <Grid item>
-                        <IconButton component={RouterLink} to={`/courses/${props.course.courseID}/grades`}>
+                        <IconButton component={RouterLink} to={`/courses/${props.course.course_code}/grades`}>
                           <GradeIcon />
                         </IconButton>
                       </Grid>
 
                       <Grid item>
-                        <IconButton component={RouterLink} to={`/courses/${props.course.courseID}/files`}>
+                        <IconButton component={RouterLink} to={`/courses/${props.course.course_code}/files`}>
                           <FolderSharedIcon />  
                         </IconButton>
                       </Grid>
