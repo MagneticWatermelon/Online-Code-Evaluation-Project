@@ -140,7 +140,6 @@ const addStudentToCourse = (course_id, student_id, callback)=>{
          });
          course_taken.validate()
          .then(()=>{
-            console.log(isValidated)
             course_taken.save()
             .then(result => {
                return callback(null)
