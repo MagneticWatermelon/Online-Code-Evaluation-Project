@@ -224,13 +224,14 @@ course_taken.findOne({student_id:student_id}).then(
     example callback call => callback(err, notification_ids)
  */
 const getNotifications = (user_id, callback)=>{
+    console.log(user_id)
     Notification.model
     .find({student_id:user_id})
-    .select()
-    .then(notifications=>{
-        return callback(null,notifications)
+    .then(result=>{
+        return callback(null,result)
     })
     .catch(err=>{
+        console.log(err)
         return callback('Cannot get notifications',null)
     })
 }
