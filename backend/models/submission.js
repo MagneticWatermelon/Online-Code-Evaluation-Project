@@ -23,7 +23,7 @@ const submissionSchema = new Schema({
 });
 
 /* Following function saves the submission to the db
-    example callback call => callback(err)
+    example callback call => callback(err, submission_id)
  */
 const Submission = mongoose.model('Submission', submissionSchema);
 
@@ -41,11 +41,11 @@ const saveSubmission = (student_id, question_id, score, evaluation, files, langu
     submission.validate()
     .then(success=>{
         submission.save()
-        .then(success=>{updateGrade(submission);callback(null)})
-        .catch((err)=> callback('Cannot save submission'));
+        .then(success=>{updateGrade(submission);callback(null, submission._id)})
+        .catch((err)=> callback('Cannot save submission',null));
     })
     .catch(err=>{
-        return callback('Validation failed')
+        return callback('Validation failed',null)
     })
 }
 

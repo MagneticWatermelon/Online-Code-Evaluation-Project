@@ -72,9 +72,9 @@ module.exports.getCourses = (req,res,next)=>{
 
 module.exports.getNotifications = (req,res,next)=>{
     const givenID   = req.params.id
-    userModel.getNotifications(givenID,(err, noitifications)=>{
-        if(err){return res.status(404).json({message:'Notifications not found'})}
-        return res.status(200).json(noitifications)
+    userModel.getNotifications(givenID,(err, notifications)=>{
+        if(err){return res.status(404).json({message:err})}
+        return res.status(200).json(notifications)
     })
 }
 
