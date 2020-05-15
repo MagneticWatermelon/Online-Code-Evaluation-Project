@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const validate_email = require('validate-email-node-js');
 const course_given = require('./course_given');
 const course_taken = require('./course_taken');
+const Notification = require('./notification') 
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
@@ -223,7 +224,15 @@ course_taken.findOne({student_id:student_id}).then(
     example callback call => callback(err, notification_ids)
  */
 const getNotifications = (user_id, callback)=>{
-    
+    Notification.model
+    .find({student_id:user_id})
+    .select()
+    .then(notifications=>{
+        return callback(null,notifications)
+    })
+    .catch(err=>{
+        return callback('Cannot get notifications',null)
+    })
 }
 
 module.exports.model = User;
