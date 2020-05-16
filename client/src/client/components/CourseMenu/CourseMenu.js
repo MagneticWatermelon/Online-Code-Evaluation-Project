@@ -29,8 +29,8 @@ export default function CourseMenu(props) {
                 <ListItem 
                     button 
                     component={RouterLink} 
-                    to={`/courses/${props.course.courseID}/announcements`}
-                    selected={selectedIndex === 0 || window.location.pathname === `/courses/${props.course.courseID}/announcements`}
+                    to={`/courses/${props.course.course_code}/announcements`}
+                    selected={selectedIndex === 0 || window.location.pathname === `/courses/${props.course.course_code}/announcements`}
                     onClick={(event) => handleListItemClick(event, 0)}
                 >
                     <ListItemText primary='Announcements' />
@@ -39,8 +39,8 @@ export default function CourseMenu(props) {
                 <ListItem 
                     button 
                     component={RouterLink} 
-                    to={`/courses/${props.course.courseID}/assignments`}
-                    selected={selectedIndex === 1 || window.location.pathname === `/courses/${props.course.courseID}/assignments`}
+                    to={`/courses/${props.course.course_code}/assignments`}
+                    selected={selectedIndex === 1 || window.location.pathname === `/courses/${props.course.course_code}/assignments`}
                     onClick={(event) => handleListItemClick(event, 1)}
                 >
                     <ListItemText primary='Assignments' />
@@ -49,8 +49,8 @@ export default function CourseMenu(props) {
                 <ListItem 
                     button 
                     component={RouterLink} 
-                    to={`/courses/${props.course.courseID}/submissions`}
-                    selected={selectedIndex === 2  || window.location.pathname === `/courses/${props.course.courseID}/submissions`}
+                    to={`/courses/${props.course.course_code}/submissions`}
+                    selected={selectedIndex === 2  || window.location.pathname === `/courses/${props.course.course_code}/submissions`}
                     onClick={(event) => handleListItemClick(event, 2)}
                 >
                     <ListItemText primary='Submissions' />
@@ -59,8 +59,8 @@ export default function CourseMenu(props) {
                 <ListItem 
                     button 
                     component={RouterLink} 
-                    to={`/courses/${props.course.courseID}/grades`}
-                    selected={selectedIndex === 3  || window.location.pathname === `/courses/${props.course.courseID}/grades`}
+                    to={`/courses/${props.course.course_code}/grades`}
+                    selected={selectedIndex === 3  || window.location.pathname === `/courses/${props.course.course_code}/grades`}
                     onClick={(event) => handleListItemClick(event, 3)}
                 >
                     <ListItemText primary='Grades' />
@@ -69,8 +69,8 @@ export default function CourseMenu(props) {
                 <ListItem 
                     button 
                     component={RouterLink} 
-                    to={`/courses/${props.course.courseID}/files`}
-                    selected={selectedIndex === 4  || window.location.pathname === `/courses/${props.course.courseID}/files`}
+                    to={`/courses/${props.course.course_code}/files`}
+                    selected={selectedIndex === 4  || window.location.pathname === `/courses/${props.course.course_code}/files`}
                     onClick={(event) => handleListItemClick(event, 4)}
                 >
                     <ListItemText primary='Resources' />

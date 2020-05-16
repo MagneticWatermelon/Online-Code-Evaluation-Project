@@ -1,10 +1,10 @@
 import React from 'react';
-import { Typography, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails } from '@material-ui/core';
+import { Typography, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, List, ListItem, ListItemText, Divider } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { makeStyles } from '@material-ui/core/styles';
 
 
-export default function CourseSummary() {
+export default function CourseSummary(props) {
 
     const useStyles = makeStyles((theme) => ({
         header: {
@@ -33,10 +33,22 @@ export default function CourseSummary() {
                     </Typography>
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails>
-                    <Typography>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex,
-                        sit amet blandit leo lobortis eget.
-                    </Typography>
+                    <List>
+                        {props.announceList.map((ann, index) => {
+                            return(
+                                <div>
+                                    {index > 0 ? <div></div> : <Divider />}
+                                    <ListItem>
+                                        <ListItemText
+                                            primary={ann.title}
+                                            secondary={ann.explanation}
+                                        />
+                                    </ListItem>
+                                    <Divider />
+                                </div>
+                            )
+                        })}
+                    </List>
                 </ExpansionPanelDetails>
             </ExpansionPanel>
             <ExpansionPanel>
@@ -49,10 +61,22 @@ export default function CourseSummary() {
                     </Typography>
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails>
-                    <Typography>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex,
-                        sit amet blandit leo lobortis eget.
-                    </Typography>
+                    <List>
+                        {props.assignments.map((assign, index) => {
+                            return(
+                                <div>
+                                    {index > 0 ? <div></div> : <Divider />}
+                                    <ListItem>
+                                        <ListItemText
+                                            primary={assign.title}
+                                            secondary={assign.explanation}
+                                        />
+                                    </ListItem>
+                                    <Divider />
+                                </div>
+                            )
+                        })}
+                    </List>
                 </ExpansionPanelDetails>
             </ExpansionPanel>
         </div>
