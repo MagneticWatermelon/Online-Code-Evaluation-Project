@@ -1,5 +1,4 @@
 import React from 'react';
-import { TableContainer, Table, TableBody, TableRow, TableCell } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { Link as RouterLink} from 'react-router-dom';
 import { Link } from '@material-ui/core';
@@ -17,7 +16,6 @@ export default function CoursesAll(props) {
             filter: false,
             sort: true,
             customBodyRender: (value, tableData, updateValue) => {
-                console.log(tableData);
                 return (
                     <Link component={RouterLink} to={`courses/${tableData.rowData[1]}`}>
                         {value}

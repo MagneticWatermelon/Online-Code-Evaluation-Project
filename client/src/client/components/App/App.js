@@ -1,8 +1,6 @@
 import React, { useEffect } from 'react';
 import './App.css';
-import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
-import { Link as RouterLink } from 'react-router-dom';
-import Button from '@material-ui/core/Button';
+import { BrowserRouter as Router, Route,Redirect } from 'react-router-dom';
 import SignIn from '../SignIn/SignIn';
 import { makeStyles } from '@material-ui/core/styles';
 import Dashboard from '../Dashboard/Dashboard';
