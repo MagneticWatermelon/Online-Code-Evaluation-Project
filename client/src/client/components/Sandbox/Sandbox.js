@@ -15,6 +15,7 @@ import TreeItem from '@material-ui/lab/TreeItem';
 import CloseIcon from '@material-ui/icons/Close';
 import { blueGrey } from '@material-ui/core/colors';
 import FolderOutlinedIcon from '@material-ui/icons/FolderOutlined';
+import axios from 'axios';
 
 
 function debounce(func, wait) {
@@ -48,6 +49,26 @@ export default function Sandbox(props) {
     
 
     const editorRef = useRef();
+
+    useEffect(() => {
+        let body = {
+            language:"java:8",
+            files:[
+                    {
+                        "name":"main.java",
+                        "content":"import java.util.Scanner;public class main{public static void main(String[] args){Scanner sc = new Scanner(System.in);operator.sum(sc.nextInt(),sc.nextInt());sc.close();}}"
+                    },
+                    {
+                        "name":"operator.java",
+                        "content":"public class operator{public static void sum(int a, int b){System.out.println(a+b);}}"
+                    }
+                ]
+        };
+        axios.get(`http://localhost:8080/question/execute/5eba61b0d1288f0b58b4c3ae`, body, {headers: {"Authorization" : `Bearer ${props.token}`}}).
+        then((response) => {
+            console.log(response);
+        })
+    }, []);
 
     const handleChange = (event) => {
         sessionStorage.setItem('splitPos', event);

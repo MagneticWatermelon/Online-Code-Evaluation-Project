@@ -124,8 +124,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-let arr = [{courseName: 'Art of Computing', courseID: 'COMP101-01', courseSemestr: '2019/2020 Spring', courseStatus: "Active"}];
-
 export default function Dashboard(props) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
@@ -338,7 +336,7 @@ export default function Dashboard(props) {
                         </Route>
 
                         <Route exact path="/example">
-                            <Sandbox sessionId={10}/>
+                            <Sandbox sessionId={10} token={props.token}/>
                         </Route>
 
                     </Switch>

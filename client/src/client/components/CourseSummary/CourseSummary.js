@@ -7,6 +7,9 @@ import { makeStyles } from '@material-ui/core/styles';
 export default function CourseSummary(props) {
 
     const useStyles = makeStyles((theme) => ({
+        root: {
+            width: '100%',
+        },
         header: {
           marginBottom: 10,
         }
@@ -15,7 +18,7 @@ export default function CourseSummary(props) {
     const styles = useStyles();
 
     return(
-        <div>
+        <div className={styles.root}>
             <Typography
                 variant='h5'
                 component='div'

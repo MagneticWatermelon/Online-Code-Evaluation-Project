@@ -59,6 +59,7 @@ export default function Course(props) {
     const [todos, setToDos] = React.useState([]);
     const [assignments, setAssignments] = React.useState([]);
     const [announcements, setAnnouncements] = React.useState([]);
+    const [resources, setResources] = React.useState([]);
 
     const styles = useStyles();
 
@@ -74,6 +75,13 @@ export default function Course(props) {
         axios.get(`http://localhost:8080/course/announcements/${props.course._id}`, {headers: {"Authorization" : `Bearer ${props.token}`}}).
         then((response) => {
             setAnnouncements(response.data);
+        })
+    }, []);
+
+    useEffect(() => {
+        axios.get(`http://localhost:8080/course/resources/${props.course._id}`, {headers: {"Authorization" : `Bearer ${props.token}`}}).
+        then((response) => {
+            setResources(response.data);
         })
     }, []);
 
@@ -104,15 +112,15 @@ export default function Course(props) {
                             </Route>
 
                             <Route path={`/courses/${props.course.course_code}/assignments`}>
-                                <CourseAssignments course={props.course} />
+                                <CourseAssignments course={props.course} assignments={assignments} />
                             </Route>
 
                             <Route path={`/courses/${props.course.course_code}/grades`}>
-                                <CourseGrades course={props.course} />
+                                <CourseGrades course={props.course} grades={assignments}/>
                             </Route>
 
                             <Route path={`/courses/${props.course.course_code}/files`}>
-                                <CourseFiles course={props.course} />
+                                <CourseFiles course={props.course} resources={resources} />
                             </Route>
 
                             <Route path={`/courses/${props.course.course_code}`}>
