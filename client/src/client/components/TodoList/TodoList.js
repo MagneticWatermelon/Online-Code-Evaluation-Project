@@ -31,7 +31,7 @@ export default function TodoList(props) {
                 {props.todos.map(todo => {
                     return (
                     <div>
-                        <Link component={RouterLink} to={`courses/${todo.courseID}/assignments/${todo.assignID}`}>
+                        <Link component={RouterLink} to={`courses/${todo.course_id}/assignments/${todo.releasing_instructor_id}`}>
                             <ListItem>
                                 <ListItemIcon>
                                     <AssignmentIcon />
@@ -47,7 +47,7 @@ export default function TodoList(props) {
                                                 className={styles.content}
                                                 noWrap='true'
                                             >
-                                                {todo.courseName}
+                                                {todo.title}
                                             </Typography>
                                             <Typography
                                                 component="p"
@@ -56,7 +56,7 @@ export default function TodoList(props) {
                                                 noWrap='true'
                                                 
                                             >
-                                                {todo.dueDate}
+                                                {todo.due_date}
                                             </Typography>
                                         </React.Fragment>
                                     }

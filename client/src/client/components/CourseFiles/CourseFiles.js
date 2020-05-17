@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import TreeView from '@material-ui/lab/TreeView';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import TreeItem from '@material-ui/lab/TreeItem';
 import { makeStyles } from '@material-ui/core/styles';
 import MUIDataTable from 'mui-datatables';
+import axios from 'axios';
+import { Typography } from '@material-ui/core';
 
 
 
@@ -12,33 +14,32 @@ import MUIDataTable from 'mui-datatables';
 
 export default function CourseFiles(props) {
 
+
+
+    
+
     const columns = [
-        {label :"Name", name: 'assignName', options: {
+        {label :"Name", name: 'file_name', options: {
             filter: false,
             sort: true,
            }}, 
-        {label :"Status", name: 'assignStatus'}, 
-        {label :"Due Date", name: 'assignDue', options: {
+        {label :"Created At", name: 'createdAt'}, 
+        {label :"Modified At", name: 'updatedAt', options: {
             filter: false,
             sort: true,
            }}, 
-        {label :"Grade", name: 'assignGrade', options: {
+        {label :"Size", name: 'assignGrade', options: {
             filter: false,
             sort: false,
+            customBodyRender: (value, tableData, updateValue) => {
+                return (
+                    <div>
+                        {`142 kB`}
+                    </div>
+                )
+            }
            }},
-        {name: 'assignID', options: {display: 'false',  filter: false, sort: false}},
     ];
-
-    const data = [
-        {assignName: 'LCS', courseName: 'Algorithmic Thinking', assignStatus: 'Open', assignDue: '15 May at 23:59', assignGrade : '7/10', courseID: 'COMP401-01',assignID: 148}, 
-        {assignName: 'Knapsack', courseName: 'Algorithms and Data Structures', assignStatus: 'Closed', assignDue: '10 May at 23:59', assignGrade : '6/10',courseID: 'COMP203-02',assignID: 149}, 
-        {assignName: 'Simple Array', courseName: 'Art of Computing', assignStatus: 'Open', assignDue: '12 May at 23:59', assignGrade : '9/10',courseID: 'COMP101-01', assignID: 150}, 
-        {assignName: 'Inheritance', courseName: 'Object Oriented Programming', assignStatus: 'Closed', assignDue: '9 May at 23:59', assignGrade : '7/10',courseID: 'COMP112-02', assignID: 151},
-        {assignName: 'Functions', courseName: 'Art of Computing', assignStatus: 'Open', assignDue: '10 May at 23:59', assignGrade : '5/10',courseID: 'COMP101-01', assignID: 152}, 
-        {assignName: 'Encapsulation', courseName: 'Object Oriented Programming', assignStatus: 'Open', assignDue: '11 May at 23:59', assignGrade : '_/10',courseID: 'COMP112-02', assignID: 153}, 
-        {assignName: 'Task Scheduling', courseName: 'Algorithmic Thinking', assignStatus: 'Open', assignDue: '18 May at 23:59', assignGrade : '_/10',courseID: 'COMP401-01', assignID: 154},
-    ];
-
 
     const options = {
         filter: false,
@@ -87,19 +88,25 @@ export default function CourseFiles(props) {
                     defaultExpandIcon={<ChevronRightIcon />}
                 >
                     <TreeItem nodeId="1" label="files">
-                        <TreeItem nodeId="2" label="main.java" />
-                        <TreeItem nodeId="3" label="app">
-                            <TreeItem nodeId="4" label="func.java" />
-                            <TreeItem nodeId="5" label="bar.java" />
-                            <TreeItem nodeId="6" label="foo.java" />
-                        </TreeItem>
+                        {props.resources.map((file, index) => {
+                            return <TreeItem nodeId={index + 2} label={
+                                <Typography
+                                    variant='body2'
+                                    noWrap={true}
+                                    gutterBottom
+                                >
+                                    {file.file_name}
+                                </Typography>
+                                }
+                                />
+                        })}
                     </TreeItem>
                 </TreeView>
             </div>
             <div className={styles.folder}>
                 <MUIDataTable
                     title={"Files"}
-                    data={data}
+                    data={props.resources}
                     columns={columns}
                     options={options}
                 />

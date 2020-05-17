@@ -24,7 +24,7 @@ export default function Notification(props) {
             <ListItem alignItems="flex-start">
                 <ListItemText
                     className={styles.root}
-                    primary={props.notification.notifType}
+                    primary={props.notification.explanation}
                     secondary={
                         <React.Fragment>
                         <Typography
@@ -33,9 +33,9 @@ export default function Notification(props) {
                             variant="body2"
                             color="textPrimary"
                         >
-                            {props.notification.notifBody}
+                            {props.notification.title}
                         </Typography>
-                        {props.notification.notifDetail}
+                        {props.notification.course}
                         </React.Fragment>
                     }
                 />

@@ -93,4 +93,10 @@ router.get(
     courseController.checkCourse,
     courseController.getGrade)
 
+router.get(
+    '/grades/:id/:studentID',
+    isAuth,
+    courseController.checkCourse,
+    courseController.getAssignmentsWithGrades)
+
 module.exports = router;

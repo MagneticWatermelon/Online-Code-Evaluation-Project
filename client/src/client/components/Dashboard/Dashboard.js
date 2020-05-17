@@ -114,12 +114,15 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'auto',
     flexDirection: 'column',
   },
+  progress: {
+    width: '100%',
+    height: '100%',
+    padding: '15% 20%',
+  },
   fixedHeight: {
     height: 240,
   },
 }));
-
-let arr = [{courseName: 'Art of Computing', courseID: 'COMP101-01', courseSemestr: '2019/2020 Spring', courseStatus: "Active"}];
 
 export default function Dashboard(props) {
   const classes = useStyles();
@@ -128,27 +131,36 @@ export default function Dashboard(props) {
   const [openNotif, setOpenNotif] = React.useState(false);
   const [anchorElNotif, setAnchorElNotif] = React.useState(null);
   const [title, setTitle] = React.useState('Dashboard');
-  const [count, setCount] = React.useState(2);
+  const [count, setCount] = React.useState(0);
   const [clickedCourse, setIndex] = React.useState(1);
-  const [courseIDs, setCourses] = React.useState([]);
   const [courseList, setCourseList] = React.useState([]);
   const [dataLoaded, setLoaded] = React.useState(false);
+  const [notifs, setNotifs] = React.useState([]);
 
   async function getCourseIDs() {
-    let data = await axios.get(`http://localhost:8080/user/courses/${props.userId}`, {headers: {"Authorization" : `Bearer ${props.token}`}})
-    console.log(data);
-    data.map((obj) => {
-      let course = await axios.get(`http://localhost:8080/course/get/${obj.course_id}`, {headers: {"Authorization" : `Bearer ${props.token}`}});
-      courseList.push(course);
-    })
-    console.log(courseList);
-  }
+    let response = await axios.get(`http://localhost:8080/user/courses/${props.userId}`, {headers: {"Authorization" : `Bearer ${props.token}`}});
+    let courseArr = await response.data.courses;
 
+    axios.all(courseArr.map((obj) => {
+      return axios.get(`http://localhost:8080/course/get/${obj.course_id}`, {headers: {"Authorization" : `Bearer ${props.token}`}});
+    })).then((responseArr) => {
+      responseArr.map((course) => {
+        courseList.push(course.data);
+      })
+      setLoaded(true);
+    })
+  };
+
+  async function getNotifications() {
+    let response = await axios.get(`http://localhost:8080/user/notifications/${props.userId}`, {headers: {"Authorization" : `Bearer ${props.token}`}});
+    let nots = await response.data;
+    setNotifs(nots);
+    setCount(nots.length);
+  }
+  
   useEffect(getCourseIDs, []);
-  const [notifs, setNotifs] = React.useState([
-    {notifType: 'Assigment Graded', notifBody: 'Simple Array' , notifDetail: 'Art of Computing - COMP101-01'},
-    {notifType: 'Assigment Graded', notifBody: 'LCS' , notifDetail: 'Algorithmic Thinking - COMP401-01'},
-  ]);
+
+  useEffect(getNotifications, []);
 
   const [gradeList, setGrades] = React.useState([
     {name: 'LCS', courseName: 'Algorithmic Thinking', gradeInfo: '7 out of 10', submID: 59, assignID: 148, courseID: 'COMP401-01'}, 
@@ -298,18 +310,18 @@ export default function Dashboard(props) {
                           {dataLoaded ? 
                             (<CourseGrid courses={courseList} click={index => {setIndex(index)}}/>)
                           :
-                          (<CircularProgress />)
+                          (<div className={classes.progress}><CircularProgress /></div>)
                           }
                           <RightBar todos={toDoList} grades={gradeList}/>
                         </Route>
 
                         {courseList.map((course) => {
-                            return(
-                                <Route path={`/courses/${course.course_code}`}>
-                                    <Course course={course} todos={toDoList}/>
-                                </Route>
-                            );
-                        })}
+                          return(
+                              <Route path={`/courses/${course.course_code}`}>
+                                  <Course course={course} token={props.token} userId={props.userId}/>
+                              </Route>
+                        )})
+                        }
 
                         <Route path="/courses">
                             <CoursesAll  courses={courseList}/>
@@ -324,7 +336,7 @@ export default function Dashboard(props) {
                         </Route>
 
                         <Route exact path="/example">
-                            <Sandbox sessionId={10}/>
+                            <Sandbox sessionId={10} token={props.token}/>
                         </Route>
 
                     </Switch>

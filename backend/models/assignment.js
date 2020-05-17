@@ -1,6 +1,7 @@
 const mongoose  = require('mongoose');
 const Question  = require('./question');
 const Grade     = require('./grade');
+const Submission= require('./submission');
 
 const Schema = mongoose.Schema;
 
@@ -113,6 +114,50 @@ const getQuestions = (assignment_id, callback)=>{
         })
 }
 
+const getSubmissionChecks = (assignment_id, student_id,callback)=>{
+    Question.model
+    .find({assignment_id:assignment_id})
+    .select({assignment_id:0})
+    .then(questions=>{
+        if(!questions){}
+
+        let promises = questions.map(async question=>{
+            return new Promise((resolve,reject)=>{
+                Submission.model
+                .find({question_id:question._id, student_id:student_id})
+                .select({_id:1})
+                .then(submissions=>{
+                    let submission_count = submissions.length
+                    let submission_ids   = submissions.map(s=>s._id)
+
+                    let obj = question.toObject()
+                    obj.submission_count = submission_count
+                    obj.submissions      = submission_ids
+                    obj.isSubmitted      = (submissions.length>0)?true:false;
+
+                    resolve(obj)
+                })
+                .catch(err=>{
+                    reject()
+                })
+
+            })
+        })
+
+
+        Promise.all(promises)
+        .then(results=>{
+            return callback(null,results)
+        })
+        .catch(err=>{
+            return callback('Cannot get student\s activities on this assignment',null)
+        })
+    })
+    .catch(err=>{
+        return callback('Cannot get student\s activities on this assignment',null)
+    })
+}
+
 /* Deletes assignment
     example callback call => callback(err)
  */
@@ -165,9 +210,10 @@ const getGrade = (student_id, assignment_id, callback)=>{
 }
 
 module.exports.model = Assignment;
-module.exports.createAssignment = createAssignment;
-module.exports.getQuestions     = getQuestions;
-module.exports.getAssignment    = getAssignment;
-module.exports.updateAssignment = updateAssignment;
-module.exports.deleteAssignment = deleteAssignment;
-module.exports.getGrade  = getGrade;
+module.exports.createAssignment     = createAssignment;
+module.exports.getQuestions         = getQuestions;
+module.exports.getAssignment        = getAssignment;
+module.exports.updateAssignment     = updateAssignment;
+module.exports.deleteAssignment     = deleteAssignment;
+module.exports.getGrade             = getGrade;
+module.exports.getSubmissionChecks  = getSubmissionChecks;

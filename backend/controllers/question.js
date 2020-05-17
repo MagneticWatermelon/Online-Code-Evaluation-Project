@@ -4,11 +4,11 @@ const Bundle            = require('../evaluator/bundle')
 const evaluator         = require('../evaluator/evaluator')
 
 module.exports.createQuestion = (req,res,next)=>{
-    let {title, explanation, submission_limit,points, inputs, outputs} = req.body
+    let {title, explanation, submission_limit,points,languages, inputs, outputs} = req.body
     const assignmentID = req.params.assignmentID
 
     console.log(req.body)
-    questionModel.createQuestion(assignmentID,title, explanation,submission_limit,points, inputs, outputs, (err, id)=>{
+    questionModel.createQuestion(assignmentID,title, explanation,submission_limit,points,languages, inputs, outputs, (err, id)=>{
         if(err){return res.status(500).json({message: err})}
         return res.status(201).json({message:'Question added to assignment',question_id:id})
     })
@@ -24,8 +24,8 @@ module.exports.getQuestion = (req,res,next)=>{
 
 module.exports.updateQuestion = (req,res,next)=>{
     const questionID = req.params.id
-    let {title,explanation,submission_limit,points} = req.body
-    questionModel.updateQuestion(questionID,title, explanation,submission_limit,points, (err)=>{
+    let {title,explanation,submission_limit,points,languages} = req.body
+    questionModel.updateQuestion(questionID,title, explanation,submission_limit,points,languages, (err)=>{
         if(err){return res.status(500).json({message:err})}
         return res.status(200).json({message:'Question updated succesfully'})
     })

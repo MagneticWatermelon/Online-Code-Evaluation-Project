@@ -5,6 +5,7 @@ const Assignment = require('./assignment');
 const Announcement = require('./announcement');
 const Resource = require('./resource');
 const Grade    = require('./grade');
+const User     = require('./user')
 const Schema = mongoose.Schema;
 
 const courseSchema = new Schema({
@@ -214,6 +215,47 @@ const getAssignments = (course_id, callback)=>{
    
 }
 
+const getAssignmentsWithGrades = (course_id,student_id,callback)=>{
+   Assignment.model
+        .find({course_id:course_id})
+        .select({title:1,_id:1,due_date:1})
+        .then(assignments=>{
+            let promises = assignments.map(async assignment=>{
+                return new Promise((resolve,reject)=>{
+                    let obj     = assignment.toObject()
+                    let date    = assignment.due_date
+
+                    obj.status  = Date.parse(date)>Date.now() ? 'Closed' : 'Open'
+                
+                    Grade.model
+                    .findOne({assignment_id:assignment._id, student_id:student_id})
+                    .then(result=>{
+                        if(!result){obj.grade = null;resolve(obj);return;}
+                        obj.grade = result.grade
+                        resolve(obj);
+                    })
+                    .catch(err=>{
+                        obj.grade = null
+                        resolve(obj);
+                    })
+                })
+            })
+
+            Promise.all(promises)
+            .then(results=>{
+                callback(null,results)
+            })
+            .catch(err=>{
+                console.log(err)
+                callback('Cannot get assignments', null)
+            })
+        })
+        .catch(err=>{
+            console.log(err)
+            callback('Cannot get assignments', null)
+        })
+}
+
 /* Returns the id of the instructor who associated with this course
     example callback call => callback(err, instructor_id)
  */
@@ -307,16 +349,37 @@ const getAnnouncements = (course_id, callback)=>{
    Announcement.model
    .find({course_id: course_id})
    .select({"_id": 0})
-   .then(result => {
-      if (!result) {
-         return callback("No announcement found", null);
-      } else {
-         return callback(null, result);
-      }
+   .then(announcements => {
+      if (!announcements) {return callback("No announcement found", null);} 
+      
+      let promises = announcements.map(async announcement=>{
+         return User.model
+         .findById(announcement.instructor_id)
+         .select({name:1,profile_photo:1,_id:0})
+         .then(instructor=>{
+            let obj = announcement.toObject()
+            obj['instructor'] = instructor
+            return obj;
+         })
+         .catch(err=>{
+            let obj = announcement.toObject()
+            obj['instructor'] = {name:'',profile_photo:''}
+            return obj;
+         })
       })
-      .catch(err => {
+
+      Promise.all(promises)
+      .then(result=>{
+         return callback(null,result)
+      })
+      .catch(err=>{
+         return callback('Cannot get announcements',null)
+      })
+
+   })
+   .catch(err => {
          return callback("Error occured while getting announcements", null);
-      });
+   });
 }
 
 /* Following function returns the resource_ids of the given course
@@ -387,4 +450,5 @@ module.exports.deleteCourse               = deleteCourse;
 module.exports.updateCourse               = updateCourse;
 module.exports.getAnnouncements           = getAnnouncements;
 module.exports.getResources               = getResources;
-module.exports.getAverageGrade            = getAverageGrade
+module.exports.getAverageGrade            = getAverageGrade;
+module.exports.getAssignmentsWithGrades   = getAssignmentsWithGrades;

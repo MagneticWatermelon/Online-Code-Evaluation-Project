@@ -34,12 +34,11 @@ const useStyles = makeStyles((theme) => ({
 
 export default function CourseAnnouncements(props) {
     const classes = useStyles();
-    const test = [1,2,3,4,5];
 
     return(
         <div className={classes.root}>
             <List className={classes.list}>
-                {test.map((val) => {
+                {props.announcements.map((val) => {
                     return(
                         <div>
                             <ListItem alignItems="flex-start" component={RouterLink} to={`/courses/${props.course.courseID}/announcements/${150 + val}`}>
@@ -47,7 +46,7 @@ export default function CourseAnnouncements(props) {
                                     <Avatar />
                                 </ListItemAvatar>
                                 <ListItemText
-                                    primary={<Link>{"Announcement Title"}</Link>}
+                                    primary={<Link>{val.title}</Link>}
                                     secondary={
                                         <React.Fragment>
                                             <Typography
@@ -56,7 +55,7 @@ export default function CourseAnnouncements(props) {
                                                 className={classes.instructor}
                                                 color="textPrimary"
                                             >
-                                                Instructor Name
+                                                {val.instructor_id}
                                         </Typography>
                                             <Typography
                                                 component="span"
@@ -64,7 +63,7 @@ export default function CourseAnnouncements(props) {
                                                 className={classes.date}
                                                 color="textSecondary"
                                             >
-                                                Date
+                                                {val.createdAt}
                                         </Typography>
                                             <Typography
                                                 component="p"
@@ -73,7 +72,7 @@ export default function CourseAnnouncements(props) {
                                                 color="textSecondary"
                                                 noWrap={true}
                                             >
-                                                Announcement body
+                                                {val.explanation}
                                         </Typography>
                                         </React.Fragment>
                                     }

@@ -41,6 +41,12 @@ router.get(
     assignmentController.getQuestions)
 
 router.get(
+    '/check-submissions/:id/:studentID',
+    isAuth,
+    assignmentController.validateUser,
+    assignmentController.getSubmissionChecks)
+
+router.get(
     '/grade/:id/:studentID',
     isAuth,
     assignmentController.validateUser,

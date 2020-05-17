@@ -90,6 +90,16 @@ module.exports.getAssignments = (req,res,next)=>{
     })
 }
 
+module.exports.getAssignmentsWithGrades = (req,res,next)=>{
+    let courseID    = req.params.id
+    let studentID   = req.params.studentID
+    
+    courseModel.getAssignmentsWithGrades(courseID,studentID,(err,assignments)=>{
+        if(err){return res.status(404).json({message:err})}
+        return res.status(200).json(assignments)
+    })
+}
+
 module.exports.getStudents = (req,res,next)=>{
     let courseID    = req.params.id
     courseModel.getStudents(courseID,(err,students)=>{

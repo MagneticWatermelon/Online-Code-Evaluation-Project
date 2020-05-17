@@ -69,6 +69,22 @@ module.exports.getCourses = (req,res,next)=>{
     })
 }
 
+module.exports.getAssignments = (req,res,next)=>{
+    const studentID  = req.params.id
+    const limit      = req.params.limit
+
+    if(isNaN(Number.parseInt(limit)) && limit!='all'){
+        return res.status(400).json({message:'Invalid limit identifier'})
+    }
+
+    let length = isNaN(Number.parseInt(limit)) ? Number.MAX_SAFE_INTEGER : Number.parseInt(limit);
+
+    userModel.getAssignments(studentID,length,(err,assignments)=>{
+        if(err){return res.status(404).json({message:err})}
+        return res.status(200).json(assignments)
+    })
+}
+
 
 module.exports.getNotifications = (req,res,next)=>{
     const givenID   = req.params.id

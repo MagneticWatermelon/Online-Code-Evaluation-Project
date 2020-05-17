@@ -49,6 +49,12 @@ router.get(
     userController.checkUser,
     userController.getNotifications)
 
+router.get(
+    '/assignments/:id/:limit',
+    isAuth,
+    userController.checkUser, // needed update
+    userController.getAssignments)
+
 module.exports = router;
 
 

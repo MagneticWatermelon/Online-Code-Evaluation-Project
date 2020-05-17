@@ -3,7 +3,9 @@ const bcrypt = require('bcrypt');
 const validate_email = require('validate-email-node-js');
 const course_given = require('./course_given');
 const course_taken = require('./course_taken');
-const Notification = require('./notification') 
+const Assignment   = require('./assignment');
+const Notification = require('./notification');
+const Grade        = require('./grade');
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
@@ -236,6 +238,60 @@ const getNotifications = (user_id, callback)=>{
     })
 }
 
+const getAssignments = (student_id, limit, callback)=>{
+    course_taken
+    .find({student_id:student_id})
+    .select()
+    .then(pairs=>{
+
+        let course_ids = pairs.map(p=>(p.course_id))
+
+        Assignment.model
+        .find({course_id:{$in : course_ids}})
+        .select({title:1,_id:1,due_date:1})
+        .limit(limit)
+        .then(assignments=>{
+            let promises = assignments.map(async assignment=>{
+                return new Promise((resolve,reject)=>{
+                    let obj     = assignment.toObject()
+                    let date    = assignment.due_date
+
+                    obj.status  = Date.parse(date)>Date.now() ? 'Closed' : 'Open'
+                
+                    Grade.model
+                    .findOne({assignment_id:assignment._id, student_id:student_id})
+                    .then(result=>{
+                        if(!result){obj.grade = null;resolve(obj);return;}
+                        obj.grade = result.grade
+                        resolve(obj);
+                    })
+                    .catch(err=>{
+                        obj.grade = null
+                        resolve(obj);
+                    })
+                })
+            })
+
+            Promise.all(promises)
+            .then(results=>{
+                callback(null,results)
+            })
+            .catch(err=>{
+                console.log(err)
+                callback('Cannot get assignments', null)
+            })
+        })
+        .catch(err=>{
+            console.log(err)
+            callback('Cannot get assignments', null)
+        })
+    })
+    .catch(err=>{
+        console.log(err)
+        callback('Cannot get assignments', null)
+    })
+}
+
 module.exports.model = User;
 
 module.exports.checkUser        = checkUser;
@@ -248,3 +304,4 @@ module.exports.updatePassword   = updatePassword;
 module.exports.getGivenCourses  = getGivenCourses;
 module.exports.getTakenCourses  = getTakenCourses;
 module.exports.getNotifications = getNotifications;
+module.exports.getAssignments   = getAssignments;

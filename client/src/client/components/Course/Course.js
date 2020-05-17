@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { Typography, Divider } from '@material-ui/core';
 import { Switch, Route} from 'react-router-dom';
 import { makeStyles, createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
@@ -10,6 +10,7 @@ import CourseAssignments from '../CourseAssignments/CourseAssignments';
 import CourseSubmissions from '../CourseSubmissions/CourseSubmissions';
 import CourseGrades from '../CourseGrades/CourseGrades';
 import CourseFiles from '../CourseFiles/CourseFiles';
+import axios from 'axios';
 
 
 
@@ -55,10 +56,34 @@ overrides: {
 
 
 export default function Course(props) {
-
-    const [todos, setToDos] = React.useState(props.todos);
+    const [todos, setToDos] = React.useState([]);
+    const [assignments, setAssignments] = React.useState([]);
+    const [announcements, setAnnouncements] = React.useState([]);
+    const [resources, setResources] = React.useState([]);
 
     const styles = useStyles();
+
+    useEffect(() => {
+        axios.get(`http://localhost:8080/course/assignments/${props.course._id}`, {headers: {"Authorization" : `Bearer ${props.token}`}}).
+        then((response) => {
+            console.log(response.data);
+            setAssignments(response.data);
+        })
+    }, []);
+
+    useEffect(() => {
+        axios.get(`http://localhost:8080/course/announcements/${props.course._id}`, {headers: {"Authorization" : `Bearer ${props.token}`}}).
+        then((response) => {
+            setAnnouncements(response.data);
+        })
+    }, []);
+
+    useEffect(() => {
+        axios.get(`http://localhost:8080/course/resources/${props.course._id}`, {headers: {"Authorization" : `Bearer ${props.token}`}}).
+        then((response) => {
+            setResources(response.data);
+        })
+    }, []);
 
     return(
             <div className={styles.root}>
@@ -69,7 +94,7 @@ export default function Course(props) {
                             component='div'
                             className={styles.title}
                         >
-                            {props.course.courseName}
+                            {props.course.name}
                         </Typography>
                         
                     </div>
@@ -78,29 +103,29 @@ export default function Course(props) {
                         <CourseMenu course={props.course} />
 
                         <Switch>
-                            <Route path={`/courses/${props.course.courseID}/announcements`}>
-                                <CourseAnnouncements course={props.course}/>
+                            <Route path={`/courses/${props.course.course_code}/announcements`}>
+                                <CourseAnnouncements course={props.course} announcements={announcements}/>
                             </Route>
 
-                            <Route path={`/courses/${props.course.courseID}/submissions`}>
+                            <Route path={`/courses/${props.course.course_code}/submissions`}>
                                 <CourseSubmissions course={props.course} />
                             </Route>
 
-                            <Route path={`/courses/${props.course.courseID}/assignments`}>
-                                <CourseAssignments course={props.course} />
+                            <Route path={`/courses/${props.course.course_code}/assignments`}>
+                                <CourseAssignments course={props.course} assignments={assignments} />
                             </Route>
 
-                            <Route path={`/courses/${props.course.courseID}/grades`}>
-                                <CourseGrades course={props.course} />
+                            <Route path={`/courses/${props.course.course_code}/grades`}>
+                                <CourseGrades course={props.course} grades={assignments}/>
                             </Route>
 
-                            <Route path={`/courses/${props.course.courseID}/files`}>
-                                <CourseFiles course={props.course} />
+                            <Route path={`/courses/${props.course.course_code}/files`}>
+                                <CourseFiles course={props.course} resources={resources} />
                             </Route>
 
-                            <Route path={`/courses/:courseID`}>
-                                <CourseSummary />
-                                <RightBar todos={todos} grades={[]}/>
+                            <Route path={`/courses/${props.course.course_code}`}>
+                                <CourseSummary announceList={announcements} assignments={assignments}/>
+                                <RightBar todos={assignments} grades={[]}/>
                             </Route>
                         </Switch>
                     </div>

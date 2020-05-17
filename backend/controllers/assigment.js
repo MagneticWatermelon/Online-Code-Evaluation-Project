@@ -74,6 +74,15 @@ module.exports.getQuestions = (req,res,next)=>{
     })
 }
 
+module.exports.getSubmissionChecks = (req,res,next)=>{
+    const assignmentID = req.params.id
+    const studentID    = req.params.studentID
+    assignmentModel.getSubmissionChecks(assignmentID,studentID,(err,checks)=>{
+        if(err){return res.status(404).json({message:err})}
+        return res.status(200).json(checks)
+    })
+}
+
 module.exports.getGrade = (req,res,next)=>{
     const assignmentID  = req.params.id
     const studentID     = req.params.studentID

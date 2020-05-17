@@ -3,7 +3,6 @@ import MUIDataTable from 'mui-datatables';
 import { makeStyles } from '@material-ui/core/styles';
 import { Link } from '@material-ui/core';
 import { Link as RouterLink} from 'react-router-dom';
-import Course from '../Course/Course';
 
 
 
@@ -15,7 +14,6 @@ export default function AssignmentsAll() {
             filter: false,
             sort: true,
             customBodyRender: (value, tableData, updateValue) => {
-                console.log(tableData);
                 return (
                     <Link component={RouterLink} to={`courses/${tableData.rowData[5]}/assignments/${tableData.rowData[6]}`}>
                         {value}

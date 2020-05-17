@@ -1,5 +1,4 @@
 import React from 'react';
-import { TableContainer, Table, TableBody, TableRow, TableCell } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { Link as RouterLink} from 'react-router-dom';
 import { Link } from '@material-ui/core';
@@ -10,14 +9,11 @@ import MUIDataTable from 'mui-datatables';
 
 export default function CoursesAll(props) {
 
-    const [courses, setData] = React.useState(props.courses);
-
     const columns = [
-        {label :"Name", name: 'courseName', options: {
+        {label :"Name", name: 'name', options: {
             filter: false,
             sort: true,
             customBodyRender: (value, tableData, updateValue) => {
-                console.log(tableData);
                 return (
                     <Link component={RouterLink} to={`courses/${tableData.rowData[1]}`}>
                         {value}
@@ -25,17 +21,31 @@ export default function CoursesAll(props) {
                 )
             }
            }}, 
-        {label :"Course ID", name: 'courseID', options: {
+        {label :"Course ID", name: 'course_code', options: {
             filter: false,
             sort: false,
            }},  
-        {label :"Semestr", name: 'courseSemestr', options: {
+        {label :"Semestr", name: 'term', options: {
             filter: true,
             sort: false,
+            customBodyRender: (value, tableData, updateValue) => {
+                return (
+                    <div>
+                        {`${tableData.rowData[2]}/${tableData.rowData[3]}`}
+                    </div>
+                )
+            }
            }}, 
-        {label :"Status", name: 'courseStatus', options: {
+        {label :"Status", name: 'year', options: {
             filter: true,
             sort: false,
+            customBodyRender: (value, tableData, updateValue) => {
+                return (
+                    <div>
+                        {`Active`}
+                    </div>
+                )
+            }
            }},
     ];
 
@@ -62,7 +72,7 @@ export default function CoursesAll(props) {
         <div className={styles.root}>
             <MUIDataTable
                 title={"All Courses"}
-                data={courses}
+                data={props.courses}
                 columns={columns}
                 options={options}
             />
