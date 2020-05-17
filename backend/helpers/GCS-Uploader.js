@@ -28,7 +28,17 @@ async function _uploadFile (req, file, callback){
         createdFile.makePublic();
         req.filename    = file.originalname
         req.gcs_id      = gcs_file_id
-        callback(null)
+        
+        createdFile.getMetadata()
+        .then(result=>{
+            let [metadata] = result
+            req.filesize = metadata.size
+            callback(null)
+        })
+        .catch(err=>{
+            req.filesize = 0;
+            callback(null)
+        })
     })
     
     writeStream.on('error',(err)=>{

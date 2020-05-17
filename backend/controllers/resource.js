@@ -7,8 +7,9 @@ module.exports.addResourceToDB= (req,res,next)=>{
     const instructorID  = req.user_id
     const filename      = req.filename
     const gcs_id        = req.gcs_id
-
-    resourceModel.addResource(courseID,instructorID,filename,gcs_id,(err,id)=>{
+    const filesize      = req.filesize
+    console.log(filesize)
+    resourceModel.addResource(courseID,instructorID,filename,filesize,gcs_id,(err,id)=>{
         if(err){
             gcsHandler.deleteFile(gcs_id);
             return res.status(500).json({message:err})

@@ -1,6 +1,7 @@
 const userModel         = require('../models/user')
 const assignmentModel   = require('../models/assignment')
 const questionModel     = require('../models/question')
+const userController    = require('../controllers/user')
 
 
 module.exports.createUser = (req,res,next)=>{
@@ -102,6 +103,15 @@ module.exports.checkUser = (req,res,next)=>{
 
     if(givenID.toString()==userID.toString() || role==2){
         next()
+    }
+    else if(role==1){
+        userController.doesHaveCourse(req,course_id,userID,role)
+        .then(success=>{
+            next()
+        })
+        .catch(err=>{
+            return res.status(403).json({message:'Permission denied'})
+        })
     }
     else{
         return res.status(403).json({message:'Permission denied'})

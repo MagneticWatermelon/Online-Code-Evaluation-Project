@@ -393,7 +393,28 @@ const getResources = (course_id, callback)=>{
       Resource.model.find({course_id:course_id})
       .select()
       .then(resources=>{
-         return callback(null,resources)
+         let promises = resources.map(async resource=>{
+            return new Promise((resolve,reject)=>{
+               User.model
+               .findById(resource.instructor_id)
+               .select({name:1})
+               .then(person=>{
+                  let obj = resource.toObject()
+                  obj.instructor = person.name
+                  resolve(obj)
+               })
+               .catch(err=>{
+                  let obj = resource.toObject()
+                  obj.instructor = 'undefined'
+                  resolve(obj)
+               })
+            })
+         })
+
+         Promise.all(promises)
+         .then(results=>{
+            return callback(null,results)
+         })
       })
       .catch(err=>{
          return callback('Cannot get course\'s resources',null)

@@ -52,7 +52,7 @@ router.get(
 router.get(
     '/assignments/:id/:limit',
     isAuth,
-    userController.checkUser, // needed update
+    userController.checkUser,
     userController.getAssignments)
 
 module.exports = router;
