@@ -147,6 +147,7 @@ export default function Sandbox(props) {
             event.preventDefault();
             let temp = treeFiles;
             temp.splice(index, 1);
+            sessionStorage.setItem(index, '');
             setTreeFiles(temp);
             handleTabChange(event, 0);
         }
