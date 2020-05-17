@@ -6,7 +6,7 @@ import OutputArea from '../OutputArea/OutputArea';
 import './SandBox.css';
 import Editor from '@monaco-editor/react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Tabs, Tab, IconButton, Grow, Typography, Collapse} from '@material-ui/core';
+import { Tabs, Tab, IconButton, Typography, Input} from '@material-ui/core';
 import PropTypes from 'prop-types';
 import TreeView from '@material-ui/lab/TreeView';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -15,6 +15,7 @@ import TreeItem from '@material-ui/lab/TreeItem';
 import CloseIcon from '@material-ui/icons/Close';
 import { blueGrey } from '@material-ui/core/colors';
 import FolderOutlinedIcon from '@material-ui/icons/FolderOutlined';
+import AddIcon from '@material-ui/icons/Add';
 import axios from 'axios';
 
 
@@ -37,52 +38,23 @@ function debounce(func, wait) {
 export default function Sandbox(props) {
 
     if(sessionStorage.getItem('splitPos') == null) {
-        sessionStorage.setItem('splitPos', '33%,33%,33%');
+        sessionStorage.setItem('splitPos', '25%,50%,25%');
     }
-    
-    const arr = ['main.java'];
-    
+        
     const [value, setValue] = React.useState(0);
     const [treeFiles, setTreeFiles] = React.useState([]);
-    const [fileTabs , setFileTabs] = React.useState(arr);
-
-    
+    const [fileTabs , setFileTabs] = React.useState([]);
 
     const editorRef = useRef();
-
-    useEffect(() => {
-        let body = {
-            language:"java:8",
-            files:[
-                    {
-                        "name":"main.java",
-                        "content":"import java.util.Scanner;public class main{public static void main(String[] args){Scanner sc = new Scanner(System.in);operator.sum(sc.nextInt(),sc.nextInt());sc.close();}}"
-                    },
-                    {
-                        "name":"operator.java",
-                        "content":"public class operator{public static void sum(int a, int b){System.out.println(a+b);}}"
-                    }
-                ]
-        };
-        axios.get(`http://localhost:8080/question/execute/5eba61b0d1288f0b58b4c3ae`, body, {headers: {"Authorization" : `Bearer ${props.token}`}}).
-        then((response) => {
-            console.log(response);
-        })
-    }, []);
-
+    
     const handleChange = (event) => {
         sessionStorage.setItem('splitPos', event);
         debounce(editorRef.current.layout(), 300);
     };
 
-    const handleFolderClick = (event) => {
-        event.preventDefault();
-        let fileName = event.currentTarget.innerHTML;
-        let index = fileTabs.indexOf(fileName);
-        if(index < 0) {
-            fileTabs.push(fileName);
-        }
-        handleTabChange(event, index);
+    const handleAddClick = (event) => {
+        treeFiles.push('');
+        handleTabChange(event, 0);
     }
 
     const handleCloseClick = (event) => {
@@ -114,10 +86,14 @@ export default function Sandbox(props) {
             height: 240,
             flexGrow: 1,
             maxWidth: 400,
+            minWidth: 200,
             color: blueGrey[100],
             paddingLeft: 10,
             paddingTop: 10,
             paddingRight: 10,
+        },
+        folderFile: {
+            color: '#cfd8dc'
         },
         monacoDiv: {
             width: '100%',
@@ -125,6 +101,9 @@ export default function Sandbox(props) {
         },
         tabsTypo: {
             textTransform: 'lowercase',
+        },
+        treeItem: {
+            display: 'inline-flex'
         },
         tabs: {
             display: 'inline'
@@ -152,6 +131,77 @@ export default function Sandbox(props) {
     const handleFolderOpen = () => {
         setChecked((prev) => !prev);
       };
+
+    function TreeFile(props) {
+        const {children, index, name,  ...other} = props;
+
+        const [treeFileName, setTreeFileName] = React.useState(name);
+        const [isDisabled, setDisabled] = React.useState(false);
+
+        useEffect(() => {
+            if(treeFileName) {
+                setDisabled(true);
+            }
+        }, [])
+        const handleFileDeleteClick = (event) => {
+            event.preventDefault();
+            let temp = treeFiles;
+            temp.splice(index, 1);
+            setTreeFiles(temp);
+            handleTabChange(event, 0);
+        }
+
+        const handleFolderClick = (event) => {
+            event.preventDefault();
+            if(treeFileName) {
+                let index = fileTabs.indexOf(treeFileName);
+                if(index < 0) {
+                    fileTabs.push(treeFileName);
+                }
+                handleTabChange(event, index);
+            }
+        }
+
+        const handleFileChange = (event) => {
+            event.preventDefault();
+            let newVal = event.currentTarget.value;
+            setTreeFileName(newVal);
+        }
+
+        const handleFileNameChange = (event) => {
+            treeFiles[index] = treeFileName;
+            sessionStorage.setItem(index, treeFileName);
+        }
+
+        return (
+            <TreeItem nodeId={index + 2} onLabelClick={handleFolderClick} onIconClick={handleFileDeleteClick} label={
+                <div className={styles.treeItem}>
+                    <Input 
+                    placeholder='fileName.lang' 
+                    disableUnderline
+                    margin='dense'
+                    required={true}
+                    fullWidth={true}
+                    onBlur={handleFileNameChange}
+                    onChange={handleFileChange}
+                    value={treeFileName}
+                    classes={{root: styles.folderFile, disabled: styles.folderFile}}
+                    disabled={isDisabled}
+                    id={index}
+                />
+                </div>
+                }
+                icon={
+                <IconButton
+                    size='small'
+                    edge='end'
+                >
+                    <CloseIcon  style={{ color: blueGrey[100] }}/>
+                </IconButton>
+                }
+            />
+        )
+    }
 
     function TabPanel(props) {
         const { children, value, index, ...other } = props;
@@ -257,7 +307,7 @@ export default function Sandbox(props) {
         value: PropTypes.any.isRequired,
       };
     
-    const [checked, setChecked] = React.useState(false);
+    const [checked, setChecked] = React.useState(true);
     
     return (
         <SplitPane split='vertical' onChange={handleChange}>
@@ -274,18 +324,22 @@ export default function Sandbox(props) {
                         className={styles.folder}
                         defaultCollapseIcon={<ExpandMoreIcon />}
                         defaultExpandIcon={<ChevronRightIcon />}
+                        expanded={['1']}
                     >
                         <TreeItem nodeId="1" label="files">
-                            <TreeItem nodeId="2" label="main.java" onLabelClick={handleFolderClick}/>
-                            <TreeItem nodeId="3" label="func.java" onLabelClick={handleFolderClick}/>
-                            <TreeItem nodeId="4" label="bar.java" onLabelClick={handleFolderClick}/>
-                            <TreeItem nodeId="5" label="foo.java" onLabelClick={handleFolderClick}/>
-                        </TreeItem>
+                        {treeFiles.map((file, index) => {
+                            return <TreeFile index={index} name={file} />
+                        })}
+                    </TreeItem>
                     </TreeView>
                     </div>
                     }
                     <div className={styles.editor}>
                         <div className={styles.header}>
+                            {checked && 
+                            <IconButton onClick={handleAddClick}>
+                                <AddIcon style={{ color: blueGrey[100]}}/>
+                            </IconButton>}
                             <IconButton onClick={handleFolderOpen} style={{paddingRight: 0 }}>
                                 <FolderOutlinedIcon style={{ color: blueGrey[100]}} />
                             </IconButton>
