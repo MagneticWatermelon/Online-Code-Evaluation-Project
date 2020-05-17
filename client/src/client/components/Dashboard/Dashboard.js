@@ -136,6 +136,7 @@ export default function Dashboard(props) {
   const [courseList, setCourseList] = React.useState([]);
   const [dataLoaded, setLoaded] = React.useState(false);
   const [notifs, setNotifs] = React.useState([]);
+  const [assignments, setAssignments] = React.useState([]);
 
   async function getCourseIDs() {
     let response = await axios.get(`http://localhost:8080/user/courses/${props.userId}`, {headers: {"Authorization" : `Bearer ${props.token}`}});
@@ -157,10 +158,17 @@ export default function Dashboard(props) {
     setNotifs(nots);
     setCount(nots.length);
   }
+
+  async function getAllAssignments() {
+    let response = await axios.get(`http://localhost:8080/user/assignments/${props.userId}/all`, {headers: {"Authorization" : `Bearer ${props.token}`}});
+    setAssignments(response.data);
+  }
   
   useEffect(getCourseIDs, []);
 
   useEffect(getNotifications, []);
+
+  useEffect(getAllAssignments, []);
 
   const [gradeList, setGrades] = React.useState([
     {name: 'LCS', courseName: 'Algorithmic Thinking', gradeInfo: '7 out of 10', submID: 59, assignID: 148, courseID: 'COMP401-01'}, 
@@ -328,7 +336,7 @@ export default function Dashboard(props) {
                         </Route>
 
                         <Route path="/assignments" >
-                          <AssignmentsAll />
+                          <AssignmentsAll assignments={assignments}/>
                         </Route>
 
                         <Route path="/submissions" >

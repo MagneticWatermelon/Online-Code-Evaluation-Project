@@ -7,10 +7,10 @@ import { Link as RouterLink} from 'react-router-dom';
 
 
 
-export default function AssignmentsAll() {
+export default function AssignmentsAll(props) {
 
     const columns = [
-        {label :"Name", name: 'assignName', options: {
+        {label :"Name", name: 'title', options: {
             filter: false,
             sort: true,
             customBodyRender: (value, tableData, updateValue) => {
@@ -22,14 +22,22 @@ export default function AssignmentsAll() {
             }
            }}, 
         {label :"Course", name: 'courseName'}, 
-        {label :"Status", name: 'assignStatus'}, 
-        {label :"Due Date", name: 'assignDue', options: {
+        {label :"Status", name: 'status'}, 
+        {label :"Due Date", name: 'due_date', options: {
             filter: false,
             sort: true,
            }}, 
-        {label :"Grade", name: 'assignGrade', options: {
+        {label :"Grade", name: 'grade', options: {
             filter: false,
             sort: false,
+            customBodyRender: (value, tableData, updateValue) => {
+                if(value) {
+                    return {value}
+                }
+                else {
+                    return '_'
+                }
+            }
            }},
         {name: 'courseID', options: {display: 'false',  filter: false, sort: false}},
         {name: 'assignID', options: {display: 'false',  filter: false, sort: false}},
@@ -68,7 +76,7 @@ export default function AssignmentsAll() {
         <div className={styles.root}>
             <MUIDataTable
                 title={"All Assignments"}
-                data={data}
+                data={props.assignments}
                 columns={columns}
                 options={options}
             />

@@ -64,10 +64,16 @@ export default function Course(props) {
     const styles = useStyles();
 
     useEffect(() => {
-        axios.get(`http://localhost:8080/course/assignments/${props.course._id}`, {headers: {"Authorization" : `Bearer ${props.token}`}}).
+        axios.get(`http://localhost:8080/course/grades/${props.course._id}/${props.userId}`, {headers: {"Authorization" : `Bearer ${props.token}`}}).
         then((response) => {
             console.log(response.data);
             setAssignments(response.data);
+        }).then(() => {
+            axios.all(assignments.map((asg) => {
+                return axios.get(`http://localhost:8080/assignment/check-submissions/${asg._id}/${props.userId}`, {headers: {"Authorization" : `Bearer ${props.token}`}});
+            })).then((responseArr => {
+                console.log(responseArr);
+            }))
         })
     }, []);
 

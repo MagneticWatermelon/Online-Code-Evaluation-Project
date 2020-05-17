@@ -13,22 +13,30 @@ export default function CourseAssignments(props) {
             sort: true,
             customBodyRender: (value, tableData, updateValue) => {
                 return (
-                    <Link component={RouterLink} to={`/courses/${props.course.courseID}/assignments/${tableData.rowData[4]}`}>
+                    <Link component={RouterLink} to={`/courses/${props.course._id}/assignments/${tableData.rowData[4]}`}>
                         {value}
                     </Link>
                 )
             }
            }}, 
-        {label :"Status", name: 'assignStatus'}, 
+        {label :"Status", name: 'status'}, 
         {label :"Due Date", name: 'due_date', options: {
             filter: false,
             sort: true,
            }}, 
-        {label :"Grade", name: 'weight', options: {
+        {label :"Grade", name: 'grade', options: {
             filter: false,
             sort: false,
+            customBodyRender: (value, tableData, updateValue) => {
+                if(value) {
+                    return {value}
+                }
+                else {
+                    return '_'
+                }
+            }
            }},
-        {name: 'assignID', options: {display: 'false',  filter: false, sort: false}},
+        {name: '_id', options: {display: 'false',  filter: false, sort: false}},
     ];
 
 
