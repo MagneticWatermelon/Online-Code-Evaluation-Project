@@ -6,6 +6,7 @@ const notificationController= require('../controllers/notification')
 const Bundle                = require('../evaluator/bundle')
 
 module.exports.createSubmission = (req,res,next)=>{
+    console.log('creating...')
     const   studentID   = req.user_id
     let     question    = req.question
     let {files,language,comment} = req.body
@@ -145,9 +146,9 @@ module.exports.checkSubmissionLimit = (req,res,next)=>{
     const userID     = req.user_id
     const limit      = req.question.submission_limit
 
-    questionModel.getSubmissions(questionID,userID,(err,submissions)=>{
+    questionModel.getSubmissionCount(questionID,userID,(err,count)=>{
         if(err){return res.status(500).json({message:err})}
-        if(limit<submissions.length){return next()}
+        if(limit>count){return next()}
         return res.status(403).json({message:'You exceeded submission limit'})
     })
 }
