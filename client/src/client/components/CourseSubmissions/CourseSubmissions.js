@@ -28,7 +28,6 @@ export default function CourseSubmissions(props) {
             filter: false,
             sort: true,
             customBodyRender: (value, tableData, updateValue) => {
-                console.log(tableData);
                 return (
                     <Link component={RouterLink} to={`/courses/${props.course.courseID}/assignments/${tableData.rowData[4]}/submissions/${tableData.rowData[5]}`}>
                         {value}

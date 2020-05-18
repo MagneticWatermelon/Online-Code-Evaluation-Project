@@ -135,6 +135,7 @@ export default function Dashboard(props) {
   const [clickedCourse, setIndex] = React.useState(1);
   const [courseList, setCourseList] = React.useState([]);
   const [dataLoaded, setLoaded] = React.useState(false);
+  const [submLoaded, setSubmLoaded] = React.useState(false);
   const [notifs, setNotifs] = React.useState([]);
   const [assignments, setAssignments] = React.useState([]);
   const [submissions, setSubmissions] = React.useState([]);
@@ -172,18 +173,21 @@ export default function Dashboard(props) {
           if(subm.isSubmitted){
             let temp ={title: subm.title};
             axios.all(subm.submissions.map((id) => {
+              temp._id = id;
               return axios.get(`http://localhost:8080/submission/get/${id}`, {headers: {"Authorization" : `Bearer ${props.token}`}});
             })).then(responseArr => {
-              responseArr.map(val => {
-                temp.grade = val.score;
+              responseArr.map(obj => {
+                temp.grade = obj.data.score;
+                console.log(temp);
                 subms.push(temp);
+                submissions.push(temp);
               })
+              setSubmLoaded(true);
             })
           }
         })
       })
-    }).then(() => {
-      setSubmissions(subms);
+      
     })
     let temp = [];
     data.map((val) => {
@@ -199,16 +203,6 @@ export default function Dashboard(props) {
   useEffect(getNotifications, []);
 
   useEffect(getAllAssignments, []);
-
-  const [gradeList, setGrades] = React.useState([
-    {name: 'LCS', courseName: 'Algorithmic Thinking', gradeInfo: '7 out of 10', submID: 59, assignID: 148, courseID: 'COMP401-01'}, 
-    {name: 'Knapsack', courseName: 'Algorithms and Data Structures', gradeInfo: '6 out of 10', submID: 60, assignID: 149, courseID: 'COMP203-02'}, 
-    {name: 'Simple Array', courseName: 'Art of Computing', gradeInfo: '9 out of 10', submID: 61, assignID: 150, courseID: 'COMP101-01'}, 
-    {name: 'Inheritance', courseName: 'Object Oriented Programming', gradeInfo: '7 out of 10', submID: 62, assignID: 151, courseID: 'COMP112-02'}]);
-  const [toDoList, setTodos] = React.useState([
-    {name: 'Task Scheduling', courseName: 'Algorithmic Thinking', dueDate: '15 May at 23:59', assignID: 152, courseID: 'COMP401-01'}, 
-    {name: 'Functions', courseName: 'Art of Computing', dueDate: '10 May at 23:59', assignID: 153, courseID: 'COMP101-01'}, 
-    {name: 'Encapsulation', courseName: 'Object Oriented Programming', dueDate: '11 May at 23:59', assignID: 154, courseID: 'COMP112-02'}]);
 
   const handleTitle = (event) => {
     setTitle(event.currentTarget.children[1].innerText);
@@ -350,7 +344,12 @@ export default function Dashboard(props) {
                           :
                           (<div className={classes.progress}><CircularProgress /></div>)
                           }
-                          <RightBar todos={assignments} grades={submissions}/>
+                          {submLoaded ? 
+                            (<RightBar todos={assignments} grades={submissions}/>)
+                          :
+                          (<div className={classes.progress}><CircularProgress /></div>)
+                          }
+                          
                         </Route>
 
                         {courseList.map((course) => {
