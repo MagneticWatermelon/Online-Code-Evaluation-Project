@@ -10,6 +10,18 @@ import Typography from '@material-ui/core/Typography';
 import { Link as RouterLink} from 'react-router-dom';
 import Link from '@material-ui/core/Link';
 
+Object.defineProperty(String.prototype, 'hashCode', {
+    value: function() {
+      var hash = 0, i, chr;
+      for (i = 0; i < this.length; i++) {
+        chr   = this.charCodeAt(i);
+        hash  = ((hash << 5) - hash) + chr;
+        hash |= 0; // Convert to 32bit integer
+      }
+      return hash;
+    }
+  });
+
 const useStyles = makeStyles((theme) => ({
     root: {
         width: '100%',
@@ -41,7 +53,7 @@ export default function CourseAnnouncements(props) {
                 {props.announcements.map((val) => {
                     return(
                         <div>
-                            <ListItem alignItems="flex-start" component={RouterLink} to={`/courses/${props.course.courseID}/announcements/${150 + val}`}>
+                            <ListItem alignItems="flex-start" component={RouterLink} to={`/courses/${props.course.course_code}/announcements/${val.createdAt.hashCode()}`}>
                                 <ListItemAvatar>
                                     <Avatar />
                                 </ListItemAvatar>
@@ -55,7 +67,7 @@ export default function CourseAnnouncements(props) {
                                                 className={classes.instructor}
                                                 color="textPrimary"
                                             >
-                                                {val.instructor_id}
+                                                {val.instructor.name}
                                         </Typography>
                                             <Typography
                                                 component="span"

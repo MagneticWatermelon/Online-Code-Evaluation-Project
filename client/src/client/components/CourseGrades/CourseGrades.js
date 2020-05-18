@@ -12,7 +12,7 @@ export default function CourseGrades(props) {
             sort: true,
             customBodyRender: (value, tableData, updateValue) => {
                 return (
-                    <Link component={RouterLink} to={`/courses/${props.course.courseID}/assignments/${tableData.rowData[3]}`}>
+                    <Link component={RouterLink} to={`/courses/${props.course.course_code}/assignments/${tableData.rowData[3]}`}>
                         {value}
                     </Link>
                 )
@@ -33,7 +33,7 @@ export default function CourseGrades(props) {
                 )
             }
            }},
-        {name: 'assignID', options: {display: 'false',  filter: false, sort: false}},
+        {name: '_id', options: {display: 'false',  filter: false, sort: false}},
     ];
 
     const options = {

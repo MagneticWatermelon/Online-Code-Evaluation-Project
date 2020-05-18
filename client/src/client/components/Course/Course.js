@@ -60,19 +60,27 @@ export default function Course(props) {
     const [assignments, setAssignments] = React.useState([]);
     const [announcements, setAnnouncements] = React.useState([]);
     const [resources, setResources] = React.useState([]);
+    const [submissions, setSubmissions] = React.useState([]);
 
     const styles = useStyles();
 
     useEffect(() => {
         axios.get(`http://localhost:8080/course/grades/${props.course._id}/${props.userId}`, {headers: {"Authorization" : `Bearer ${props.token}`}}).
         then((response) => {
-            console.log(response.data);
             setAssignments(response.data);
-        }).then(() => {
-            axios.all(assignments.map((asg) => {
-                return axios.get(`http://localhost:8080/assignment/check-submissions/${asg._id}/${props.userId}`, {headers: {"Authorization" : `Bearer ${props.token}`}});
+            return response.data;
+        }).then((response) => {
+            axios.all(response.map((asg) => {
+                return axios.get(`http://localhost:8080/assignment/questions/${asg._id}`, {headers: {"Authorization" : `Bearer ${props.token}`}});
             })).then((responseArr => {
-                console.log(responseArr);
+                let temp =[];
+                responseArr.map((data) => {
+                    data.data.map((val) => {
+                        console.log(val);
+                        temp.push(val);
+                    })
+                })
+                setSubmissions(temp);
             }))
         })
     }, []);
@@ -131,7 +139,7 @@ export default function Course(props) {
 
                             <Route path={`/courses/${props.course.course_code}`}>
                                 <CourseSummary announceList={announcements} assignments={assignments}/>
-                                <RightBar todos={assignments} grades={[]}/>
+                                <RightBar todos={assignments} courseCode={props.course.course_code} grades={submissions}/>
                             </Route>
                         </Switch>
                     </div>

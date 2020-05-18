@@ -31,24 +31,15 @@ export default function TodoList(props) {
                 {props.todos.map(todo => {
                     return (
                     <div>
-                        <Link component={RouterLink} to={`courses/${todo.course_id}/assignments/${todo.releasing_instructor_id}`}>
+                        <Link component={RouterLink} to={`/courses/${props.code}/assignments/${todo._id}`}>
                             <ListItem>
                                 <ListItemIcon>
                                     <AssignmentIcon />
                                 </ListItemIcon>
                                 <ListItemText 
-                                    primary={todo.name}
+                                    primary={todo.title}
                                     secondary={
                                         <React.Fragment>
-                                            <Typography
-                                                component="p"
-                                                variant="body2"
-                                                color="textPrimary"
-                                                className={styles.content}
-                                                noWrap='true'
-                                            >
-                                                {todo.title}
-                                            </Typography>
                                             <Typography
                                                 component="p"
                                                 variant="body2"

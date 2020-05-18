@@ -26,6 +26,8 @@ export default function FeedBack(props) {
       }));
     
     const styles = useStyles();
+
+    // console.log(props.grades);
     
     return (
         <div className={styles.root}>
@@ -38,12 +40,12 @@ export default function FeedBack(props) {
                 return (
                     <div>
                         <Link>
-                            <ListItem component={RouterLink} to={`courses/${grade.courseID}/assignments/${grade.assignID}/submissions/${grade.submID}`}>
+                            <ListItem component={RouterLink} to={`/courses/${props.code}/assignments/${grade.assignment_id}/submissions/${grade._id}`}>
                                 <ListItemIcon>
                                     <DoneIcon style={{ color: green[500] }} />
                                 </ListItemIcon>
                                 <ListItemText 
-                                    primary={grade.name}
+                                    primary={grade.title}
                                     secondary={
                                         <React.Fragment>
                                             <Typography
@@ -53,7 +55,7 @@ export default function FeedBack(props) {
                                                 className={styles.content}
                                                 noWrap='true'
                                             >
-                                                {grade.courseName}
+                                                {grade.points}
                                             </Typography>
                                             <Typography
                                                 component="p"
@@ -61,7 +63,7 @@ export default function FeedBack(props) {
                                                 color="textPrimary"
                                                 noWrap='true'
                                             >
-                                                {grade.gradeInfo}
+                                                {grade.createdAt}
                                             </Typography>
                                         </React.Fragment>
                                     }
