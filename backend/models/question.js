@@ -174,6 +174,22 @@ const getSubmissions = (question_id,student_id,callback)=>{
     })
 }
 
+
+/* callback(err, submission_count)
+ */
+const getSubmissionCount = (question_id,student_id,callback)=>{
+    Submission
+    .find({question_id:question_id,student_id:student_id})
+    .select({_id:1})
+    .then(submissions=>{
+        return callback(null,submissions.length)
+    })
+    .catch(err=>{
+        return callback('Cannot get submissions',null)
+    })
+}
+
+
 const getAssignment = async (question_id)=>{
     return new Promise((resolve,reject)=>{
         Question.findById(question_id)
@@ -205,11 +221,12 @@ const getAssignment = async (question_id)=>{
 
 module.exports.model = Question;
 
-module.exports.createQuestion   = createQuestion;
-module.exports.getQuestion      = getQuestion;
-module.exports.setIOOfQuestion  = setIOOfQuestion;
-module.exports.updateQuestion   = updateQuestion;
-module.exports.deleteQuestion   = deleteQuestion;
-module.exports.getSubmissions   = getSubmissions;
-module.exports.getAssignment    = getAssignment;
+module.exports.createQuestion       = createQuestion;
+module.exports.getQuestion          = getQuestion;
+module.exports.setIOOfQuestion      = setIOOfQuestion;
+module.exports.updateQuestion       = updateQuestion;
+module.exports.deleteQuestion       = deleteQuestion;
+module.exports.getSubmissions       = getSubmissions;
+module.exports.getAssignment        = getAssignment;
+module.exports.getSubmissionCount   = getSubmissionCount;
 

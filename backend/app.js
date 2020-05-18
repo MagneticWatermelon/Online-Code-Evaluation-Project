@@ -1,5 +1,8 @@
 const express   = require('express');
-const app       = express();    
+const app       = express();
+
+const dotenv        = require('dotenv')
+dotenv.config('./env')
 
 const authRoutes        = require('./routes/auth')
 const courseRoutes      = require('./routes/course')
@@ -13,9 +16,6 @@ const commentRoutes     = require('./routes/comment')
 const resourceRoutes    = require('./routes/resource')
 
 const database      = require('./util/database')
-
-const dotenv        = require('dotenv')
-dotenv.config('./env')
 
 app.use(express.urlencoded({extended:true}))
 app.use(express.json())
