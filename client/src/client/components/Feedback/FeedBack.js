@@ -40,7 +40,7 @@ export default function FeedBack(props) {
                 return (
                     <div>
                         <Link>
-                            <ListItem component={RouterLink} to={`/courses/${props.code}/assignments/${grade.assignment_id}/submissions/${grade._id}`}>
+                            <ListItem component={RouterLink} to={`/assignments/${grade.assignment_id}/submissions/${grade._id}`}>
                                 <ListItemIcon>
                                     <DoneIcon style={{ color: green[500] }} />
                                 </ListItemIcon>

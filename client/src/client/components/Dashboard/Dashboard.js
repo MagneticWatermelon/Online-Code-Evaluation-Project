@@ -137,6 +137,7 @@ export default function Dashboard(props) {
   const [dataLoaded, setLoaded] = React.useState(false);
   const [notifs, setNotifs] = React.useState([]);
   const [assignments, setAssignments] = React.useState([]);
+  const [submissions, setSubmissions] = React.useState([]);
 
   async function getCourseIDs() {
     let response = await axios.get(`http://localhost:8080/user/courses/${props.userId}`, {headers: {"Authorization" : `Bearer ${props.token}`}});
@@ -161,7 +162,36 @@ export default function Dashboard(props) {
 
   async function getAllAssignments() {
     let response = await axios.get(`http://localhost:8080/user/assignments/${props.userId}/all`, {headers: {"Authorization" : `Bearer ${props.token}`}});
-    setAssignments(response.data);
+    let data = response.data;
+    let subms = [];
+    axios.all(data.map((val) => {
+      return axios.get(`http://localhost:8080/assignment/check-submissions/${val._id}/${props.userId}`, {headers: {"Authorization" : `Bearer ${props.token}`}});
+    })).then((responseArr) => {
+      responseArr.map((obj) => {
+        obj.data.map((subm) => {
+          if(subm.isSubmitted){
+            let temp ={title: subm.title};
+            axios.all(subm.submissions.map((id) => {
+              return axios.get(`http://localhost:8080/submission/get/${id}`, {headers: {"Authorization" : `Bearer ${props.token}`}});
+            })).then(responseArr => {
+              responseArr.map(val => {
+                temp.grade = val.score;
+                subms.push(temp);
+              })
+            })
+          }
+        })
+      })
+    }).then(() => {
+      setSubmissions(subms);
+    })
+    let temp = [];
+    data.map((val) => {
+      if(!val.grade) {
+        temp.push(val);
+      }
+    })
+    setAssignments(temp);
   }
   
   useEffect(getCourseIDs, []);
@@ -320,7 +350,7 @@ export default function Dashboard(props) {
                           :
                           (<div className={classes.progress}><CircularProgress /></div>)
                           }
-                          <RightBar todos={toDoList} grades={gradeList}/>
+                          <RightBar todos={assignments} grades={submissions}/>
                         </Route>
 
                         {courseList.map((course) => {

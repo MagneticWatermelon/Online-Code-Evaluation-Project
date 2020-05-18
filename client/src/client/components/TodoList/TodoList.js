@@ -31,7 +31,7 @@ export default function TodoList(props) {
                 {props.todos.map(todo => {
                     return (
                     <div>
-                        <Link component={RouterLink} to={`/courses/${props.code}/assignments/${todo._id}`}>
+                        <Link component={RouterLink} to={`/assignments/${todo._id}`}>
                             <ListItem>
                                 <ListItemIcon>
                                     <AssignmentIcon />

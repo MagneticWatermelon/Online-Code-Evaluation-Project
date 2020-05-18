@@ -15,7 +15,7 @@ export default function AssignmentsAll(props) {
             sort: true,
             customBodyRender: (value, tableData, updateValue) => {
                 return (
-                    <Link component={RouterLink} to={`courses/${tableData.rowData[5]}/assignments/${tableData.rowData[6]}`}>
+                    <Link component={RouterLink} to={`/assignments/${tableData.rowData[6]}`}>
                         {value}
                     </Link>
                 )
@@ -40,7 +40,7 @@ export default function AssignmentsAll(props) {
             }
            }},
         {name: 'courseID', options: {display: 'false',  filter: false, sort: false}},
-        {name: 'assignID', options: {display: 'false',  filter: false, sort: false}},
+        {name: '_id', options: {display: 'false',  filter: false, sort: false}},
     ];
 
     const data = [
