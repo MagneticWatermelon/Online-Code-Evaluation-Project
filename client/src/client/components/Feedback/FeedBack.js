@@ -5,7 +5,7 @@ import { green } from '@material-ui/core/colors';
 import { makeStyles } from '@material-ui/core/styles';
 import { Link as RouterLink} from 'react-router-dom';
 import Link from '@material-ui/core/Link';
-
+import moment from 'moment';
 
 
 
@@ -27,7 +27,10 @@ export default function FeedBack(props) {
     
     const styles = useStyles();
 
-    // console.log(props.grades);
+    const transformDate =(date) => {
+        let newDate = moment.utc(date).format('MMMM Do [At] HH[:]mm');
+        return newDate;
+    }
     
     return (
         <div className={styles.root}>
@@ -63,7 +66,7 @@ export default function FeedBack(props) {
                                                 color="textPrimary"
                                                 noWrap='true'
                                             >
-                                                {grade.createdAt}
+                                                {transformDate(grade.createdAt)}
                                             </Typography>
                                         </React.Fragment>
                                     }

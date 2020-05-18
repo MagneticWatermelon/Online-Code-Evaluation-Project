@@ -9,18 +9,7 @@ import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
 import { Link as RouterLink} from 'react-router-dom';
 import Link from '@material-ui/core/Link';
-
-Object.defineProperty(String.prototype, 'hashCode', {
-    value: function() {
-      var hash = 0, i, chr;
-      for (i = 0; i < this.length; i++) {
-        chr   = this.charCodeAt(i);
-        hash  = ((hash << 5) - hash) + chr;
-        hash |= 0; // Convert to 32bit integer
-      }
-      return hash;
-    }
-  });
+import moment from 'moment';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -46,6 +35,11 @@ const useStyles = makeStyles((theme) => ({
 
 export default function CourseAnnouncements(props) {
     const classes = useStyles();
+
+    const transformDate =(date) => {
+        let newDate = moment.utc(date).format('MMMM Do [At] HH[:]mm');
+        return newDate;
+    }
 
     return(
         <div className={classes.root}>
@@ -75,7 +69,7 @@ export default function CourseAnnouncements(props) {
                                                 className={classes.date}
                                                 color="textSecondary"
                                             >
-                                                {val.createdAt}
+                                                {transformDate(val.createdAt)}
                                         </Typography>
                                             <Typography
                                                 component="p"

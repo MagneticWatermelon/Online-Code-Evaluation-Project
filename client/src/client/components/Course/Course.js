@@ -11,6 +11,7 @@ import CourseSubmissions from '../CourseSubmissions/CourseSubmissions';
 import CourseGrades from '../CourseGrades/CourseGrades';
 import CourseFiles from '../CourseFiles/CourseFiles';
 import axios from 'axios';
+import Announcement from '../Announcement/Announcement';
 
 
 
@@ -76,7 +77,6 @@ export default function Course(props) {
                 let temp =[];
                 responseArr.map((data) => {
                     data.data.map((val) => {
-                        console.log(val);
                         temp.push(val);
                     })
                 })
@@ -117,6 +117,10 @@ export default function Course(props) {
                         <CourseMenu course={props.course} />
 
                         <Switch>
+                            <Route path={'/courses/:courseCode/announcements/:announcementID'}>
+                                <Announcement course={props.course} announcements={announcements} />
+                            </Route>
+
                             <Route path={`/courses/${props.course.course_code}/announcements`}>
                                 <CourseAnnouncements course={props.course} announcements={announcements}/>
                             </Route>

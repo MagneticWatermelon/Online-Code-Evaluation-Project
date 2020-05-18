@@ -3,11 +3,16 @@ import MUIDataTable from 'mui-datatables';
 import { makeStyles } from '@material-ui/core/styles';
 import { Link } from '@material-ui/core';
 import { Link as RouterLink} from 'react-router-dom';
-
+import moment from 'moment';
 
 
 
 export default function AssignmentsAll(props) {
+
+    const transformDate =(date) => {
+        let newDate = moment.utc(date).format('MMMM Do [At] HH[:]mm');
+        return newDate;
+    }
 
     const columns = [
         {label :"Name", name: 'title', options: {
@@ -26,6 +31,9 @@ export default function AssignmentsAll(props) {
         {label :"Due Date", name: 'due_date', options: {
             filter: false,
             sort: true,
+            customBodyRender: (value, tableData, updateValue) => {
+                return transformDate(value);
+            }
            }}, 
         {label :"Grade", name: 'grade', options: {
             filter: false,

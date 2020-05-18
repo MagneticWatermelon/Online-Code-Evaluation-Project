@@ -5,28 +5,37 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import TreeItem from '@material-ui/lab/TreeItem';
 import { makeStyles } from '@material-ui/core/styles';
 import MUIDataTable from 'mui-datatables';
-import axios from 'axios';
 import { Typography } from '@material-ui/core';
-
+import moment from 'moment';
 
 
 
 
 export default function CourseFiles(props) {
 
-
-
-    
+    const transformDate =(date) => {
+        let newDate = moment.utc(date).format('MMMM Do [At] HH[:]mm');
+        return newDate;
+    }
 
     const columns = [
         {label :"Name", name: 'file_name', options: {
             filter: false,
             sort: true,
            }}, 
-        {label :"Created At", name: 'createdAt'}, 
+        {label :"Created At", name: 'createdAt',  options: {
+            filter: false,
+            sort: true,
+            customBodyRender: (value, tableData, updateValue) => {
+                return transformDate(value);
+            }
+           }}, 
         {label :"Modified At", name: 'updatedAt', options: {
             filter: false,
             sort: true,
+            customBodyRender: (value, tableData, updateValue) => {
+                return transformDate(value);
+            }
            }}, 
         {label :"Size", name: 'assignGrade', options: {
             filter: false,
