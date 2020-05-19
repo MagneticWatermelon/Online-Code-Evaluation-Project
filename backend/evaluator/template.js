@@ -69,45 +69,6 @@ const pythonTemplate = {
                 ], 
 }
 
-const goTemplate = {
-    
-    lang  : 'golang:1.13', // a string to define language
-
-    files : // a json array that each element has 'name' and 'content' feature 
-    [
-        {
-            name:       'main.go',
-            content:    `
-                        import "fmt"
- 
-                        func main() {
-                        
-                            var num1 int
-                            fmt.Scanln(&num1)
-
-                            var num2 int
-                            fmt.Scanln(&num2)
-
-                            var sum = num1 + num2
-
-                            fmt.Print(sum)
-                        }` 
-        }
-    ],
-
-    inputs  :   [ // a 2D array with inputs for each cases
-                    ['1','2'],
-                    ['0','8'],
-                    ['77','6']
-                ],
-
-    outputs :   [// a 2D array with outputs for each cases
-                    ['3'],
-                    ['8'],
-                    ['83']
-                ], 
-}
-
 const cppTemplate = {
     lang  : 'c++', // a string to define language
 

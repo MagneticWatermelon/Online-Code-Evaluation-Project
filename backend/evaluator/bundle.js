@@ -60,13 +60,4 @@ module.exports = class Bundle{
     deletefile(name){
         this.files = this.files.filter(file => {file.name!=name})
     }
-
-    toJSON(){
-        return {
-            lang    : this.lang,
-            files   : this.files,
-            inputs  : this.inputs,
-            outputs : this.outputs
-        }
-    }
 }

@@ -45,7 +45,6 @@ async function test3(){
     let {lang, files, inputs, outputs} = require('./template').cppTemplate;
     let bundle = new Bundle(lang, inputs, outputs)
     bundle.addAll(files)
-    
     evaluator.evaluate('user3', bundle, (err, score, evaluation)=>{
         
         if(err){return console.log(err);}
@@ -94,8 +93,8 @@ async function test6(){
 }
 
 
-test1();
-test2();
-/*test3();
-test5();
-test6();*/
+//test1();
+//test2();
+test3();
+//test5();
+//test6();

@@ -68,6 +68,7 @@ module.exports.execute = (req,res,next)=>{
 }
 
 module.exports.executeBundle = (userID, bundle, callback)=>{
+    console.log(bundle)
     evaluator.evaluate(userID, bundle, (err, score, evaluation)=>{
         if(err){return callback(err,null)}
         return callback(null,{

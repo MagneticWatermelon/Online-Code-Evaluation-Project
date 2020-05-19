@@ -6,7 +6,6 @@ const notificationController= require('../controllers/notification')
 const Bundle                = require('../evaluator/bundle')
 
 module.exports.createSubmission = (req,res,next)=>{
-    console.log('creating...')
     const   studentID   = req.user_id
     let     question    = req.question
     let {files,language,comment} = req.body
