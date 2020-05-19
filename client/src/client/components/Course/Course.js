@@ -89,6 +89,7 @@ export default function Course(props) {
     useEffect(() => {
         axios.get(`http://localhost:8080/course/announcements/${props.course._id}`, {headers: {"Authorization" : `Bearer ${props.token}`}}).
         then((response) => {
+            console.log(response.data);
             setAnnouncements(response.data);
         })
     }, []);

@@ -73,7 +73,7 @@ export default function Assignment(props) {
                                 variant='h5'
                                 gutterBottom={true}
                                 component={RouterLink} 
-                                to={`/example`}
+                                to={`/question/${q._id}`}
                             >
                                 {q.title}
                             </Typography>
