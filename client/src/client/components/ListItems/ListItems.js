@@ -24,14 +24,14 @@ export default function ListItems(props) {
           <ListItemText primary="Dashboard" />
         </ListItem>
 
-        <ListItem button component={RouterLink} to="/courses" onClick={props.onClick}>
+        <ListItem button component={RouterLink} to={`/courses/${props.id}`} onClick={props.onClick}>
           <ListItemIcon>
             <SchoolIcon />
           </ListItemIcon>
           <ListItemText primary="Courses" />
         </ListItem>
 
-        <ListItem button component={RouterLink} to="/assignments" onClick={props.onClick}>
+        <ListItem button component={RouterLink} to={`/assignments/${props.id}`} onClick={props.onClick}>
           <ListItemIcon>
             <AssignmentIcon />
           </ListItemIcon>

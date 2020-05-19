@@ -12,6 +12,7 @@ import CourseGrades from '../CourseGrades/CourseGrades';
 import CourseFiles from '../CourseFiles/CourseFiles';
 import axios from 'axios';
 import Announcement from '../Announcement/Announcement';
+import Assignment from '../Assignment/Assignment';
 
 
 
@@ -117,6 +118,7 @@ export default function Course(props) {
                         <CourseMenu course={props.course} />
 
                         <Switch>
+
                             <Route path={'/courses/:courseCode/announcements/:announcementID'}>
                                 <Announcement course={props.course} announcements={announcements} />
                             </Route>
