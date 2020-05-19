@@ -29,6 +29,7 @@ const useStyles = makeStyles((theme) => ({
     },
     body: {
         marginTop: 5,
+        maxWidth: 600,
     },
   }));
 
