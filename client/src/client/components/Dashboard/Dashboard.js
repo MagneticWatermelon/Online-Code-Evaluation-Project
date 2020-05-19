@@ -31,6 +31,7 @@ import CoursesAll from '../CoursesAll/CoursesAll';
 import AssignmentsAll from '../AssignmentsAll/AssignmentsAll';
 import SubmissionsAll from '../SubmissionsAll/SubmissionsAll';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Assignment from '../Assignment/Assignment';
 import axios from 'axios';
 
 
@@ -51,6 +52,7 @@ const useStyles = makeStyles((theme) => ({
     ...theme.mixins.toolbar,
   },
   appBar: {
+    backgroundColor: '#BA3B46',
     zIndex: theme.zIndex.drawer + 1,
     transition: theme.transitions.create(['width', 'margin'], {
       easing: theme.transitions.easing.sharp,
@@ -58,6 +60,7 @@ const useStyles = makeStyles((theme) => ({
     }),
   },
   appBarShift: {
+    backgroundColor: '#BA3B46',
     marginLeft: drawerWidth,
     width: `calc(100% - ${drawerWidth}px)`,
     transition: theme.transitions.create(['width', 'margin'], {
@@ -331,7 +334,7 @@ export default function Dashboard(props) {
                 </IconButton>
                 </div>
                 <Divider />
-                <ListItems onClick={handleTitle}/>
+                <ListItems onClick={handleTitle} id={props.userId}/>
             </Drawer>
             <main className={classes.content}>
                 <div className={classes.appBarSpacer} />
@@ -360,12 +363,16 @@ export default function Dashboard(props) {
                         )})
                         }
 
-                        <Route path="/courses">
+                        <Route path={`/courses/${props.userId}`}>
                             <CoursesAll  courses={courseList}/>
                         </Route>
 
-                        <Route path="/assignments" >
+                        <Route path={`/assignments/${props.userId}`}>
                           <AssignmentsAll assignments={assignments}/>
+                        </Route>
+
+                        <Route path={'/assignments/:assignmentID'}>
+                          <Assignment token={props.token} />
                         </Route>
 
                         <Route path="/submissions" >

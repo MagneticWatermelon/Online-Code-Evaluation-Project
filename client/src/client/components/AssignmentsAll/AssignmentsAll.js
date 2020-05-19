@@ -51,16 +51,6 @@ export default function AssignmentsAll(props) {
         {name: '_id', options: {display: 'false',  filter: false, sort: false}},
     ];
 
-    const data = [
-        {assignName: 'LCS', courseName: 'Algorithmic Thinking', assignStatus: 'Open', assignDue: '15 May at 23:59', assignGrade : '7/10', courseID: 'COMP401-01',assignID: 148}, 
-        {assignName: 'Knapsack', courseName: 'Algorithms and Data Structures', assignStatus: 'Closed', assignDue: '10 May at 23:59', assignGrade : '6/10',courseID: 'COMP203-02',assignID: 149}, 
-        {assignName: 'Simple Array', courseName: 'Art of Computing', assignStatus: 'Open', assignDue: '12 May at 23:59', assignGrade : '9/10',courseID: 'COMP101-01', assignID: 150}, 
-        {assignName: 'Inheritance', courseName: 'Object Oriented Programming', assignStatus: 'Closed', assignDue: '9 May at 23:59', assignGrade : '7/10',courseID: 'COMP112-02', assignID: 151},
-        {assignName: 'Functions', courseName: 'Art of Computing', assignStatus: 'Open', assignDue: '10 May at 23:59', assignGrade : '5/10',courseID: 'COMP101-01', assignID: 152}, 
-        {assignName: 'Encapsulation', courseName: 'Object Oriented Programming', assignStatus: 'Open', assignDue: '11 May at 23:59', assignGrade : '_/10',courseID: 'COMP112-02', assignID: 153}, 
-        {assignName: 'Task Scheduling', courseName: 'Algorithmic Thinking', assignStatus: 'Open', assignDue: '18 May at 23:59', assignGrade : '_/10',courseID: 'COMP401-01', assignID: 154},
-    ];
-
     const options = {
         filterType: 'checkbox',
         pagination: true,
