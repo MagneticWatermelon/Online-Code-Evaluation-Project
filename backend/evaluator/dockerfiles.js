@@ -3,13 +3,13 @@
 */
 const dockerfiles = {
 
-    'java:8' :         `FROM        openjdk:8
+    'java:8' :         `FROM        frolvlad/alpine-java:jdk8-slim
                         COPY        . /
                         RUN         javac main.java
                         CMD         ["java","main"]
                        `,
 
-    'python:3':        `FROM        python:3
+    'python:3':        `FROM        python:3-slim
                         COPY        . /
                         WORKDIR     /
                         CMD         ["python","main.py"]

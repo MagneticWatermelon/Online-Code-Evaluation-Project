@@ -11,8 +11,6 @@ async function getOutputs(bundle, imageName){
         
     let results      = await runner.getOutputs(imageName,bundle.getInputs())
     
-    await runner.removeImage(imageName)
-    
     return results;
 }
 

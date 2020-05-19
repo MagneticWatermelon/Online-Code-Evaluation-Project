@@ -13,12 +13,18 @@ const targenerator  = require('./tar-generator')
 
 const attachOptions =   {logs:true,stream: true, stdin: true, stdout: true, stderr: true};
 
+const hostConfigs   =   {
+    AutoRemove:false
+}
+
 docker = new Docker()
 
 /*function for building the image
 */
 async function buildImage(bundle, options){
     try{
+
+        await removeImage(options.t)
 
         let tar     = targenerator.fromBundle(bundle)
         
@@ -32,7 +38,6 @@ async function buildImage(bundle, options){
         return success;
     }
     catch(e){
-        console.log(e)
         return false;
     }
 }
@@ -51,7 +56,7 @@ async function runCode(bundle, imagename){
 */
 async function testInput(imagename, testcase){
 
-    let container = await createContainer(imagename,null);
+    let container = await createContainer(imagename,hostConfigs);
 
     await attachToContainer(container,testcase)
 
@@ -75,12 +80,9 @@ async function testInput(imagename, testcase){
             container.modem.demuxStream(stream, logStream, logStream);
             
             stream.on('end', function(){
-                
-                resolve('log is ended')
                 logStream.end();
-                
+                resolve('log is ended')
                 container.remove(()=>{})
-                
             });
         })
     })
