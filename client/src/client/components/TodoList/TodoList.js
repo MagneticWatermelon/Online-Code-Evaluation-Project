@@ -4,6 +4,7 @@ import AssignmentIcon from '@material-ui/icons/Assignment';
 import { makeStyles } from '@material-ui/core/styles';
 import { Link as RouterLink} from 'react-router-dom';
 import Link from '@material-ui/core/Link';
+import moment from 'moment';
 
 
 export default function TodoList(props) {
@@ -20,6 +21,11 @@ export default function TodoList(props) {
       }));
     
     const styles = useStyles();
+
+    const transformDate =(date) => {
+        let newDate = moment.utc(date).format('MMMM Do [At] HH[:]mm');
+        return newDate;
+    }
     
     return (
         <div className={styles.root}>
@@ -31,32 +37,23 @@ export default function TodoList(props) {
                 {props.todos.map(todo => {
                     return (
                     <div>
-                        <Link component={RouterLink} to={`courses/${todo.course_id}/assignments/${todo.releasing_instructor_id}`}>
+                        <Link component={RouterLink} to={`/assignments/${todo._id}`}>
                             <ListItem>
                                 <ListItemIcon>
                                     <AssignmentIcon />
                                 </ListItemIcon>
                                 <ListItemText 
-                                    primary={todo.name}
+                                    primary={todo.title}
                                     secondary={
                                         <React.Fragment>
                                             <Typography
                                                 component="p"
                                                 variant="body2"
                                                 color="textPrimary"
-                                                className={styles.content}
-                                                noWrap='true'
-                                            >
-                                                {todo.title}
-                                            </Typography>
-                                            <Typography
-                                                component="p"
-                                                variant="body2"
-                                                color="textPrimary"
-                                                noWrap='true'
+                                                noWrap={true}
                                                 
                                             >
-                                                {todo.due_date}
+                                                {transformDate(todo.due_date)}
                                             </Typography>
                                         </React.Fragment>
                                     }

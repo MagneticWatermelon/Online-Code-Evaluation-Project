@@ -29,51 +29,61 @@ export default function CourseMenu(props) {
                 <ListItem 
                     button 
                     component={RouterLink} 
-                    to={`/courses/${props.course.course_code}/announcements`}
-                    selected={selectedIndex === 0 || window.location.pathname === `/courses/${props.course.course_code}/announcements`}
+                    to={`/courses/${props.course.course_code}`}
+                    selected={selectedIndex === 0 || window.location.pathname === `/courses/${props.course.course_code}`}
                     onClick={(event) => handleListItemClick(event, 0)}
                 >
-                    <ListItemText primary='Announcements' />
+                    <ListItemText primary='Home' primaryTypographyProps={{align: 'center'}}/>
+                </ListItem>
+
+                <ListItem 
+                    button 
+                    component={RouterLink} 
+                    to={`/courses/${props.course.course_code}/announcements`}
+                    selected={selectedIndex === 1 || window.location.pathname === `/courses/${props.course.course_code}/announcements`}
+                    onClick={(event) => handleListItemClick(event, 1)}
+                >
+                    <ListItemText primary='Announcements' primaryTypographyProps={{align: 'center'}}/>
                 </ListItem>
 
                 <ListItem 
                     button 
                     component={RouterLink} 
                     to={`/courses/${props.course.course_code}/assignments`}
-                    selected={selectedIndex === 1 || window.location.pathname === `/courses/${props.course.course_code}/assignments`}
-                    onClick={(event) => handleListItemClick(event, 1)}
+                    selected={selectedIndex === 2 || window.location.pathname === `/courses/${props.course.course_code}/assignments`}
+                    onClick={(event) => handleListItemClick(event, 2)}
                 >
-                    <ListItemText primary='Assignments' />
+                    <ListItemText primary='Assignments' primaryTypographyProps={{align: 'center'}}/>
                 </ListItem>
 
                 <ListItem 
                     button 
                     component={RouterLink} 
                     to={`/courses/${props.course.course_code}/submissions`}
-                    selected={selectedIndex === 2  || window.location.pathname === `/courses/${props.course.course_code}/submissions`}
-                    onClick={(event) => handleListItemClick(event, 2)}
+                    selected={selectedIndex === 3  || window.location.pathname === `/courses/${props.course.course_code}/submissions`}
+                    onClick={(event) => handleListItemClick(event, 3)}
                 >
-                    <ListItemText primary='Submissions' />
+                    <ListItemText primary='Submissions' primaryTypographyProps={{align: 'center'}}/>
                 </ListItem>
 
                 <ListItem 
                     button 
                     component={RouterLink} 
                     to={`/courses/${props.course.course_code}/grades`}
-                    selected={selectedIndex === 3  || window.location.pathname === `/courses/${props.course.course_code}/grades`}
-                    onClick={(event) => handleListItemClick(event, 3)}
+                    selected={selectedIndex === 4  || window.location.pathname === `/courses/${props.course.course_code}/grades`}
+                    onClick={(event) => handleListItemClick(event, 4)}
                 >
-                    <ListItemText primary='Grades' />
+                    <ListItemText primary='Grades' primaryTypographyProps={{align: 'center'}}/>
                 </ListItem>
 
                 <ListItem 
                     button 
                     component={RouterLink} 
                     to={`/courses/${props.course.course_code}/files`}
-                    selected={selectedIndex === 4  || window.location.pathname === `/courses/${props.course.course_code}/files`}
-                    onClick={(event) => handleListItemClick(event, 4)}
+                    selected={selectedIndex === 5  || window.location.pathname === `/courses/${props.course.course_code}/files`}
+                    onClick={(event) => handleListItemClick(event, 5)}
                 >
-                    <ListItemText primary='Resources' />
+                    <ListItemText primary='Resources' primaryTypographyProps={{align: 'center'}}/>
                 </ListItem>
 
             </List>

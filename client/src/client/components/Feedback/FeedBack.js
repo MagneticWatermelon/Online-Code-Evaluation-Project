@@ -5,7 +5,7 @@ import { green } from '@material-ui/core/colors';
 import { makeStyles } from '@material-ui/core/styles';
 import { Link as RouterLink} from 'react-router-dom';
 import Link from '@material-ui/core/Link';
-
+import moment from 'moment';
 
 
 
@@ -26,6 +26,11 @@ export default function FeedBack(props) {
       }));
     
     const styles = useStyles();
+
+    const transformDate =(date) => {
+        let newDate = moment.utc(date).format('MMMM Do [At] HH[:]mm');
+        return newDate;
+    }
     
     return (
         <div className={styles.root}>
@@ -38,12 +43,12 @@ export default function FeedBack(props) {
                 return (
                     <div>
                         <Link>
-                            <ListItem component={RouterLink} to={`courses/${grade.courseID}/assignments/${grade.assignID}/submissions/${grade.submID}`}>
+                            <ListItem component={RouterLink} to={`/submissions/${grade._id}`}>
                                 <ListItemIcon>
                                     <DoneIcon style={{ color: green[500] }} />
                                 </ListItemIcon>
                                 <ListItemText 
-                                    primary={grade.name}
+                                    primary={grade.title}
                                     secondary={
                                         <React.Fragment>
                                             <Typography
@@ -53,7 +58,7 @@ export default function FeedBack(props) {
                                                 className={styles.content}
                                                 noWrap='true'
                                             >
-                                                {grade.courseName}
+                                                {`Score: ${grade.grade}`}
                                             </Typography>
                                             <Typography
                                                 component="p"
@@ -61,7 +66,7 @@ export default function FeedBack(props) {
                                                 color="textPrimary"
                                                 noWrap='true'
                                             >
-                                                {grade.gradeInfo}
+                                                {transformDate(grade.createdAt)}
                                             </Typography>
                                         </React.Fragment>
                                     }

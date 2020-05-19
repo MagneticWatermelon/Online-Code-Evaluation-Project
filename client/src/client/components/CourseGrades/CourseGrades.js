@@ -3,8 +3,14 @@ import MUIDataTable from 'mui-datatables';
 import { makeStyles } from '@material-ui/core/styles';
 import { Link } from '@material-ui/core';
 import { Link as RouterLink} from 'react-router-dom';
+import moment from 'moment';
 
 export default function CourseGrades(props) {
+
+    const transformDate =(date) => {
+        let newDate = moment.utc(date).format('MMMM Do [At] HH[:]mm');
+        return newDate;
+    }
 
     const columns = [
         {label :"Name", name: 'title', options: {
@@ -12,7 +18,7 @@ export default function CourseGrades(props) {
             sort: true,
             customBodyRender: (value, tableData, updateValue) => {
                 return (
-                    <Link component={RouterLink} to={`/courses/${props.course.courseID}/assignments/${tableData.rowData[3]}`}>
+                    <Link component={RouterLink} to={`/courses/${props.course.course_code}/assignments/${tableData.rowData[3]}`}>
                         {value}
                     </Link>
                 )
@@ -21,6 +27,9 @@ export default function CourseGrades(props) {
         {label :"Due Date", name: 'due_date', options: {
             filter: false,
             sort: true,
+            customBodyRender: (value, tableData, updateValue) => {
+                return transformDate(value);
+            }
            }}, 
         {label :"Grade", name: 'weight', options: {
             filter: false,
@@ -33,7 +42,7 @@ export default function CourseGrades(props) {
                 )
             }
            }},
-        {name: 'assignID', options: {display: 'false',  filter: false, sort: false}},
+        {name: '_id', options: {display: 'false',  filter: false, sort: false}},
     ];
 
     const options = {

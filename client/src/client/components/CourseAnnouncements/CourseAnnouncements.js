@@ -9,6 +9,7 @@ import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
 import { Link as RouterLink} from 'react-router-dom';
 import Link from '@material-ui/core/Link';
+import moment from 'moment';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -35,13 +36,18 @@ const useStyles = makeStyles((theme) => ({
 export default function CourseAnnouncements(props) {
     const classes = useStyles();
 
+    const transformDate =(date) => {
+        let newDate = moment.utc(date).format('MMMM Do [At] HH[:]mm');
+        return newDate;
+    }
+
     return(
         <div className={classes.root}>
             <List className={classes.list}>
                 {props.announcements.map((val) => {
                     return(
                         <div>
-                            <ListItem alignItems="flex-start" component={RouterLink} to={`/courses/${props.course.courseID}/announcements/${150 + val}`}>
+                            <ListItem alignItems="flex-start" component={RouterLink} to={`/courses/${props.course.course_code}/announcements/${val.createdAt.hashCode()}`}>
                                 <ListItemAvatar>
                                     <Avatar />
                                 </ListItemAvatar>
@@ -55,7 +61,7 @@ export default function CourseAnnouncements(props) {
                                                 className={classes.instructor}
                                                 color="textPrimary"
                                             >
-                                                {val.instructor_id}
+                                                {val.instructor.name}
                                         </Typography>
                                             <Typography
                                                 component="span"
@@ -63,7 +69,7 @@ export default function CourseAnnouncements(props) {
                                                 className={classes.date}
                                                 color="textSecondary"
                                             >
-                                                {val.createdAt}
+                                                {transformDate(val.createdAt)}
                                         </Typography>
                                             <Typography
                                                 component="p"

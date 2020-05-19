@@ -19,9 +19,9 @@ export default function RightBar(props) {
 
     return (
         <Container className={styles.root}>
-            <TodoList todos={props.todos}/>
+            <TodoList todos={props.todos} code={props.courseCode}/>
             <Divider orientation="vertical" flexItem />
-            <FeedBack grades={props.grades}/>
+            <FeedBack grades={props.grades} code={props.courseCode}/>
         </Container>
     );
 }
