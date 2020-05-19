@@ -6,7 +6,7 @@ import OutputArea from '../OutputArea/OutputArea';
 import './SandBox.css';
 import Editor from '@monaco-editor/react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Tabs, Tab, IconButton, Typography, Input} from '@material-ui/core';
+import { Tabs, Tab, IconButton, Typography, Input, ButtonGroup, Button} from '@material-ui/core';
 import PropTypes from 'prop-types';
 import TreeView from '@material-ui/lab/TreeView';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -49,7 +49,9 @@ export default function Sandbox(props) {
     
     const handleChange = (event) => {
         sessionStorage.setItem('splitPos', event);
-        debounce(editorRef.current.layout(), 300);
+        if(editorRef.current) {
+            debounce(editorRef.current.layout(), 300);
+        }
     };
 
     const handleAddClick = (event) => {
@@ -66,11 +68,25 @@ export default function Sandbox(props) {
     };
 
     const useStyles = makeStyles((theme) => ({
+        root_root: {
+            width: '100%',
+            height: '100%',
+        },
         root: {
             display: 'inline-flex',
             width: '100%',
             height: '100%',
             backgroundColor: '#202124'
+        },
+        button: {
+            width: 250,
+            backgroundColor: '#B9BAA3'
+        },
+        button_group: {
+            width: '100%',
+            height: 42,
+            paddingLeft: 'calc(50% - 250px)',
+            backgroundColor: '#033F63'
         },
         editor: {
           width: '100%',
@@ -131,6 +147,21 @@ export default function Sandbox(props) {
     const handleFolderOpen = () => {
         setChecked((prev) => !prev);
       };
+
+    const handleRunButton = (event) => {
+        let submitArr = [];
+        treeFiles.map((file) => {
+            let fileContent = sessionStorage.getItem(file);
+            submitArr.push({name: file, content: fileContent});
+        })
+        let postObj = {language: 'java:8', files: submitArr};
+        console.log(postObj);
+    }
+
+    const handleSubmitButton = (event) => {
+        console.log(treeFiles);
+
+    }
 
     function TreeFile(props) {
         const {children, index, name,  ...other} = props;
@@ -311,91 +342,99 @@ export default function Sandbox(props) {
     const [checked, setChecked] = React.useState(true);
     
     return (
-        <SplitPane split='vertical' onChange={handleChange}>
+        <div className={styles.root_root}>
+            <SplitPane split='vertical' onChange={handleChange}>
 
-            <Pane initialSize={sessionStorage.getItem('splitPos').split(',')[0]}>
-                <ProblemArea />
-            </Pane>
-            
-            <Pane minSize="10%" initialSize={sessionStorage.getItem('splitPos').split(',')[1]}>
-                <div className={styles.root}>
-                    {checked && 
-                    <div>
-                    <TreeView
-                        className={styles.folder}
-                        defaultCollapseIcon={<ExpandMoreIcon />}
-                        defaultExpandIcon={<ChevronRightIcon />}
-                        expanded={['1']}
-                    >
-                        <TreeItem nodeId="1" label="files">
-                        {treeFiles.map((file, index) => {
-                            return <TreeFile index={index} name={file} />
-                        })}
-                    </TreeItem>
-                    </TreeView>
-                    </div>
-                    }
-                    <div className={styles.editor}>
-                        <div className={styles.header}>
-                            {checked && 
-                            <IconButton onClick={handleAddClick}>
-                                <AddIcon style={{ color: blueGrey[100]}}/>
-                            </IconButton>}
-                            <IconButton onClick={handleFolderOpen} style={{paddingRight: 0 }}>
-                                <FolderOutlinedIcon style={{ color: blueGrey[100]}} />
-                            </IconButton>
-                            <Tabs
-                                value={value}
-                                onChange={handleTabChange}
-                                indicatorColor="primary"
-                                textColor="primary"
-                                variant="scrollable"
-                                scrollButtons="on"
-                                classes={{scrollButtons: styles.scrollButtons}}
-                            >
-                                {fileTabs.map((name, index) => {
+                <Pane initialSize={sessionStorage.getItem('splitPos').split(',')[0]}>
+                    <ProblemArea />
+                </Pane>
+                
+                <Pane minSize="10%" initialSize={sessionStorage.getItem('splitPos').split(',')[1]}>
+                    <div className={styles.root}>
+                        {checked && 
+                        <div>
+                        <TreeView
+                            className={styles.folder}
+                            defaultCollapseIcon={<ExpandMoreIcon />}
+                            defaultExpandIcon={<ChevronRightIcon />}
+                            expanded={['1']}
+                        >
+                            <TreeItem nodeId="1" label="files">
+                            {treeFiles.map((file, index) => {
+                                return <TreeFile index={index} name={file} />
+                            })}
+                        </TreeItem>
+                        </TreeView>
+                        </div>
+                        }
+                        <div className={styles.editor}>
+                            <div className={styles.header}>
+                                {checked && 
+                                <IconButton onClick={handleAddClick}>
+                                    <AddIcon style={{ color: blueGrey[100]}}/>
+                                </IconButton>}
+                                <IconButton onClick={handleFolderOpen} style={{paddingRight: 0 }}>
+                                    <FolderOutlinedIcon style={{ color: blueGrey[100]}} />
+                                </IconButton>
+                                <Tabs
+                                    value={value}
+                                    onChange={handleTabChange}
+                                    indicatorColor="primary"
+                                    textColor="primary"
+                                    variant="scrollable"
+                                    scrollButtons="on"
+                                    classes={{scrollButtons: styles.scrollButtons}}
+                                >
+                                    {fileTabs.map((name, index) => {
+                                        return(
+                                            <Tab
+                                                tabIndex={index}
+                                                label={
+                                                    <div className={styles.tabs}>
+                                                        <Typography
+                                                            component='span'
+                                                            variant='body2'
+                                                            className={styles.tabsTypo}
+                                                            style={{ color: blueGrey[100] }}
+                                                        >
+                                                            {name}
+                                                        </Typography>
+                                                        <IconButton
+                                                            size='small'
+                                                            edge='end'
+                                                            onClick={handleCloseClick}
+                                                        >
+                                                            <CloseIcon  style={{ color: blueGrey[100] }}/>
+                                                        </IconButton>
+                                                    </div>
+                                                }
+                                            />
+                                        );
+                                    })}
+                                </Tabs>
+                            </div>
+                            <div className={styles.monacoDiv}>
+                            {fileTabs.map((name, index) => {
                                     return(
-                                        <Tab
-                                            tabIndex={index}
-                                            label={
-                                                <div className={styles.tabs}>
-                                                    <Typography
-                                                        component='span'
-                                                        variant='body2'
-                                                        className={styles.tabsTypo}
-                                                        style={{ color: blueGrey[100] }}
-                                                    >
-                                                        {name}
-                                                    </Typography>
-                                                    <IconButton
-                                                        size='small'
-                                                        edge='end'
-                                                        onClick={handleCloseClick}
-                                                    >
-                                                        <CloseIcon  style={{ color: blueGrey[100] }}/>
-                                                    </IconButton>
-                                                </div>
-                                            }
-                                        />
+                                        <TabPanel value={value} index={index} sessionId={name} />
                                     );
                                 })}
-                            </Tabs>
-                        </div>
-                        <div className={styles.monacoDiv}>
-                        {fileTabs.map((name, index) => {
-                                return(
-                                    <TabPanel value={value} index={index} sessionId={name} />
-                                );
-                            })}
-                        </div>
-                    </div>
-                </div>               
-            </Pane>
+                            </div>
+                        </div> 
+                    </div>               
+                </Pane>
 
-            <Pane initialSize={sessionStorage.getItem('splitPos').split(',')[2]}>
-                <OutputArea />
-            </Pane>
-            
-        </SplitPane>
+                <Pane initialSize={sessionStorage.getItem('splitPos').split(',')[2]}>
+                    <OutputArea />
+                </Pane>
+                
+            </SplitPane>
+            <div className={styles.button_group}>
+                <ButtonGroup variant="contained" size="large">
+                    <Button className={styles.button} onClick={handleRunButton}>Run</Button>
+                    <Button className={styles.button} onClick={handleSubmitButton}>Submit</Button>
+                </ButtonGroup>
+            </div>
+        </div>
     );
 }
