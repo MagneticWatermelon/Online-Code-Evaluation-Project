@@ -348,7 +348,7 @@ const updateCourse =  (course_id, title, course_code, term, year, callback)=>{
 const getAnnouncements = (course_id, callback)=>{
    Announcement.model
    .find({course_id: course_id})
-   .select({"_id": 0})
+   .select()
    .then(announcements => {
       if (!announcements) {return callback("No announcement found", null);} 
       

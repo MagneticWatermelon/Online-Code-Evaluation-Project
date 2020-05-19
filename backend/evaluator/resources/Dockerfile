@@ -1,3 +1,3 @@
-FROM openjdk:8
-FROM python:3
+FROM frolvlad/alpine-java:jdk8-slim
+FROM python:3-slim
 FROM gcc:8
