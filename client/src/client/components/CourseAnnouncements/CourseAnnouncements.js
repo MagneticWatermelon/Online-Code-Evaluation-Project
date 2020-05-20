@@ -48,7 +48,7 @@ export default function CourseAnnouncements(props) {
                 {props.announcements.map((val) => {
                     return(
                         <div>
-                            <ListItem alignItems="flex-start" component={RouterLink} to={`/courses/${props.course.course_code}/announcements/${val.createdAt.hashCode()}`}>
+                            <ListItem alignItems="flex-start" component={RouterLink} to={`/courses/${props.course.course_code}/announcements/${val._id}`}>
                                 <ListItemAvatar>
                                     <Avatar />
                                 </ListItemAvatar>

@@ -35,7 +35,7 @@ export default function FeedBack(props) {
     return (
         <div className={styles.root}>
             <Typography gutterBottom variant='h6' align='left' className={styles.title}>
-                Graded Assigments
+                Done
             </Typography>
             <Divider />
             <List>
@@ -66,7 +66,7 @@ export default function FeedBack(props) {
                                                 color="textPrimary"
                                                 noWrap='true'
                                             >
-                                                {transformDate(grade.createdAt)}
+                                                {transformDate(grade.date)}
                                             </Typography>
                                         </React.Fragment>
                                     }

@@ -6,7 +6,7 @@ import OutputArea from '../OutputArea/OutputArea';
 import './SandBox.css';
 import Editor from '@monaco-editor/react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Tabs, Tab, IconButton, Typography, Input, ButtonGroup, Button} from '@material-ui/core';
+import { Tabs, Tab, IconButton, Typography, Input, ButtonGroup, Button, CircularProgress} from '@material-ui/core';
 import PropTypes from 'prop-types';
 import TreeView from '@material-ui/lab/TreeView';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -44,8 +44,22 @@ export default function Sandbox(props) {
     const [value, setValue] = React.useState(0);
     const [treeFiles, setTreeFiles] = React.useState([]);
     const [fileTabs , setFileTabs] = React.useState([]);
+    const [question, setQuestion] = React.useState({});
+    const [isQuestionLoaded, loadedQuestion] = React.useState(false);
+    const [results, setResults] = React.useState({});
+    const [loadedResults, loadResults] = React.useState(true);
 
     const editorRef = useRef();
+
+    useEffect(() =>{
+        let url = window.location.pathname;
+        let id = url.split('/').pop();
+        axios.get(`http://localhost:8080/question/get/${id}`, {headers: {"Authorization" : `Bearer ${props.token}`}}).
+        then((response) => {
+            setQuestion(response.data);
+            loadedQuestion(true);
+        })
+    }, []);
     
     const handleChange = (event) => {
         sessionStorage.setItem('splitPos', event);
@@ -132,6 +146,11 @@ export default function Sandbox(props) {
             color: blueGrey[100],
             width: 30,
         },
+        progress: {
+            width: '100%',
+            height: '100%',
+            padding: '15% 20%',
+          },
       }));
 
     const styles = useStyles();
@@ -155,12 +174,25 @@ export default function Sandbox(props) {
             submitArr.push({name: file, content: fileContent});
         })
         let postObj = {language: 'java:8', files: submitArr};
-        console.log(postObj);
+        let url = window.location.pathname;
+        let id = url.split('/').pop();
+        axios.post(`http://localhost:8080/question/execute/${id}`, {headers: {"Authorization" : `Bearer ${props.token}`}}).
+        then((response => {
+            console.log(response.data);
+            setResults(response.data);
+        }))
     }
 
     const handleSubmitButton = (event) => {
-        console.log(treeFiles);
-
+        loadResults(false);
+        let testObj = {}
+        testObj.score = 10;
+        let promise =  new Promise(resolve => {
+            resolve(setResults(testObj));
+        });
+        promise.then(() => {
+            loadResults(true)
+        });
     }
 
     function TreeFile(props) {
@@ -220,7 +252,10 @@ export default function Sandbox(props) {
                     classes={{root: styles.folderFile, disabled: styles.folderFile}}
                     disabled={isDisabled}
                     id={index}
-                />
+                    inputProps={{
+                        autoComplete: 'off',
+                        }}
+                    />
                 </div>
                 }
                 icon={
@@ -300,7 +335,7 @@ export default function Sandbox(props) {
                             "overviewRulerLanes": 2,
                             "quickSuggestions": true,
                             "quickSuggestionsDelay": 100,
-                            "readOnly": false,
+                            "readOnly": props.readOnly,
                             "renderControlCharacters": false,
                             "renderFinalNewline": true,
                             "renderIndentGuides": true,
@@ -346,7 +381,11 @@ export default function Sandbox(props) {
             <SplitPane split='vertical' onChange={handleChange}>
 
                 <Pane initialSize={sessionStorage.getItem('splitPos').split(',')[0]}>
-                    <ProblemArea />
+                    {isQuestionLoaded ? 
+                        (<ProblemArea question={question} loaded={isQuestionLoaded}/>)
+                        :
+                        (<div className={styles.progress}><CircularProgress/></div>)
+                    }
                 </Pane>
                 
                 <Pane minSize="10%" initialSize={sessionStorage.getItem('splitPos').split(',')[1]}>
@@ -416,7 +455,7 @@ export default function Sandbox(props) {
                             <div className={styles.monacoDiv}>
                             {fileTabs.map((name, index) => {
                                     return(
-                                        <TabPanel value={value} index={index} sessionId={name} />
+                                        <TabPanel value={value} index={index} sessionId={name} readOnly={props.readOnly} />
                                     );
                                 })}
                             </div>
@@ -425,7 +464,11 @@ export default function Sandbox(props) {
                 </Pane>
 
                 <Pane initialSize={sessionStorage.getItem('splitPos').split(',')[2]}>
-                    <OutputArea />
+                    {loadedResults ? 
+                        (<OutputArea result={results}/>)
+                        :
+                        (<div className={styles.progress}><CircularProgress/></div>)
+                    }
                 </Pane>
                 
             </SplitPane>

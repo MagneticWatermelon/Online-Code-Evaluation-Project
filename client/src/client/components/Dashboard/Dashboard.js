@@ -181,7 +181,7 @@ export default function Dashboard(props) {
             })).then(responseArr => {
               responseArr.map(obj => {
                 temp.grade = obj.data.score;
-                console.log(temp);
+                temp.date= obj.data.date;
                 subms.push(temp);
                 submissions.push(temp);
               })
@@ -375,12 +375,16 @@ export default function Dashboard(props) {
                           <Assignment token={props.token} />
                         </Route>
 
+                        <Route exact path="/submission/:submId">
+                            <Sandbox sessionId={10} token={props.token} readOnly={true}/>
+                        </Route>
+
                         <Route path="/submissions" >
                           <SubmissionsAll />
                         </Route>
 
-                        <Route exact path="/example">
-                            <Sandbox sessionId={10} token={props.token}/>
+                        <Route exact path="/question/:questionId">
+                            <Sandbox sessionId={10} token={props.token} readOnly={false}/>
                         </Route>
 
                     </Switch>

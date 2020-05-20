@@ -13,7 +13,7 @@ export default function Announcement(props) {
         let url = window.location.pathname;
         let hash = url.split('/').pop();
         arr.map((ann) => {
-            if(ann.createdAt.hashCode() == hash) {
+            if(ann._id == hash) {
                 setAnnouncement(ann);
             }
         })
