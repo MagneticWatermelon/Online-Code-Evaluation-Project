@@ -252,7 +252,10 @@ export default function Sandbox(props) {
                     classes={{root: styles.folderFile, disabled: styles.folderFile}}
                     disabled={isDisabled}
                     id={index}
-                />
+                    inputProps={{
+                        autocomplete: 'off',
+                        }}
+                    />
                 </div>
                 }
                 icon={
