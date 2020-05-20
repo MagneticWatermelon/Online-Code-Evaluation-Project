@@ -5,11 +5,23 @@ const runner = require('./runner')
 /*function for building and generating outputs from the code
 */
 async function getOutputs(bundle, imageName){
-    let buildsuccess = await runner.buildImage(bundle,{t:imageName,forcerm:true})
+    
+    let start = Date.now()
+    console.log('build starting...')
+    let buildsuccess = await runner.buildImage(bundle,
+    {t:imageName,
+     forcerm:true
+    })
+
+    let duration = (Date.now()-start)/1000
+    console.log('build finished.')
+    console.log('it took ' + duration + ' seconds')
     
     if(!buildsuccess){throw 'Compilation Error'}
         
     let results      = await runner.getOutputs(imageName,bundle.getInputs())
+
+    runner.removeImage(imageName)
     
     return results;
 }
