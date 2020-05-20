@@ -176,7 +176,7 @@ export default function Sandbox(props) {
         let postObj = {language: 'java:8', files: submitArr};
         let url = window.location.pathname;
         let id = url.split('/').pop();
-        axios.post(`http://localhost:8080/question/execute/${id}`, {headers: {"Authorization" : `Bearer ${props.token}`}}).
+        axios.post(`http://localhost:8080/question/execute/${id}`, postObj, {headers: {"Authorization" : `Bearer ${props.token}`}}).
         then((response => {
             console.log(response.data);
             setResults(response.data);
