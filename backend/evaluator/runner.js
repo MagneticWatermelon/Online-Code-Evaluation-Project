@@ -13,9 +13,7 @@ const targenerator  = require('./tar-generator')
 
 const attachOptions =   {logs:true,stream: true, stdin: true, stdout: true, stderr: true};
 
-const hostConfigs   =   {
-    AutoRemove:false
-}
+const hostConfigs   =   {}
 
 docker = new Docker()
 
@@ -23,9 +21,8 @@ docker = new Docker()
 */
 async function buildImage(bundle, options){
     try{
-
         await removeImage(options.t)
-
+        
         let tar     = targenerator.fromBundle(bundle)
         
         let stream  = await docker.buildImage(tar,options)
@@ -33,7 +30,6 @@ async function buildImage(bundle, options){
         await new Promise((resolve,reject)=>{
             docker.modem.followProgress(stream,(err,res)=>{err ? reject() : resolve()})
         })
-        
         let success = await checkImage(options.t)
         return success;
     }
@@ -55,57 +51,59 @@ async function runCode(bundle, imagename){
 /*function for running a single test case
 */
 async function testInput(imagename, testcase){
+    try{
 
-    let container = await createContainer(imagename,hostConfigs);
-
-    await attachToContainer(container,testcase)
-
-    await container.start();
-
-    let output = []
-
-    let logStream = new require('stream').PassThrough();
-
-    logStream.on('data', function(chunk){
-        output.push(chunk.toString('utf8').replace('\n',''))
-    })
-    
-    await container.wait();
-
-    await new Promise((resolve,reject)=>{
+        let container = await createContainer(imagename,hostConfigs);
         
-        container.logs({follow:true,stdout:true,stderr:true},(err,stream)=>{
-            if(err){return reject('cannot get logs from container')}
-            
-            container.modem.demuxStream(stream, logStream, logStream);
-            
-            stream.on('end', function(){
-                logStream.end();
-                resolve('log is ended')
-                container.remove(()=>{})
-            });
+        await attachToContainer(container,testcase)
+        
+        await container.start();
+        
+        let output = []
+        
+        let logStream = new require('stream').PassThrough();
+        
+        logStream.on('data', function(chunk){
+            output.push(chunk.toString('utf8').replace('\n',''))
         })
-    })
-
-    return output;
+        
+        await container.wait();
+        
+        await new Promise((resolve,reject)=>{
+            
+            container.logs({follow:true,stdout:true,stderr:true},(err,stream)=>{
+                if(err){return reject('cannot get logs from container')}
+                
+                container.modem.demuxStream(stream, logStream, logStream);
+                
+                stream.on('end', function(){
+                    logStream.end();
+                    resolve('log is ended')
+                    container.remove(()=>{})
+                });
+            })
+        })
+        
+        return output;
+    }
+    catch(e){
+        console.log(e)
+        return ['Execution error'];
+    }
 }
 
 /*function for getting all outputs from all test cases
 */
 async function getOutputs(imagename, inputs){
-    let outputs = []
+    let promises = inputs.map(i=>testInput(imagename,i))
 
-    for(input of inputs){
-        try{
-            let output = await testInput(imagename,input)
-            outputs.push(output)
-        }
-        catch(e){
-            outputs.push(['Error ocurred'])
-        }
-    }
-
-    return outputs;
+    return Promise.all(promises)
+    .then(outputs=>{
+        return outputs;
+    })
+    .catch(err=>{
+        return inputs.map(i=>['Execution Failed']);
+    })
 }
 
 function checkImage(imagename){
@@ -152,20 +150,25 @@ async function attachToContainer(container, inputs){
 /*function for creating a container for a test case
 */
 async function createContainer(imagename, hostConfig){
-    let container = await docker.createContainer(
-        {
-          Image         : imagename,
-          AttachStdin   : true,
-          AttachStdout  : true,
-          AttachStderr  : true,
-          OpenStdin     : true,
-          StdinOnce     : false,
-          Tty           : false,
-          Cmd           : [],
-          HostConfig    : hostConfig
-        })
-
-    return container;
+    try{
+        let container = await docker.createContainer(
+            {
+                Image         : imagename,
+                AttachStdin   : true,
+                AttachStdout  : true,
+                AttachStderr  : true,
+                OpenStdin     : true,
+                StdinOnce     : false,
+                Tty           : false,
+                Cmd           : [],
+                HostConfig    : hostConfig
+            })
+            
+            return container;
+        }
+    catch(e){
+        console.log(e)
+    }
 }
   
 

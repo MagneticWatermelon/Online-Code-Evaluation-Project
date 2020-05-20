@@ -6,6 +6,7 @@ const runner = require('./runner')
 
 async function test1(){
 
+    let start = Date.now()
     let {lang, files, inputs, outputs} = require('./template').javaTemplate;
     let bundle = new Bundle(lang, inputs, outputs)
     bundle.addAll(files)
@@ -19,6 +20,9 @@ async function test1(){
         for(e of evaluation){
             console.log(e);
         }
+        let duration = (Date.now()-start)/1000
+
+        console.log('it took ' + duration + ' seconds')
     });
 }
 
@@ -94,7 +98,7 @@ async function test6(){
 
 
 test1();
-test2();
-test3();
-test5();
+//test2();
+//test3();
+//test5();
 //test6();

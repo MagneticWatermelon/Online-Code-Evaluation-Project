@@ -31,13 +31,17 @@ const javaTemplate = {
     inputs  :   [ // a 2D array with inputs for each cases
                     ['1','2'],
                     ['0','8'],
-                    ['77','6']
+                    ['77','6'],
+                    ['99','77'],
+                    ['3','5']
                 ],
 
     outputs :   [// a 2D array with outputs for each cases
                     ['3'],
                     ['8'],
-                    ['83']
+                    ['83'],
+                    ['176'],
+                    ['8']
                 ], 
 }
 
