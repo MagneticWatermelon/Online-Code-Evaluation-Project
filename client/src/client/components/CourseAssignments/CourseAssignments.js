@@ -17,7 +17,7 @@ export default function CourseAssignments(props) {
             sort: true,
             customBodyRender: (value, tableData, updateValue) => {
                 return (
-                    <Link component={RouterLink} to={`/assignments/${tableData.rowData[4]}`}>
+                    <Link component={RouterLink} to={`/assignments/${tableData.rowData[3]}`}>
                         {value}
                     </Link>
                 )
@@ -31,18 +31,6 @@ export default function CourseAssignments(props) {
                 return transformDate(value);
             }
            }}, 
-        {label :"Grade", name: 'grade', options: {
-            filter: false,
-            sort: false,
-            customBodyRender: (value, tableData, updateValue) => {
-                if(value) {
-                    return {value}
-                }
-                else {
-                    return '_'
-                }
-            }
-           }},
         {name: '_id', options: {display: 'false',  filter: false, sort: false}},
     ];
 

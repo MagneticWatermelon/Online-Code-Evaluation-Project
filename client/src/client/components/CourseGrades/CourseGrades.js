@@ -31,15 +31,16 @@ export default function CourseGrades(props) {
                 return transformDate(value);
             }
            }}, 
-        {label :"Grade", name: 'weight', options: {
+        {label :"Grade", name: 'grade', options: {
             filter: false,
             sort: false,
             customBodyRender: (value, tableData, updateValue) => {
-                return (
-                    <div>
-                        {`10/${tableData.rowData[2]}`}
-                    </div>
-                )
+                if(value) {
+                    return {value}
+                }
+                else {
+                    return '_'
+                }
             }
            }},
         {name: '_id', options: {display: 'false',  filter: false, sort: false}},
