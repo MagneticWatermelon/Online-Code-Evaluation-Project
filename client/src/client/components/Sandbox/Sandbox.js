@@ -168,6 +168,7 @@ export default function Sandbox(props) {
       };
 
     const handleRunButton = (event) => {
+        loadResults(false);
         let submitArr = [];
         treeFiles.map((file) => {
             let fileContent = sessionStorage.getItem(file);
@@ -178,21 +179,34 @@ export default function Sandbox(props) {
         let id = url.split('/').pop();
         axios.post(`http://localhost:8080/question/execute/${id}`, postObj, {headers: {"Authorization" : `Bearer ${props.token}`}}).
         then((response => {
-            console.log(response.data);
-            setResults(response.data);
+            let promise =  new Promise(resolve => {
+                resolve(setResults(response.data));
+            });
+            promise.then(() => {
+                loadResults(true)
+            });
         }))
     }
 
     const handleSubmitButton = (event) => {
         loadResults(false);
-        let testObj = {}
-        testObj.score = 10;
-        let promise =  new Promise(resolve => {
-            resolve(setResults(testObj));
-        });
-        promise.then(() => {
-            loadResults(true)
-        });
+        let submitArr = [];
+        treeFiles.map((file) => {
+            let fileContent = sessionStorage.getItem(file);
+            submitArr.push({name: file, content: fileContent});
+        })
+        let postObj = {language: 'java:8', files: submitArr};
+        let url = window.location.pathname;
+        let id = url.split('/').pop();
+        axios.post(`http://localhost:8080/submissions/create/${id}`, postObj, {headers: {"Authorization" : `Bearer ${props.token}`}}).
+        then((response => {
+            let promise =  new Promise(resolve => {
+                resolve(setResults(response.data));
+            });
+            promise.then(() => {
+                loadResults(true)
+            });
+        }))
     }
 
     function TreeFile(props) {
@@ -298,7 +312,7 @@ export default function Sandbox(props) {
                 <Editor
                     value={sessionStorage.getItem(props.sessionId)}
                     theme='dark'
-                    language='javascript'
+                    language='java'
                     editorDidMount={handleEditorDidMount}
                     width='100%'
                     height='100%'
