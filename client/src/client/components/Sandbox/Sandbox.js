@@ -253,7 +253,7 @@ export default function Sandbox(props) {
                     disabled={isDisabled}
                     id={index}
                     inputProps={{
-                        autocomplete: 'off',
+                        autoComplete: 'off',
                         }}
                     />
                 </div>

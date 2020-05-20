@@ -73,15 +73,27 @@ export default function Course(props) {
             return response.data;
         }).then((response) => {
             axios.all(response.map((asg) => {
-                return axios.get(`http://localhost:8080/assignment/questions/${asg._id}`, {headers: {"Authorization" : `Bearer ${props.token}`}});
+                return axios.get(`http://localhost:8080/assignment/check-submissions/${asg._id}/${props.userId}`, {headers: {"Authorization" : `Bearer ${props.token}`}});
             })).then((responseArr => {
-                let temp =[];
-                responseArr.map((data) => {
-                    data.data.map((val) => {
-                        temp.push(val);
+                let subms =[];
+                responseArr.map((obj) => {
+                    obj.data.map((subm) => {
+                      if(subm.isSubmitted){
+                        let temp ={title: subm.title};
+                        axios.all(subm.submissions.map((id) => {
+                          temp._id = id;
+                          return axios.get(`http://localhost:8080/submission/get/${id}`, {headers: {"Authorization" : `Bearer ${props.token}`}});
+                        })).then(responseArr => {
+                          responseArr.map(obj => {
+                            temp.grade = obj.data.score;
+                            temp.date = obj.data.date;
+                            subms.push(temp);
+                          })
+                          setSubmissions(subms);
+                        })
+                      }
                     })
                 })
-                setSubmissions(temp);
             }))
         })
     }, []);
@@ -89,7 +101,6 @@ export default function Course(props) {
     useEffect(() => {
         axios.get(`http://localhost:8080/course/announcements/${props.course._id}`, {headers: {"Authorization" : `Bearer ${props.token}`}}).
         then((response) => {
-            console.log(response.data);
             setAnnouncements(response.data);
         })
     }, []);

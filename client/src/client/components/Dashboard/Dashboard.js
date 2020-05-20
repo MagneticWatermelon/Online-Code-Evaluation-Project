@@ -181,6 +181,7 @@ export default function Dashboard(props) {
             })).then(responseArr => {
               responseArr.map(obj => {
                 temp.grade = obj.data.score;
+                temp.date= obj.data.date;
                 subms.push(temp);
                 submissions.push(temp);
               })
