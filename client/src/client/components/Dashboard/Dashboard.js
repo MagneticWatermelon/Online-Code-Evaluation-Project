@@ -375,12 +375,16 @@ export default function Dashboard(props) {
                           <Assignment token={props.token} />
                         </Route>
 
+                        <Route exact path="/submission/:submId">
+                            <Sandbox sessionId={10} token={props.token} readOnly={true}/>
+                        </Route>
+
                         <Route path="/submissions" >
                           <SubmissionsAll />
                         </Route>
 
                         <Route exact path="/question/:questionId">
-                            <Sandbox sessionId={10} token={props.token}/>
+                            <Sandbox sessionId={10} token={props.token} readOnly={false}/>
                         </Route>
 
                     </Switch>

@@ -335,7 +335,7 @@ export default function Sandbox(props) {
                             "overviewRulerLanes": 2,
                             "quickSuggestions": true,
                             "quickSuggestionsDelay": 100,
-                            "readOnly": false,
+                            "readOnly": props.readOnly,
                             "renderControlCharacters": false,
                             "renderFinalNewline": true,
                             "renderIndentGuides": true,
@@ -455,7 +455,7 @@ export default function Sandbox(props) {
                             <div className={styles.monacoDiv}>
                             {fileTabs.map((name, index) => {
                                     return(
-                                        <TabPanel value={value} index={index} sessionId={name} />
+                                        <TabPanel value={value} index={index} sessionId={name} readOnly={props.readOnly} />
                                     );
                                 })}
                             </div>
