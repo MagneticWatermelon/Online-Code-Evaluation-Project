@@ -3,52 +3,43 @@ import MUIDataTable from 'mui-datatables';
 import { makeStyles } from '@material-ui/core/styles';
 import { Link } from '@material-ui/core';
 import { Link as RouterLink} from 'react-router-dom';
+import moment from 'moment';
 
 
 export default function CourseSubmissions(props) {
-    const data = [
-        {assignName: 'LCS', courseName: 'Algorithmic Thinking', submResult: 'Accepted', submDate: '15 May at 23:59', submGrade : '7/10', courseID: 'COMP401-01',assignID: 148, submID: 14}, 
-        {assignName: 'Knapsack', courseName: 'Algorithms and Data Structures', submResult: 'Accepted', submDate: '10 May at 23:59', submGrade : '6/10',courseID: 'COMP203-02',assignID: 149, submID: 15}, 
-        {assignName: 'Simple Array', courseName: 'Art of Computing', submResult: 'Accepted', submDate: '12 May at 23:59', submGrade : '9/10',courseID: 'COMP101-01', assignID: 150, submID: 16}, 
-        {assignName: 'Inheritance', courseName: 'Object Oriented Programming', submResult: 'Accepted', submDate: '9 May at 23:59', submGrade : '7/10',courseID: 'COMP112-02', assignID: 151, submID: 17},
-        {assignName: 'Functions', courseName: 'Art of Computing', submResult: 'Accepted', submDate: '10 May at 23:59', submGrade : '5/10',courseID: 'COMP101-01', assignID: 152, submID: 18}, 
-        {assignName: 'Encapsulation', courseName: 'Object Oriented Programming', submResult: 'Wrong Answer', submDate: '11 May at 23:59', submGrade : '_/10',courseID: 'COMP112-02', assignID: 153, submID: 19}, 
-        {assignName: 'Task Scheduling', courseName: 'Algorithmic Thinking', submResult: 'Wrong Answer', submDate: '18 May at 23:59', submGrade : '_/10',courseID: 'COMP401-01', assignID: 154, submID: 20},
-        {assignName: 'LCS', courseName: 'Algorithmic Thinking', submResult: 'Accepted', submDate: '15 May at 23:59', submGrade : '7/10', courseID: 'COMP401-01',assignID: 148, submID: 14}, 
-        {assignName: 'Knapsack', courseName: 'Algorithms and Data Structures', submResult: 'Accepted', submDate: '10 May at 23:59', submGrade : '6/10',courseID: 'COMP203-02',assignID: 149, submID: 15}, 
-        {assignName: 'Simple Array', courseName: 'Art of Computing', submResult: 'Accepted', submDate: '12 May at 23:59', submGrade : '9/10',courseID: 'COMP101-01', assignID: 150, submID: 16}, 
-        {assignName: 'Inheritance', courseName: 'Object Oriented Programming', submResult: 'Accepted', submDate: '9 May at 23:59', submGrade : '7/10',courseID: 'COMP112-02', assignID: 151, submID: 17},
-        {assignName: 'Functions', courseName: 'Art of Computing', submResult: 'Accepted', submDate: '10 May at 23:59', submGrade : '5/10',courseID: 'COMP101-01', assignID: 152, submID: 18}, 
-        {assignName: 'Encapsulation', courseName: 'Object Oriented Programming', submResult: 'Wrong Answer', submDate: '11 May at 23:59', submGrade : '_/10',courseID: 'COMP112-02', assignID: 153, submID: 19}, 
-        {assignName: 'Task Scheduling', courseName: 'Algorithmic Thinking', submResult: 'Wrong Answer', submDate: '18 May at 23:59', submGrade : '_/10',courseID: 'COMP401-01', assignID: 154, submID: 20},
-    ];
+    const transformDate =(date) => {
+        let newDate = moment.utc(date).format('MMMM Do [At] HH[:]mm');
+        return newDate;
+    }
 
     const columns = [
-        {label :"Name", name: 'assignName', options: {
+        {label :"Name", name: 'title', options: {
             filter: false,
             sort: true,
             customBodyRender: (value, tableData, updateValue) => {
                 return (
-                    <Link component={RouterLink} to={`/courses/${props.course.courseID}/assignments/${tableData.rowData[4]}/submissions/${tableData.rowData[5]}`}>
+                    <Link component={RouterLink} to={`/submissions/${tableData.rowData[4]}`}>
                         {value}
                     </Link>
                 )
             }
            }},
-        {label :"Result", name: 'submResult',  options: {
+        {label :"Language", name: 'lang',  options: {
             filter: true,
             sort: false,
            }}, 
-        {label :"Date", name: 'submDate', options: {
+        {label :"Date", name: 'date', options: {
             filter: false,
             sort: true,
+            customBodyRender: (value, tableData, updateValue) => {
+                return transformDate(value);
+            }
            }}, 
-        {label :"Grade", name: 'submGrade', options: {
+        {label :"Grade", name: 'grade', options: {
             filter: false,
             sort: false,
            }},
-        {name: 'assignID', options: {display: 'false', filter: false, sort: false,}},
-        {name: 'submID', options: {display: 'false', filter: false, sort: false,}},
+        {name: '_id', options: {display: 'false', filter: false, sort: false,}},
     ];
 
     const options = {
@@ -76,7 +67,7 @@ export default function CourseSubmissions(props) {
         <div className={styles.root}>
             <MUIDataTable
                 title={"Submissions"}
-                data={data}
+                data={props.subms}
                 columns={columns}
                 options={options}
             />

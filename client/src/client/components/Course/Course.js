@@ -87,6 +87,7 @@ export default function Course(props) {
                           responseArr.map(obj => {
                             temp.grade = obj.data.score;
                             temp.date = obj.data.date;
+                            temp.lang = obj.data.language;
                             subms.push(temp);
                           })
                           setSubmissions(subms);
@@ -140,7 +141,7 @@ export default function Course(props) {
                             </Route>
 
                             <Route path={`/courses/${props.course.course_code}/submissions`}>
-                                <CourseSubmissions course={props.course} />
+                                <CourseSubmissions course={props.course} subms={submissions}/>
                             </Route>
 
                             <Route path={`/courses/${props.course.course_code}/assignments`}>
