@@ -191,6 +191,8 @@ export default function Sandbox(props) {
     const handleSubmitButton = (event) => {
         loadResults(false);
         let submitArr = [];
+        let lang = treeFiles[0].split('.').pop();
+        console.log(lang);
         treeFiles.map((file) => {
             let fileContent = sessionStorage.getItem(file);
             submitArr.push({name: file, content: fileContent});
