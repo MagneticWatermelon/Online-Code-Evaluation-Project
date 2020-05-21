@@ -15,19 +15,21 @@ export default function OutputArea(props) {
             height: '100%',
         },
         results: {
-
+            display: 'flex',
+            alignItems: 'center',
+            marginTop: 20,
         },
         inputs: {
-
+            marginLeft: 25,
         },
         icon: {
 
         },
         inputU: {
-
+            marginTop: 10,
         },
         inputEx: {
-
+            marginTop: 10,
         },
         progress: {
             width: '100%',
@@ -47,20 +49,34 @@ export default function OutputArea(props) {
                     {result.results && result.results.map((testCase) => {
                         if(testCase.status == 'correct') {
                             return(
-                                <div>
-                                    <DoneIcon style={{ color: green[500] }} />
-                                    <div>
+                                <div className={styles.results}>
+                                    <DoneIcon fontSize='large' style={{ color: green[500] }} />
+                                    <div className={styles.inputs}>
                                         <Typography 
                                             component='span'
                                             variant='body2'
                                         >
-                                            {`Your Output: ${testCase.output[0]}`}
+                                            {`Your Output:`}
+                                            <br></br>
+                                            {testCase.output.map(val => {
+                                                return(
+                                                    <span>{val}<br></br></span>
+                                                )
+                                            })}
                                         </Typography>
                                         <Typography
                                             component='span'
                                             variant='body2'
+                                            className={styles.inputU}
+
                                         >
-                                            {`Expected Output: ${testCase.answer[0]}`}
+                                            {`Expected Output:`}
+                                            <br></br>
+                                            {testCase.answer.map(val => {
+                                                return(
+                                                    <span>{val}<br></br></span>
+                                                )
+                                            })}
                                         </Typography>
                                     </div>
                                 </div>
@@ -68,20 +84,34 @@ export default function OutputArea(props) {
                         }
                         else {
                             return(
-                                <div>
-                                    <ClearIcon style={{color: red[500]}} />
-                                    <div>
+                                <div className={styles.results}>
+                                    <ClearIcon fontSize='large' style={{color: red[500]}} />
+                                    <div className={styles.inputs}>
                                         <Typography 
                                             component='span'
                                             variant='body2'
                                         >
-                                            {`Your Output: ${testCase.output[0]}`}
+                                            {`Your Output:`}
+                                            <br></br>
+                                            {testCase.output.map(val => {
+                                                return(
+                                                    <span>{val}<br></br></span>
+                                                )
+                                            })}
                                         </Typography>
                                         <Typography
                                             component='span'
                                             variant='body2'
+                                            className={styles.inputU}
+
                                         >
-                                            {`Expected Output: ${testCase.answer[0]}`}
+                                            {`Expected Output:`}
+                                            <br></br>
+                                            {testCase.answer.map(val => {
+                                                return(
+                                                    <span>{val}<br></br></span>
+                                                )
+                                            })}
                                         </Typography>
                                     </div>
                                 </div>
@@ -90,7 +120,9 @@ export default function OutputArea(props) {
                     })}
                     <Typography 
                         component='span'
-                        variant='body2'
+                        variant='h5'
+                        className={styles.inputEx}
+
                     >
                         {`Score: ${result.score}`}
                     </Typography>

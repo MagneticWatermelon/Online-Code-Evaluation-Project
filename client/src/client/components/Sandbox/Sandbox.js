@@ -31,7 +31,7 @@ function debounce(func, wait) {
       clearTimeout(timeout);
       timeout = setTimeout(later, wait);
     };
-  };
+};
 
 function determineLang(extension) {
     switch(extension) {
@@ -44,7 +44,7 @@ function determineLang(extension) {
         default:
             return 'java:8';      
     }
-}
+};
 
 function determineEditorLang(extension) {
     switch(extension) {
@@ -57,7 +57,7 @@ function determineEditorLang(extension) {
         default:
             return 'javascript';      
     }
-}
+};
 
 
 
@@ -225,11 +225,7 @@ export default function Sandbox(props) {
             let fileContent = sessionStorage.getItem(file);
             submitArr.push({name: file, content: fileContent});
         })
-<<<<<<< HEAD
         let postObj = {language: lang, files: submitArr, comment: ''};
-=======
-        let postObj = {language: 'java:8', files: submitArr, comment:''};
->>>>>>> 024fa936c8b453592e61da8d2fb5b163eb862277
         let url = window.location.pathname;
         let id = url.split('/').pop();
         axios.post(`http://localhost:8080/submission/create/${id}`, postObj, {headers: {"Authorization" : `Bearer ${props.token}`}}).
