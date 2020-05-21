@@ -220,6 +220,7 @@ const getAssignmentsWithGrades = (course_id,student_id,callback)=>{
         .find({course_id:course_id})
         .select({title:1,_id:1,due_date:1})
         .then(assignments=>{
+            if(!assignments){return callback('No assignments yet',null)}
             let promises = assignments.map(async assignment=>{
                 return new Promise((resolve,reject)=>{
                     let obj     = assignment.toObject()

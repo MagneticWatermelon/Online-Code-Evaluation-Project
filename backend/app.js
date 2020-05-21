@@ -1,7 +1,7 @@
 const express   = require('express');
 const app       = express();
-
-const dotenv        = require('dotenv')
+const dotenv    = require('dotenv')
+const cors      = require('cors')
 dotenv.config('./env')
 
 const authRoutes        = require('./routes/auth')
@@ -19,12 +19,7 @@ const database      = require('./util/database')
 
 app.use(express.urlencoded({extended:true}))
 app.use(express.json())
-
-app.use(function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
-    res.header("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-    next();
-  });
+app.use(cors())
 
 app.use('/auth',authRoutes)
 app.use('/course', courseRoutes)

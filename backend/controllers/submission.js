@@ -141,6 +141,7 @@ module.exports.validateUser     = (req,res,next)=>{
 
 
 module.exports.checkSubmissionLimit = (req,res,next)=>{
+    console.log(req.body)
     const questionID = req.params.questionID;
     const userID     = req.user_id
     const limit      = req.question.submission_limit

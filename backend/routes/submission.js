@@ -1,5 +1,4 @@
 const express = require('express');
-
 const isInstructor  = require('../middleware/isInstructor')
 const isStudent     = require('../middleware/isStudent')
 const isAuth        = require('../middleware/isAuth')
