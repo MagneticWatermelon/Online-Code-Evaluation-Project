@@ -33,6 +33,32 @@ function debounce(func, wait) {
     };
   };
 
+function determineLang(extension) {
+    switch(extension) {
+        case 'java':
+            return 'java:8';
+        case 'cpp' :
+            return 'c++';
+        case 'py' :
+            return 'python:3';
+        default:
+            return 'java:8';      
+    }
+}
+
+function determineEditorLang(extension) {
+    switch(extension) {
+        case 'java':
+            return 'java';
+        case 'cpp' :
+            return 'cpp';
+        case 'py' :
+            return 'python';
+        default:
+            return 'javascript';      
+    }
+}
+
 
 
 export default function Sandbox(props) {
@@ -170,11 +196,13 @@ export default function Sandbox(props) {
     const handleRunButton = (event) => {
         loadResults(false);
         let submitArr = [];
+        let ext = treeFiles[0].split('.').pop();
+        let lang = determineLang(ext);
         treeFiles.map((file) => {
             let fileContent = sessionStorage.getItem(file);
             submitArr.push({name: file, content: fileContent});
         })
-        let postObj = {language: 'java:8', files: submitArr};
+        let postObj = {language: lang, files: submitArr};
         let url = window.location.pathname;
         let id = url.split('/').pop();
         axios.post(`http://localhost:8080/question/execute/${id}`, postObj, {headers: {"Authorization" : `Bearer ${props.token}`}}).
@@ -191,13 +219,13 @@ export default function Sandbox(props) {
     const handleSubmitButton = (event) => {
         loadResults(false);
         let submitArr = [];
-        let lang = treeFiles[0].split('.').pop();
-        console.log(lang);
+        let ext = treeFiles[0].split('.').pop();
+        let lang = determineLang(ext);
         treeFiles.map((file) => {
             let fileContent = sessionStorage.getItem(file);
             submitArr.push({name: file, content: fileContent});
         })
-        let postObj = {language: 'java:8', files: submitArr, comment: ''};
+        let postObj = {language: lang, files: submitArr, comment: ''};
         let url = window.location.pathname;
         let id = url.split('/').pop();
         axios.post(`http://localhost:8080/submission/create/${id}`, postObj, {headers: {"Authorization" : `Bearer ${props.token}`}}).
@@ -287,7 +315,7 @@ export default function Sandbox(props) {
     }
 
     function TabPanel(props) {
-        const { children, value, index, ...other } = props;
+        const { children, value, index, language, ...other } = props;
 
         function handleEditorDidMount(_, editor) {
             editorRef.current = editor;
@@ -314,7 +342,7 @@ export default function Sandbox(props) {
                 <Editor
                     value={sessionStorage.getItem(props.sessionId)}
                     theme='dark'
-                    language='java'
+                    language={language}
                     editorDidMount={handleEditorDidMount}
                     width='100%'
                     height='100%'
@@ -470,8 +498,15 @@ export default function Sandbox(props) {
                             </div>
                             <div className={styles.monacoDiv}>
                             {fileTabs.map((name, index) => {
+                                    let ext = name.split('.').pop();
                                     return(
-                                        <TabPanel value={value} index={index} sessionId={name} readOnly={props.readOnly} />
+                                        <TabPanel 
+                                            value={value} 
+                                            index={index} 
+                                            sessionId={name} 
+                                            readOnly={props.readOnly} 
+                                            language={determineEditorLang(ext)}
+                                        />
                                     );
                                 })}
                             </div>
