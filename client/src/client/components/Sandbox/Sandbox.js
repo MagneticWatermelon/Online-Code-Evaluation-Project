@@ -191,14 +191,16 @@ export default function Sandbox(props) {
     const handleSubmitButton = (event) => {
         loadResults(false);
         let submitArr = [];
+        let lang = treeFiles[0].split('.').pop();
+        console.log(lang);
         treeFiles.map((file) => {
             let fileContent = sessionStorage.getItem(file);
             submitArr.push({name: file, content: fileContent});
         })
-        let postObj = {language: 'java:8', files: submitArr};
+        let postObj = {language: 'java:8', files: submitArr, comment: ''};
         let url = window.location.pathname;
         let id = url.split('/').pop();
-        axios.post(`http://localhost:8080/submissions/create/${id}`, postObj, {headers: {"Authorization" : `Bearer ${props.token}`}}).
+        axios.post(`http://localhost:8080/submission/create/${id}`, postObj, {headers: {"Authorization" : `Bearer ${props.token}`}}).
         then((response => {
             let promise =  new Promise(resolve => {
                 resolve(setResults(response.data));
