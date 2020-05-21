@@ -7,7 +7,6 @@ module.exports.createQuestion = (req,res,next)=>{
     let {title, explanation, submission_limit,points,languages, inputs, outputs} = req.body
     const assignmentID = req.params.assignmentID
 
-    console.log(req.body)
     questionModel.createQuestion(assignmentID,title, explanation,submission_limit,points,languages, inputs, outputs, (err, id)=>{
         if(err){return res.status(500).json({message: err})}
         return res.status(201).json({message:'Question added to assignment',question_id:id})
@@ -68,7 +67,6 @@ module.exports.execute = (req,res,next)=>{
 }
 
 module.exports.executeBundle = (userID, bundle, callback)=>{
-    console.log(bundle)
     evaluator.evaluate(userID, bundle, (err, score, evaluation)=>{
         if(err){return callback(err,null)}
         return callback(null,{
