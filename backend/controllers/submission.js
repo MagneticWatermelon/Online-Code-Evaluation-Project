@@ -152,3 +152,7 @@ module.exports.checkSubmissionLimit = (req,res,next)=>{
         return res.status(403).json({message:'You exceeded submission limit'})
     })
 }
+
+module.exports.checkLanguage = (req,res,next)=>{
+    next();
+}
