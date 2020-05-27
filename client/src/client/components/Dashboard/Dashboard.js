@@ -16,9 +16,10 @@ import { Avatar, List, ListItem } from '@material-ui/core';
 import PersonIcon from '@material-ui/icons/Person';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
-import {Switch, Route } from 'react-router-dom';
+import {Switch, Route, useHistory } from 'react-router-dom';
 import Sandbox from '../Sandbox/Sandbox';
 import {BrowserRouter as Router} from 'react-router-dom';
+import { Link as RouterLink} from 'react-router-dom';
 import CourseGrid from '../CourseGrid/CourseGrid';
 import RightBar from '../RightBar/RightBar';
 import Badge from '@material-ui/core/Badge';
@@ -33,6 +34,7 @@ import SubmissionsAll from '../SubmissionsAll/SubmissionsAll';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Assignment from '../Assignment/Assignment';
 import axios from 'axios';
+import Profile from '../Profile/Profile';
 
 
 const drawerWidth = 240;
@@ -143,6 +145,8 @@ export default function Dashboard(props) {
   const [assignments, setAssignments] = React.useState([]);
   const [submissions, setSubmissions] = React.useState([]);
 
+  let history = useHistory();
+
   async function getCourseIDs() {
     let response = await axios.get(`http://localhost:8080/user/courses/${props.userId}`, {headers: {"Authorization" : `Bearer ${props.token}`}});
     let courseArr = await response.data.courses;
@@ -226,6 +230,12 @@ export default function Dashboard(props) {
     setAnchorEl(null);
   };
 
+  const handleLogout = () => {
+    setAnchorEl(null);
+    history.push('/');
+    window.location.reload();
+  }
+
   const handleClickNotif = (event) => {
     setAnchorElNotif(event.currentTarget);
     setCount(0);
@@ -296,9 +306,7 @@ export default function Dashboard(props) {
                       aria-haspopup="true" 
                       onClick={handleClick}
                     >
-                        <Avatar>
-                            <PersonIcon />
-                        </Avatar>
+                        <Avatar />
                     </IconButton>
 
                     <Menu
@@ -316,8 +324,18 @@ export default function Dashboard(props) {
                           horizontal: 'right',
                         }}
                     >
-                        <MenuItem onClick={handleClose}>My account</MenuItem>
-                        <MenuItem onClick={handleClose}>Logout</MenuItem>
+                        <MenuItem 
+                          onClick={handleClose} 
+                          component={RouterLink}
+                          to={`/profile/${props.userId}`}
+                        >
+                          My account
+                        </MenuItem>
+                        <MenuItem 
+                          onClick={handleLogout}
+                        >
+                          Logout
+                        </MenuItem>
                     </Menu>
                 </Toolbar>
             </AppBar>
@@ -363,6 +381,10 @@ export default function Dashboard(props) {
                         )})
                         }
 
+                        <Route path={`/profile/${props.userId}`}>
+                            <Profile />
+                        </Route>
+
                         <Route path={`/courses/${props.userId}`}>
                             <CoursesAll  courses={courseList}/>
                         </Route>
@@ -375,8 +397,8 @@ export default function Dashboard(props) {
                           <Assignment token={props.token} />
                         </Route>
 
-                        <Route exact path="/submission/:submId">
-                            <Sandbox sessionId={10} token={props.token} readOnly={true}/>
+                        <Route exact path="/submissions/:submId">
+                            <Sandbox token={props.token} readOnly={true}/>
                         </Route>
 
                         <Route path="/submissions" >
@@ -384,7 +406,7 @@ export default function Dashboard(props) {
                         </Route>
 
                         <Route exact path="/question/:questionId">
-                            <Sandbox sessionId={10} token={props.token} readOnly={false}/>
+                            <Sandbox token={props.token} readOnly={false}/>
                         </Route>
 
                     </Switch>

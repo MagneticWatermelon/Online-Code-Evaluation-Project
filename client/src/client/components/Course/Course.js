@@ -84,13 +84,17 @@ export default function Course(props) {
                           temp._id = id;
                           return axios.get(`http://localhost:8080/submission/get/${id}`, {headers: {"Authorization" : `Bearer ${props.token}`}});
                         })).then(responseArr => {
-                          responseArr.map(obj => {
-                            temp.grade = obj.data.score;
-                            temp.date = obj.data.date;
-                            temp.lang = obj.data.language;
-                            subms.push(temp);
-                          })
-                          setSubmissions(subms);
+                          let promise =  new Promise(resolve => {
+                            resolve( responseArr.map(obj => {
+                                temp.grade = obj.data.score;
+                                temp.date = obj.data.date;
+                                temp.lang = obj.data.language;
+                                subms.push(temp);
+                              }));
+                            });
+                            promise.then(() => {
+                                setSubmissions(subms);
+                            });
                         })
                       }
                     })

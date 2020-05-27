@@ -59,7 +59,8 @@ export default function AssignmentsAll(props) {
         rowsPerPageOptions: [5,10,20],
         print: false,
         download: false,
-        onRowClick: () => {console.log('clicked')}
+        viewColumns: false,
+        filter: false,
     };
 
     const useStyles = makeStyles((theme) => ({

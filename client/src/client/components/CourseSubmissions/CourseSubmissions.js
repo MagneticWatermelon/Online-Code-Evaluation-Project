@@ -52,7 +52,7 @@ export default function CourseSubmissions(props) {
         print: false,
         download: false,
         viewColumns: false,
-        onRowClick: () => {console.log('clicked')}
+        filter: false,
     };
 
     const useStyles = makeStyles((theme) => ({

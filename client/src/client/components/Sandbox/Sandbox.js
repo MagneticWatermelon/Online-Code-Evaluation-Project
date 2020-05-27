@@ -59,6 +59,12 @@ function determineEditorLang(extension) {
     }
 };
 
+function createId(name) {
+    let url = window.location.pathname;
+    let id = url.split('/').pop();
+    return `${id}_${name}`;
+}
+
 
 
 export default function Sandbox(props) {
@@ -503,7 +509,7 @@ export default function Sandbox(props) {
                                         <TabPanel 
                                             value={value} 
                                             index={index} 
-                                            sessionId={name} 
+                                            sessionId={createId(name)} 
                                             readOnly={props.readOnly} 
                                             language={determineEditorLang(ext)}
                                         />

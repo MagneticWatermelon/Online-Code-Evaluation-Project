@@ -15,7 +15,7 @@ export default function CoursesAll(props) {
             sort: true,
             customBodyRender: (value, tableData, updateValue) => {
                 return (
-                    <Link component={RouterLink} to={`courses/${tableData.rowData[1]}`}>
+                    <Link component={RouterLink} to={`/courses/${tableData.rowData[1]}`}>
                         {value}
                     </Link>
                 )
@@ -57,7 +57,8 @@ export default function CoursesAll(props) {
         rowsPerPageOptions: [5,10,20],
         print: false,
         download: false,
-        onRowClick: () => {console.log('clicked')}
+        viewColumns: false,
+        filter: false,
     };
 
     const useStyles = makeStyles((theme) => ({

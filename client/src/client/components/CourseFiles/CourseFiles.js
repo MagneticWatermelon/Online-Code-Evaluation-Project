@@ -6,6 +6,7 @@ import TreeItem from '@material-ui/lab/TreeItem';
 import { makeStyles } from '@material-ui/core/styles';
 import MUIDataTable from 'mui-datatables';
 import { Typography } from '@material-ui/core';
+import { Link } from '@material-ui/core';
 import moment from 'moment';
 
 
@@ -22,6 +23,13 @@ export default function CourseFiles(props) {
         {label :"Name", name: 'file_name', options: {
             filter: false,
             sort: true,
+            customBodyRender: (value, tableData, updateValue) => {
+                return (
+                    <Link>
+                        {value}
+                    </Link>
+                )
+            }
            }}, 
         {label :"Created At", name: 'createdAt',  options: {
             filter: false,
@@ -61,7 +69,6 @@ export default function CourseFiles(props) {
         print: false,
         download: false,
         viewColumns: false,
-        onRowClick: () => {console.log('clicked')}
     };
 
     const useStyles = makeStyles((theme) => ({
@@ -95,6 +102,7 @@ export default function CourseFiles(props) {
                     className={styles.treeroot}
                     defaultCollapseIcon={<ExpandMoreIcon />}
                     defaultExpandIcon={<ChevronRightIcon />}
+                    expanded={['1']}
                 >
                     <TreeItem nodeId="1" label="files">
                         {props.resources.map((file, index) => {

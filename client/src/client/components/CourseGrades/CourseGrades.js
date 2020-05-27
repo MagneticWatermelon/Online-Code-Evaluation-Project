@@ -18,7 +18,7 @@ export default function CourseGrades(props) {
             sort: true,
             customBodyRender: (value, tableData, updateValue) => {
                 return (
-                    <Link component={RouterLink} to={`/courses/${props.course.course_code}/assignments/${tableData.rowData[3]}`}>
+                    <Link component={RouterLink} to={`/assignments/${tableData.rowData[3]}`}>
                         {value}
                     </Link>
                 )
@@ -35,12 +35,7 @@ export default function CourseGrades(props) {
             filter: false,
             sort: false,
             customBodyRender: (value, tableData, updateValue) => {
-                if(value) {
-                    return {value}
-                }
-                else {
-                    return '_'
-                }
+                return value ? value : '_';
             }
            }},
         {name: '_id', options: {display: 'false',  filter: false, sort: false}},
@@ -56,7 +51,7 @@ export default function CourseGrades(props) {
         print: false,
         download: false,
         viewColumns: false,
-        onRowClick: () => {console.log('clicked')}
+        filter: false,
     };
 
     const useStyles = makeStyles((theme) => ({
