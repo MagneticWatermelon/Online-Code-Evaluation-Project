@@ -144,6 +144,15 @@ export default function Dashboard(props) {
   const [notifs, setNotifs] = React.useState([]);
   const [assignments, setAssignments] = React.useState([]);
   const [submissions, setSubmissions] = React.useState([]);
+  const [user, setUser] = React.useState();
+
+  useEffect(() => {
+      axios.get(`http://localhost:8080/user/get/${props.userId}`, {headers: {"Authorization" : `Bearer ${props.token}`}}).
+      then((response) => {
+          console.log(response.data);
+          setUser(response.data);
+      })
+  }, []);
 
   let history = useHistory();
 
@@ -382,7 +391,7 @@ export default function Dashboard(props) {
                         }
 
                         <Route path={`/profile/${props.userId}`}>
-                            <Profile />
+                            <Profile user={user} />
                         </Route>
 
                         <Route path={`/courses/${props.userId}`}>
