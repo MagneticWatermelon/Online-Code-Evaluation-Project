@@ -54,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
     ...theme.mixins.toolbar,
   },
   appBar: {
-    backgroundColor: '#BA3B46',
+    backgroundColor: '#104547',
     zIndex: theme.zIndex.drawer + 1,
     transition: theme.transitions.create(['width', 'margin'], {
       easing: theme.transitions.easing.sharp,
@@ -62,7 +62,7 @@ const useStyles = makeStyles((theme) => ({
     }),
   },
   appBarShift: {
-    backgroundColor: '#BA3B46',
+    backgroundColor: '#104547',
     marginLeft: drawerWidth,
     width: `calc(100% - ${drawerWidth}px)`,
     transition: theme.transitions.create(['width', 'margin'], {
@@ -144,6 +144,15 @@ export default function Dashboard(props) {
   const [notifs, setNotifs] = React.useState([]);
   const [assignments, setAssignments] = React.useState([]);
   const [submissions, setSubmissions] = React.useState([]);
+  const [user, setUser] = React.useState();
+
+  useEffect(() => {
+      axios.get(`http://localhost:8080/user/get/${props.userId}`, {headers: {"Authorization" : `Bearer ${props.token}`}}).
+      then((response) => {
+          console.log(response.data);
+          setUser(response.data);
+      })
+  }, []);
 
   let history = useHistory();
 
@@ -382,7 +391,7 @@ export default function Dashboard(props) {
                         }
 
                         <Route path={`/profile/${props.userId}`}>
-                            <Profile />
+                            <Profile user={user} />
                         </Route>
 
                         <Route path={`/courses/${props.userId}`}>
