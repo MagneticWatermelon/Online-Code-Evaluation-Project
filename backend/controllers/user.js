@@ -22,6 +22,13 @@ module.exports.deleteUser = (req,res,next)=>{
     })
 }
 
+module.exports.getAllUsers = (req,res,next)=>{
+    userModel.getAllUsers((err,users)=>{
+        if(err){return res.status(404).json({message:err})}
+        return res.status(200).json(users)
+    })
+}
+
 module.exports.getUser = (req,res,next)=>{
     const userid = req.params.id
     userModel.getUser(userid, (err, user)=>{

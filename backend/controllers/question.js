@@ -48,6 +48,7 @@ module.exports.updateIO = (req,res,next)=>{
 }
 
 module.exports.execute = (req,res,next)=>{
+    console.log(req.body);
     const questionID = req.params.id
     const userID     = req.user_id
 
@@ -100,7 +101,7 @@ module.exports.checkAssignment = (req,res,next)=>{
     })
 }
 
-module.exports.validateUser = (req,re,next)=>{
+module.exports.validateUser = (req,res,next)=>{
     const questionID    = req.params.id
     const userID        = req.user_id
     const role          = req.user_role

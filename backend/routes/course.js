@@ -15,6 +15,12 @@ router.post(
     courseController.createCourse)
 
 router.get(
+    '/get/all',
+    isAuth,
+    isAdmin,
+    courseController.getAllCourses)
+
+router.get(
     '/get/:id',
     isAuth,
     courseController.checkCourse,
@@ -33,28 +39,16 @@ router.delete(
     courseController.deleteCourse)
 
 router.post(
-    '/addStudent/:courseID/:studentID',
+    '/register/:courseID',
     isAuth,
     isAdmin,
-    courseController.addStudent)
+    courseController.addPeople)
 
 router.delete(
-    '/dropStudent/:courseID/:studentID',
+    '/deregister/:courseID',
     isAuth,
     isAdmin,
-    courseController.dropStudent)
-
-router.post(
-    '/addInstructor/:courseID/:instructorID',
-    isAuth,
-    isAdmin,
-    courseController.addInstructor)
-
-router.delete(
-    '/dropInstructor/:courseID/:instructorID',
-    isAuth,
-    isAdmin,
-    courseController.dropInstructor)
+    courseController.dropPeople)
 
 router.get(
     '/assignments/:id',

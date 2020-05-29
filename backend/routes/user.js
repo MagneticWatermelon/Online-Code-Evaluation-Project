@@ -15,6 +15,12 @@ router.post(
     userController.createUser)
 
 router.get(
+    '/get/all',
+    isAuth,
+    isAdmin,
+    userController.getAllUsers)
+
+router.get(
     '/get/:id',
     isAuth, 
     userController.getUser)

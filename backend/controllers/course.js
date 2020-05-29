@@ -8,7 +8,7 @@ module.exports.createCourse = (req, res, next)=>{
 
     courseModel.createCourse(code,year,term,name, (err,course_id)=>{
         if(err){return res.status(500).json({message:err})}
-        courseModel.addInstructorToCourse(course_id, instructor, (err)=>{
+        courseModel.addPeople(course_id,[instructor],(err)=>{
             if(err){return res.status(500).json({message:err})}
 
             return res.status(201).json({
@@ -25,6 +25,13 @@ module.exports.getCourse = (req,res,next)=>{
     courseModel.getCourse(courseID, (err, course)=>{
         if(err){return res.status(500).json({message:err})}
         return res.status(200).json(course)
+    })
+}
+
+module.exports.getAllCourses = (req,res,next)=>{
+    courseModel.getAllCourses((err, courses)=>{
+        if(err){return res.status(404).json({message:err})}
+        res.status(200).json(courses)
     })
 }
 
@@ -47,37 +54,25 @@ module.exports.deleteCourse = (req, res, next)=>{
     })
 }
 
-module.exports.addStudent = (req, res, next)=>{
-    let {courseID,studentID} = req.params
-    courseModel.addStudentToCourse(courseID,studentID,(err)=>{
-        if(err){return res.status(500).json({message:err})}
-        notificationController.sendAddedToCourse(studentID,courseID)
-        return res.status(200).json({message:'Student added to course'})
+module.exports.addPeople = (req, res, next)=>{
+    let courseID = req.params.courseID;
+    let people   = req.body.people;
+
+    console.log(people)
+    
+    courseModel.addPeople(courseID,people,(err)=>{
+        if(err){return res.status(404).json({message:err})}
+        return res.status(200).json({message:'People added to course'})
     })
 }
 
-module.exports.dropStudent = (req,res,next)=>{
-    let {courseID,studentID} = req.params
-    courseModel.dropStudentFromCourse(courseID,studentID,(err)=>{
-        if(err){return res.status(500).json({message:err})}
-        return res.status(200).json({message:'Student droped from course'})
-    })
-}
+module.exports.dropPeople = (req,res,next)=>{
+    let courseID = req.params.courseID;
+    let people   = req.body.people;
 
-
-module.exports.addInstructor = (req, res, next)=>{
-    let {courseID,instructorID} = req.params
-    courseModel.addInstructorToCourse(courseID,instructorID,(err)=>{
-        if(err){return res.status(500).json({message:err})}
-        return res.status(200).json({message:'Instructor added to course'})
-    })
-}
-
-module.exports.dropInstructor = (req,res,next)=>{
-    let {courseID,instructorID} = req.params
-    courseModel.dropInstructorFromCourse(courseID,instructorID,(err)=>{
-        if(err){return res.status(500).json({message:err})}
-        return res.status(200).json({message:'Instructor droped from course'})
+    courseModel.dropPeople(courseID,people,(err)=>{
+        if(err){return res.status(404).json({message:err})}
+        return res.status(200).json({message:'People dropped from course'})
     })
 }
 

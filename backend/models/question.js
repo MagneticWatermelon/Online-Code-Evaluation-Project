@@ -102,6 +102,7 @@ const updateQuestion = (question_id, title, explanation,submission_limit,points,
         return callback(null)
     })
     .catch(err=>{
+        console.log(err)
         return callback('Update operation failed')
     })
 }
