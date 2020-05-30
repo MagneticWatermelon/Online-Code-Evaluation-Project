@@ -204,13 +204,14 @@ export default function Sandbox(props) {
         let submitArr = [];
         let ext = treeFiles[0].split('.').pop();
         let lang = determineLang(ext);
+        let url = window.location.pathname;
+        let id = url.split('/').pop();
         treeFiles.map((file) => {
-            let fileContent = sessionStorage.getItem(file);
+            let fileName = `${id}_${file}`;
+            let fileContent = sessionStorage.getItem(fileName);
             submitArr.push({name: file, content: fileContent});
         })
         let postObj = {language: lang, files: submitArr};
-        let url = window.location.pathname;
-        let id = url.split('/').pop();
         axios.post(`http://localhost:8080/question/execute/${id}`, postObj, {headers: {"Authorization" : `Bearer ${props.token}`}}).
         then((response => {
             let promise =  new Promise(resolve => {
@@ -227,13 +228,14 @@ export default function Sandbox(props) {
         let submitArr = [];
         let ext = treeFiles[0].split('.').pop();
         let lang = determineLang(ext);
+        let url = window.location.pathname;
+        let id = url.split('/').pop();
         treeFiles.map((file) => {
-            let fileContent = sessionStorage.getItem(file);
+            let fileName = `${id}_${file}`;
+            let fileContent = sessionStorage.getItem(fileName);
             submitArr.push({name: file, content: fileContent});
         })
         let postObj = {language: lang, files: submitArr, comment: ''};
-        let url = window.location.pathname;
-        let id = url.split('/').pop();
         axios.post(`http://localhost:8080/submission/create/${id}`, postObj, {headers: {"Authorization" : `Bearer ${props.token}`}}).
         then((response => {
             let promise =  new Promise(resolve => {
