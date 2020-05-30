@@ -42,8 +42,8 @@ export default function FeedBack(props) {
                 {props.grades.map((grade, index) => {
                 return (
                     <div>
-                        <Link>
-                            <ListItem component={RouterLink} to={`/submissions/${grade._id}`}>
+                        <Link component={RouterLink} to={`/submissions/${grade._id}`}>
+                            <ListItem >
                                 <ListItemIcon>
                                     <DoneIcon style={{ color: green[500] }} />
                                 </ListItemIcon>

@@ -12,7 +12,7 @@ import CourseGrades from '../CourseGrades/CourseGrades';
 import CourseFiles from '../CourseFiles/CourseFiles';
 import axios from 'axios';
 import Announcement from '../Announcement/Announcement';
-import Assignment from '../Assignment/Assignment';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 
 
@@ -39,7 +39,12 @@ const useStyles = makeStyles((theme) => ({
     content: {
         display: 'inline-flex',
         width: '100%',
-    }
+    },
+    progress: {
+        width: '100%',
+        height: '100%',
+        padding: '15% 20%',
+    },
   }));
 
 const theme = createMuiTheme({
@@ -58,48 +63,37 @@ overrides: {
 
 
 export default function Course(props) {
-    const [todos, setToDos] = React.useState([]);
     const [assignments, setAssignments] = React.useState([]);
+    const [rightBarAssign, setRightBarAssign] = React.useState([]);
     const [announcements, setAnnouncements] = React.useState([]);
     const [resources, setResources] = React.useState([]);
     const [submissions, setSubmissions] = React.useState([]);
+    const [submLoaded, setSubmLoaded] = React.useState(false);
 
     const styles = useStyles();
 
     useEffect(() => {
         axios.get(`http://localhost:8080/course/grades/${props.course._id}/${props.userId}`, {headers: {"Authorization" : `Bearer ${props.token}`}}).
         then((response) => {
+            let data = response.data;
             setAssignments(response.data);
-            return response.data;
-        }).then((response) => {
-            axios.all(response.map((asg) => {
-                return axios.get(`http://localhost:8080/assignment/check-submissions/${asg._id}/${props.userId}`, {headers: {"Authorization" : `Bearer ${props.token}`}});
-            })).then((responseArr => {
-                let subms =[];
-                responseArr.map((obj) => {
-                    obj.data.map((subm) => {
-                      if(subm.isSubmitted){
-                        let temp ={title: subm.title};
-                        axios.all(subm.submissions.map((id) => {
-                          temp._id = id;
-                          return axios.get(`http://localhost:8080/submission/get/${id}`, {headers: {"Authorization" : `Bearer ${props.token}`}});
-                        })).then(responseArr => {
-                          let promise =  new Promise(resolve => {
-                            resolve( responseArr.map(obj => {
-                                temp.grade = obj.data.score;
-                                temp.date = obj.data.date;
-                                temp.lang = obj.data.language;
-                                subms.push(temp);
-                              }));
-                            });
-                            promise.then(() => {
-                                setSubmissions(subms);
-                            });
-                        })
-                      }
-                    })
-                })
-            }))
+            let subms = [];
+            let temp = [];
+            data.map((val) => {
+            if(!val.grade) {
+                temp.push(val);
+            }
+            else {
+                subms.push(val);
+            }
+            })
+            let promise =  new Promise(resolve => {
+            resolve(setRightBarAssign(temp));
+            resolve(setSubmissions(subms));
+            });
+            promise.then(() => {
+                setSubmLoaded(true);
+            });
         })
     }, []);
 
@@ -161,8 +155,12 @@ export default function Course(props) {
                             </Route>
 
                             <Route path={`/courses/${props.course.course_code}`}>
-                                <CourseSummary announceList={announcements} assignments={assignments}/>
-                                <RightBar todos={assignments} courseCode={props.course.course_code} grades={submissions}/>
+                                <CourseSummary announceList={announcements} course={props.course} assignments={assignments}/>
+                                {submLoaded ? 
+                                    (<RightBar todos={rightBarAssign} courseCode={props.course.course_code} grades={submissions}/>)
+                                :
+                                    (<div className={styles.progress}><CircularProgress /></div>)
+                                }
                             </Route>
                         </Switch>
                     </div>

@@ -181,37 +181,23 @@ export default function Dashboard(props) {
     let response = await axios.get(`http://localhost:8080/user/assignments/${props.userId}/all`, {headers: {"Authorization" : `Bearer ${props.token}`}});
     let data = response.data;
     let subms = [];
-    axios.all(data.map((val) => {
-      return axios.get(`http://localhost:8080/assignment/check-submissions/${val._id}/${props.userId}`, {headers: {"Authorization" : `Bearer ${props.token}`}});
-    })).then((responseArr) => {
-      responseArr.map((obj) => {
-        obj.data.map((subm) => {
-          if(subm.isSubmitted){
-            let temp ={title: subm.title};
-            axios.all(subm.submissions.map((id) => {
-              temp._id = id;
-              return axios.get(`http://localhost:8080/submission/get/${id}`, {headers: {"Authorization" : `Bearer ${props.token}`}});
-            })).then(responseArr => {
-              responseArr.map(obj => {
-                temp.grade = obj.data.score;
-                temp.date= obj.data.date;
-                subms.push(temp);
-                submissions.push(temp);
-              })
-              setSubmLoaded(true);
-            })
-          }
-        })
-      })
-      
-    })
     let temp = [];
     data.map((val) => {
       if(!val.grade) {
         temp.push(val);
       }
+      else {
+        subms.push(val);
+      }
     })
-    setAssignments(temp);
+    let promise =  new Promise(resolve => {
+      resolve(setAssignments(temp));
+      resolve(setSubmissions(subms));
+    });
+    promise.then(() => {
+        setSubmLoaded(true);
+    });
+    
   }
   
   useEffect(getCourseIDs, []);

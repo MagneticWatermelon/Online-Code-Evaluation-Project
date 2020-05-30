@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link as RouterLink} from 'react-router-dom';
 import { List, ListItem, ListItemText, Container} from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 
 
 
@@ -18,6 +18,18 @@ export default function CourseMenu(props) {
           width: 'fit-content',
         }
       }));
+    const theme = createMuiTheme({
+    overrides: {
+        MuiListItem: {
+        root: {
+            "&$selected": { 
+                backgroundColor: "#c2cfcf",
+                borderRadius: 3,
+            },
+        },
+        }
+    }
+    });
     
     const styles = useStyles();
 
@@ -25,9 +37,9 @@ export default function CourseMenu(props) {
     return(
         <Container className={styles.root}>
             <List component='nav'>
-
+            <ThemeProvider theme={theme}>
                 <ListItem 
-                    button 
+                    button
                     component={RouterLink} 
                     to={`/courses/${props.course.course_code}`}
                     selected={selectedIndex === 0 || window.location.pathname === `/courses/${props.course.course_code}`}
@@ -85,7 +97,7 @@ export default function CourseMenu(props) {
                 >
                     <ListItemText primary='Resources' primaryTypographyProps={{align: 'center'}}/>
                 </ListItem>
-
+            </ThemeProvider>
             </List>
         </Container>
     );

@@ -2,7 +2,7 @@ import React from 'react';
 import { Typography, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, List, ListItem, ListItemText, Divider } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { makeStyles } from '@material-ui/core/styles';
-
+import { Link as RouterLink} from 'react-router-dom';
 
 export default function CourseSummary(props) {
 
@@ -41,7 +41,10 @@ export default function CourseSummary(props) {
                             return(
                                 <div>
                                     {index > 0 ? <div></div> : <Divider />}
-                                    <ListItem>
+                                    <ListItem 
+                                        component={RouterLink} 
+                                        to={`/courses/${props.course.course_code}/announcements/${ann._id}`}
+                                    >
                                         <ListItemText
                                             primary={ann.title}
                                             secondary={ann.explanation}
@@ -69,7 +72,10 @@ export default function CourseSummary(props) {
                             return(
                                 <div>
                                     {index > 0 ? <div></div> : <Divider />}
-                                    <ListItem>
+                                    <ListItem
+                                        component={RouterLink} 
+                                        to={`/assignments/${assign._id}`}
+                                    >
                                         <ListItemText
                                             primary={assign.title}
                                             secondary={assign.explanation}

@@ -79,9 +79,12 @@ export default function CourseFiles(props) {
         tree: {
             width: 'fit-content',
             height: '100%',
-            backgroundColor: theme.palette.background.paper,
+            backgroundColor: '#1045473d',
             paddingTop: 10,
             paddingRight: 10,
+            paddingLeft: 10,
+            marginRight: 10,
+            borderRadius: 7,
         },
         treeroot: {
             flex: 1,

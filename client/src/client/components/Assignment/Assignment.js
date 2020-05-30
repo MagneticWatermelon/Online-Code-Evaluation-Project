@@ -25,7 +25,7 @@ export default function Assignment(props) {
         then((response) => {
             setAssignment(response.data);
         })
-    })
+    }, []);
 
     useEffect(() =>{
         let url = window.location.pathname;
