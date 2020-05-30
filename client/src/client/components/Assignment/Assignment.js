@@ -11,6 +11,7 @@ export default function Assignment(props) {
 
     const [questions, setQuestions] = React.useState([]);
     const [assignment, setAssignment] = React.useState({});
+    const [subms, setSubms] = React.useState([]);
 
 
     const transformDate =(date) => {
@@ -33,6 +34,15 @@ export default function Assignment(props) {
         axios.get(`http://localhost:8080/assignment/questions/${id}`, {headers: {"Authorization" : `Bearer ${props.token}`}}).
         then((response) => {
             setQuestions(response.data);
+        })
+    }, []);
+
+    useEffect(() => {
+        let url = window.location.pathname;
+        let id = url.split('/').pop();
+        axios.get(`http://localhost:8080/assignment/check-submissions/${id}/${props.userId}`, {headers: {"Authorization" : `Bearer ${props.token}`}}).
+        then((response) => {
+            console.log(response.data);
         })
     }, []);
 
@@ -61,33 +71,38 @@ export default function Assignment(props) {
                     {assignment.title}
                 </Typography>
             </div>
-            <Grid
-                alignItems='flex-start'
-                direction='column'
-                container={true}
-            >
-                {questions.map(q => {
-                    return(
-                        <Grid item className={styles.content}>
-                            <Typography
-                                variant='h5'
-                                gutterBottom={true}
-                                component={RouterLink} 
-                                to={`/question/${q._id}`}
-                            >
-                                {q.title}
-                            </Typography>
-                            <Typography
-                                variant='body2'
-                                gutterBottom={true}
-                                noWrap={true}
-                            >
-                                {q.explanation}
-                            </Typography>
-                        </Grid>
-                    )
-                })}
-            </Grid>
+            <div>
+                <Grid
+                    alignItems='flex-start'
+                    direction='column'
+                    container={true}
+                >
+                    {questions.map(q => {
+                        return(
+                            <Grid item className={styles.content}>
+                                <Typography
+                                    variant='h5'
+                                    gutterBottom={true}
+                                    component={RouterLink} 
+                                    to={`/question/${q._id}`}
+                                >
+                                    {q.title}
+                                </Typography>
+                                <Typography
+                                    variant='body2'
+                                    gutterBottom={true}
+                                    noWrap={true}
+                                >
+                                    {q.explanation}
+                                </Typography>
+                            </Grid>
+                        )
+                    })}
+                </Grid>
+                <div>
+
+                </div>
+            </div>
         </div>
     )
 }

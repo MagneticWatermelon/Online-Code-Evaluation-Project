@@ -17,6 +17,7 @@ import { blueGrey } from '@material-ui/core/colors';
 import FolderOutlinedIcon from '@material-ui/icons/FolderOutlined';
 import AddIcon from '@material-ui/icons/Add';
 import axios from 'axios';
+import { useSnackbar } from 'notistack';
 
 
 function debounce(func, wait) {
@@ -80,17 +81,28 @@ export default function Sandbox(props) {
     const [isQuestionLoaded, loadedQuestion] = React.useState(false);
     const [results, setResults] = React.useState({});
     const [loadedResults, loadResults] = React.useState(true);
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
     const editorRef = useRef();
 
     useEffect(() =>{
         let url = window.location.pathname;
         let id = url.split('/').pop();
-        axios.get(`http://localhost:8080/question/get/${id}`, {headers: {"Authorization" : `Bearer ${props.token}`}}).
-        then((response) => {
-            setQuestion(response.data);
-            loadedQuestion(true);
-        })
+        let type = url.split('/')[1];
+        if (type == 'question') {
+            axios.get(`http://localhost:8080/question/get/${id}`, {headers: {"Authorization" : `Bearer ${props.token}`}}).
+            then((response) => {
+                setQuestion(response.data);
+                loadedQuestion(true);
+            })
+        }
+        else {
+            axios.get(`http://localhost:8080/submission/get/${id}`, {headers: {"Authorization" : `Bearer ${props.token}`}}).
+            then((response) => {
+                let qId = response.data.question_id;
+                console.log(qId);
+            })
+        }
     }, []);
     
     const handleChange = (event) => {
@@ -200,51 +212,63 @@ export default function Sandbox(props) {
       };
 
     const handleRunButton = (event) => {
-        loadResults(false);
-        let submitArr = [];
-        let ext = treeFiles[0].split('.').pop();
-        let lang = determineLang(ext);
-        let url = window.location.pathname;
-        let id = url.split('/').pop();
-        treeFiles.map((file) => {
-            let fileName = `${id}_${file}`;
-            let fileContent = sessionStorage.getItem(fileName);
-            submitArr.push({name: file, content: fileContent});
-        })
-        let postObj = {language: lang, files: submitArr};
-        axios.post(`http://localhost:8080/question/execute/${id}`, postObj, {headers: {"Authorization" : `Bearer ${props.token}`}}).
-        then((response => {
-            let promise =  new Promise(resolve => {
-                resolve(setResults(response.data));
-            });
-            promise.then(() => {
-                loadResults(true)
-            });
-        }))
+        if (treeFiles.length > 0) {
+            loadResults(false);
+            let submitArr = [];
+            let ext = treeFiles[0].split('.').pop();
+            let lang = determineLang(ext);
+            let url = window.location.pathname;
+            let id = url.split('/').pop();
+            treeFiles.map((file) => {
+                let fileName = `${id}_${file}`;
+                let fileContent = sessionStorage.getItem(fileName);
+                submitArr.push({name: file, content: fileContent});
+            })
+            let postObj = {language: lang, files: submitArr};
+            axios.post(`http://localhost:8080/question/execute/${id}`, postObj, {headers: {"Authorization" : `Bearer ${props.token}`}}).
+            then((response => {
+                enqueueSnackbar('Success!', {variant: 'success'});
+                let promise =  new Promise(resolve => {
+                    resolve(setResults(response.data));
+                });
+                promise.then(() => {
+                    loadResults(true)
+                });
+            }))
+        }
+        else {
+            enqueueSnackbar('No files to run!', {variant: 'error'});
+        }
     }
 
     const handleSubmitButton = (event) => {
-        loadResults(false);
-        let submitArr = [];
-        let ext = treeFiles[0].split('.').pop();
-        let lang = determineLang(ext);
-        let url = window.location.pathname;
-        let id = url.split('/').pop();
-        treeFiles.map((file) => {
-            let fileName = `${id}_${file}`;
-            let fileContent = sessionStorage.getItem(fileName);
-            submitArr.push({name: file, content: fileContent});
-        })
-        let postObj = {language: lang, files: submitArr, comment: ''};
-        axios.post(`http://localhost:8080/submission/create/${id}`, postObj, {headers: {"Authorization" : `Bearer ${props.token}`}}).
-        then((response => {
-            let promise =  new Promise(resolve => {
-                resolve(setResults(response.data));
-            });
-            promise.then(() => {
-                loadResults(true)
-            });
-        }))
+        if (treeFiles.length > 0) {
+            loadResults(false);
+            let submitArr = [];
+            let ext = treeFiles[0].split('.').pop();
+            let lang = determineLang(ext);
+            let url = window.location.pathname;
+            let id = url.split('/').pop();
+            treeFiles.map((file) => {
+                let fileName = `${id}_${file}`;
+                let fileContent = sessionStorage.getItem(fileName);
+                submitArr.push({name: file, content: fileContent});
+            })
+            let postObj = {language: lang, files: submitArr, comment: ''};
+            axios.post(`http://localhost:8080/submission/create/${id}`, postObj, {headers: {"Authorization" : `Bearer ${props.token}`}}).
+            then((response => {
+                enqueueSnackbar('Success!', {variant: 'success'});
+                let promise =  new Promise(resolve => {
+                    resolve(setResults(response.data));
+                });
+                promise.then(() => {
+                    loadResults(true)
+                });
+            }))
+        }
+        else {
+            enqueueSnackbar('No files to submit!', {variant: 'error'});
+        }
     }
 
     function TreeFile(props) {

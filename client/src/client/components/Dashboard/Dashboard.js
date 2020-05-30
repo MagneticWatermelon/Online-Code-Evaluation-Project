@@ -12,8 +12,7 @@ import Container from '@material-ui/core/Container';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ListItems from '../ListItems/ListItems';
-import { Avatar, List, ListItem } from '@material-ui/core';
-import PersonIcon from '@material-ui/icons/Person';
+import { Avatar, List} from '@material-ui/core';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import {Switch, Route, useHistory } from 'react-router-dom';
@@ -149,7 +148,6 @@ export default function Dashboard(props) {
   useEffect(() => {
       axios.get(`http://localhost:8080/user/get/${props.userId}`, {headers: {"Authorization" : `Bearer ${props.token}`}}).
       then((response) => {
-          console.log(response.data);
           setUser(response.data);
       })
   }, []);
@@ -389,7 +387,7 @@ export default function Dashboard(props) {
                         </Route>
 
                         <Route path={'/assignments/:assignmentID'}>
-                          <Assignment token={props.token} />
+                          <Assignment token={props.token} userId={props.userId}/>
                         </Route>
 
                         <Route exact path="/submissions/:submId">
