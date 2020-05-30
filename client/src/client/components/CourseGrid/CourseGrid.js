@@ -5,7 +5,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 export default function CourseGrid(props) {
 
-  const[courseColors, setCourseColors] = React.useState([]);
+  const[courseColors, setCourseColors] = React.useState(["#366c9b","#035caa","#043d70","#072742","#428dce","#253949","#319cf9","#a0caef"]);
 
   function hashCode(str) {
     var hash = 0;
@@ -13,14 +13,6 @@ export default function CourseGrid(props) {
        hash = str.charCodeAt(i) + ((hash << 5) - hash);
     }
     return hash;
-  } 
-
-  function intToRGB(i){
-      var c = (i & 0x00FFFFFF)
-          .toString(16)
-          .toUpperCase();
-
-      return "00000".substring(0, 6 - c.length) + c;
   }
 
   const useStyles = makeStyles((theme) => ({
@@ -34,11 +26,9 @@ export default function CourseGrid(props) {
   return (
       <Grid container direction='row' spacing={5} className={styles.root}>
           {props.courses.map((course, index) => {
-            let color = intToRGB(hashCode(course._id))
-            courseColors.push(`#${color}`);
             return (
             <Grid item wrap='nowrap'>
-              <CourseCard course={course} color={courseColors[index]} click={e => props.click(e)} index={index}/>
+              <CourseCard course={course} color={courseColors[index % courseColors.length]} click={e => props.click(e)} index={index}/>
             </Grid>
             )
       })}

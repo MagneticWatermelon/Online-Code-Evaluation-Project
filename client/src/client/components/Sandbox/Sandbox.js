@@ -138,7 +138,7 @@ export default function Sandbox(props) {
         },
         button: {
             width: 250,
-            backgroundColor: '#B9BAA3'
+            backgroundColor: '#a0caefa1'
         },
         button_group: {
             width: '100%',
