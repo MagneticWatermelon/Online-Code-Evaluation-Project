@@ -53,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
     ...theme.mixins.toolbar,
   },
   appBar: {
-    backgroundColor: '#104547',
+    backgroundColor: '#174572',
     zIndex: theme.zIndex.drawer + 1,
     transition: theme.transitions.create(['width', 'margin'], {
       easing: theme.transitions.easing.sharp,
@@ -61,7 +61,7 @@ const useStyles = makeStyles((theme) => ({
     }),
   },
   appBarShift: {
-    backgroundColor: '#104547',
+    backgroundColor: '#174572',
     marginLeft: drawerWidth,
     width: `calc(100% - ${drawerWidth}px)`,
     transition: theme.transitions.create(['width', 'margin'], {

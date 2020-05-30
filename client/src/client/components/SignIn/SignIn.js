@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
   },
   avatar: {
     margin: theme.spacing(1),
-    backgroundColor: '#104547',
+    backgroundColor: '#174572',
   },
   form: {
     width: '100%',
@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
 const theme = createMuiTheme({
   palette: {
     primary: {
-      main: '#104547',
+      main: '#174572',
     },
   },
 });
