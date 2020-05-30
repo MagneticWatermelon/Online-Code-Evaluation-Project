@@ -6,7 +6,7 @@ import OutputArea from '../OutputArea/OutputArea';
 import './SandBox.css';
 import Editor from '@monaco-editor/react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Tabs, Tab, IconButton, Typography, Input, ButtonGroup, Button, CircularProgress} from '@material-ui/core';
+import { Tabs, Tab, IconButton, Typography, Input, ButtonGroup, Button, CircularProgress, Select, MenuItem} from '@material-ui/core';
 import PropTypes from 'prop-types';
 import TreeView from '@material-ui/lab/TreeView';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -81,6 +81,10 @@ export default function Sandbox(props) {
     const [isQuestionLoaded, loadedQuestion] = React.useState(false);
     const [results, setResults] = React.useState({});
     const [loadedResults, loadResults] = React.useState(true);
+    const [attemps, setAttemtps] = React.useState(['Current Attempt', 'test']);
+    const [currAttempt, setCurrAttempt] = React.useState('');
+    const [openAttemptMenu, setOpenAttemptMenu] = React.useState(false);
+
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
     const editorRef = useRef();
@@ -94,6 +98,10 @@ export default function Sandbox(props) {
             then((response) => {
                 setQuestion(response.data);
                 loadedQuestion(true);
+            })
+            axios.get(`http://localhost:8080/question/submissions/${id}/${props.userId}`, {headers: {"Authorization" : `Bearer ${props.token}`}}).
+            then((response) => {
+                console.log(response.data);
             })
         }
         else {
@@ -114,6 +122,7 @@ export default function Sandbox(props) {
 
     const handleAddClick = (event) => {
         treeFiles.push('');
+        sessionStorage.setItem('treeFiles', treeFiles);
         handleTabChange(event, 0);
     }
 
@@ -122,8 +131,23 @@ export default function Sandbox(props) {
         let temp = fileTabs;
         temp.splice(tab, 1);
         setFileTabs(temp);
+        sessionStorage.setItem('fileTabs', fileTabs);
         handleTabChange(event, tab);
     };
+
+    const handleChangeAttemptMenu = (event) => {
+        setCurrAttempt(event.target.value);
+        setFileTabs(['main.java', 'helper.java']);
+        setTreeFiles(['main.java', 'helper.java']);
+      };
+    
+      const handleCloseAttemptMenu = () => {
+        setOpenAttemptMenu(false);
+      };
+    
+      const handleOpenAttemptMenu = () => {
+        setOpenAttemptMenu(true);
+      };
 
     const useStyles = makeStyles((theme) => ({
         root_root: {
@@ -136,6 +160,17 @@ export default function Sandbox(props) {
             height: '100%',
             backgroundColor: '#202124'
         },
+        menu: {
+            height: '100%',
+            marginLeft: 10,
+        },
+        attemptMenu: {
+            backgroundColor: '#a0caefa1',
+            '&:focus': {
+                backgroundColor: '#a0caefa1',
+            },
+            paddingLeft: 5,
+        },
         button: {
             width: 250,
             backgroundColor: '#a0caefa1'
@@ -143,7 +178,7 @@ export default function Sandbox(props) {
         button_group: {
             width: '100%',
             height: 42,
-            paddingLeft: 'calc(50% - 250px)',
+            paddingLeft: 'calc(50% - 350px)',
             backgroundColor: '#033F63'
         },
         editor: {
@@ -289,6 +324,7 @@ export default function Sandbox(props) {
             sessionStorage.setItem(index, '');
             setTreeFiles(temp);
             handleTabChange(event, 0);
+            sessionStorage.setItem('treeFiles', treeFiles);
         }
 
         const handleFolderClick = (event) => {
@@ -300,6 +336,7 @@ export default function Sandbox(props) {
                 }
                 handleTabChange(event, index);
             }
+            sessionStorage.setItem('fileTabs', fileTabs);
         }
 
         const handleFileChange = (event) => {
@@ -311,6 +348,7 @@ export default function Sandbox(props) {
         const handleFileNameChange = (event) => {
             treeFiles[index] = treeFileName;
             sessionStorage.setItem(index, treeFileName);
+            sessionStorage.setItem('treeFiles', treeFiles);
         }
 
         return (
@@ -560,6 +598,27 @@ export default function Sandbox(props) {
                     <Button className={styles.button} onClick={handleRunButton}>Run</Button>
                     <Button className={styles.button} onClick={handleSubmitButton}>Submit</Button>
                 </ButtonGroup>
+                <Select
+                    className={styles.menu}
+                    open={openAttemptMenu}
+                    onClose={handleCloseAttemptMenu}
+                    onOpen={handleOpenAttemptMenu}
+                    value={currAttempt}
+                    onChange={handleChangeAttemptMenu}
+                    classes={{root: styles.attemptMenu}}
+                >
+                {
+                    attemps.map((val, index) => {
+                        return (
+                            <MenuItem
+                                value={index}
+                            >
+                                {val}
+                            </MenuItem>
+                        )
+                    })
+                }
+                </Select>
             </div>
         </div>
     );

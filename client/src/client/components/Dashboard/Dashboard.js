@@ -391,7 +391,7 @@ export default function Dashboard(props) {
                         </Route>
 
                         <Route exact path="/submissions/:submId">
-                            <Sandbox token={props.token} readOnly={true}/>
+                            <Sandbox token={props.token} userId={props.userId} readOnly={true}/>
                         </Route>
 
                         <Route path="/submissions" >
@@ -399,7 +399,7 @@ export default function Dashboard(props) {
                         </Route>
 
                         <Route exact path="/question/:questionId">
-                            <Sandbox token={props.token} readOnly={false}/>
+                            <Sandbox token={props.token} userId={props.userId} readOnly={false}/>
                         </Route>
 
                     </Switch>
