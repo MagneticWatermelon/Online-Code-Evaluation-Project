@@ -1,5 +1,5 @@
 import React, {useEffect}from 'react';
-import { Grid, Typography } from '@material-ui/core';
+import { Grid, Typography, Button } from '@material-ui/core';
 import { makeStyles} from '@material-ui/core/styles';
 import { Link as RouterLink} from 'react-router-dom';
 import moment from 'moment';
@@ -62,6 +62,15 @@ export default function Assignment(props) {
 
     return(
         <div className={styles.root}>
+            {props.role == 1 && 
+            (<Button
+                variant='contained'
+                color='primary'
+                component={RouterLink}
+                to={`/courses/${props.course.course_code}/assignment/create`}
+            >
+                Create Assignment
+            </Button>)}
             <div>
                 <Typography 
                     align='center'

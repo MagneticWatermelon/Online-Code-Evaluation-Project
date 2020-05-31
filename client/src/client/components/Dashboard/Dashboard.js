@@ -392,10 +392,6 @@ export default function Dashboard(props) {
                           <AssignmentsAll assignments={assignments}/>
                         </Route>
 
-                        <Route path={'/assignments/:assignmentID'}>
-                          <Assignment token={props.token} userId={props.userId}/>
-                        </Route>
-
                         <Route exact path="/submissions/:submId">
                             <Sandbox token={props.token} userId={props.userId} readOnly={true}/>
                         </Route>

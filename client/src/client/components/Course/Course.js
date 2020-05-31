@@ -15,6 +15,8 @@ import Announcement from '../Announcement/Announcement';
 import CreateAnnouncement from '../CreateAnnouncement/CreateAnnouncement'
 import CircularProgress from '@material-ui/core/CircularProgress';
 import UpdateAnnouncement from '../UpdateAnnouncement/UpdateAnnouncement';
+import CreateAssignment from '../CreateAssignment/CreateAssignment';
+import Assignment from '../Assignment/Assignment'
 
 
 
@@ -132,8 +134,12 @@ export default function Course(props) {
 
                         <Switch>
 
+                            <Route path={`/courses/${props.course.course_code}/assignments/:assignmentID`}>
+                                <Assignment token={props.token} userId={props.userId} role={props.role} course={props.course}/>
+                            </Route>
+
                             <Route path={`/courses/${props.course.course_code}/assignment/create`}>
-                                Hello
+                                <CreateAssignment course={props.course} token={props.token} />
                             </Route>
 
                             <Route path={`/courses/${props.course.course_code}/announcement/update`}>

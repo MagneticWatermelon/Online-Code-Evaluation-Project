@@ -17,7 +17,7 @@ export default function CourseAssignments(props) {
             sort: true,
             customBodyRender: (value, tableData, updateValue) => {
                 return (
-                    <Link component={RouterLink} to={`/assignments/${tableData.rowData[3]}`}>
+                    <Link component={RouterLink} to={`/courses/${props.course.course_code}/assignments/${tableData.rowData[3]}`}>
                         {value}
                     </Link>
                 )
