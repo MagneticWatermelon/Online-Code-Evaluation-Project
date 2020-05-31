@@ -94,6 +94,15 @@ export default function Assignment(props) {
                 >
                     Delete
                 </Button>
+                <Button
+                variant='contained'
+                color='primary'
+                component={RouterLink}
+                onClick={handleDelete}
+                to={`/courses/${props.course.course_code}/question/create`}
+                >
+                    Add Question
+                </Button>
             </div>
             )}
             <div>

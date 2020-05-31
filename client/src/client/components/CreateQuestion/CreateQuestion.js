@@ -21,76 +21,75 @@ const useStyles = makeStyles((theme) => ({
     },
   }));
 
-export default function CreateAssignment(props) {
+export default function CreateQuestion(props) {
 
-    const [assignment, setAssignment] = React.useState({title: '', explanation: '', due_date: '', weight: '', release_date: ''});
-    const [sliderVal, setVal] = React.useState(20);
+    const [question, setQuestion] = React.useState({title: '', explanation: '', submission_limit: 1, points: 10, languages: []});
+    const [sliderValPoint, setValPoint] = React.useState(20);
+    const [sliderValLimit, setValLimit] = React.useState(5);
     const classes = useStyles();
 
     const handleTitleChange = (e) => {
-        assignment.title = e.target.value;
+        question.title = e.target.value;
     }
 
-    const handleTimeChange = (e) => {
-        assignment.due_date = e.target.value;
+    const handlePointChange = (e, val) => {
+        setValPoint(val);
+        question.points = val;
     }
 
-    const handleWeightChange = (e, val) => {
-        setVal(val);
-        assignment.weight = val;
+    const handleLimitChange = (e, val) => {
+        setValLimit(val);
+        question.submission_limit = val;
     }
 
     const handleEditorChange = (e) => {
         let str = e.target.getContent();
-        assignment.explanation = str;
+        question.explanation = str;
     }
 
     const handleSubmit = (e) => {
-        let obj = assignment;
-        obj.release_date = moment().format(moment.HTML5_FMT.DATETIME_LOCAL);
-        console.log(obj);
-        axios.post(`http://localhost:8080/assignment/create/${props.course._id}`, obj, {headers: {"Authorization" : `Bearer ${props.token}`}}).
-        then(function (response) {
-            console.log(response);
-            })
-            .catch(function (error) {
-            console.log(error);
-        });
+        
     }
 
     return (
         <div className={classes.root}>
             <TextField id="title" label="Title" variant='outlined' onChange={handleTitleChange}/>
-            <TextField
-                id="datetime-local"
-                label="Due Date"
-                type="datetime-local"
-                defaultValue={moment().format(moment.HTML5_FMT.DATETIME_LOCAL)}
-                className={classes.textField}
-                onChange={handleTimeChange}
-                InputLabelProps={{
-                shrink: true,
-                }}
-            />
             <div className={classes.slider}>
                 <Typography
                     id="discrete-slider" gutterBottom
                 >
-                    Weight
+                    Submission Limit
                 </Typography>
                 <Slider
-                    value={sliderVal}
+                    value={sliderValLimit}
+                    aria-labelledby="discrete-slider"
+                    valueLabelDisplay="on"
+                    step={1}
+                    marks
+                    min={1}
+                    max={10}
+                    onChange={handleLimitChange}
+                />
+            </div>
+            <div className={classes.slider}>
+                <Typography
+                    id="discrete-slider" gutterBottom
+                >
+                    Points
+                </Typography>
+                <Slider
+                    value={sliderValPoint}
                     aria-labelledby="discrete-slider"
                     valueLabelDisplay="on"
                     step={5}
                     marks
                     min={0}
                     max={100}
-                    onChange={handleWeightChange}
+                    onChange={handlePointChange}
                 />
             </div>
             <Editor
-                initialValue="<p>Initial content</p>"
+                initialValue="<p>Problem Definition</p>"
                 init={{
                 height: 500,
                 apiKey:"gi18zjjrosyk60q3hkidkjbxg84ejt4s81wrhoarci6vom6k",

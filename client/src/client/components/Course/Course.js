@@ -18,6 +18,7 @@ import UpdateAnnouncement from '../UpdateAnnouncement/UpdateAnnouncement';
 import CreateAssignment from '../CreateAssignment/CreateAssignment';
 import Assignment from '../Assignment/Assignment'
 import UpdateAssignment from '../UpdateAssignment/UpdateAssignment';
+import CreateQuestion from '../CreateQuestion/CreateQuestion';
 
 
 
@@ -134,6 +135,10 @@ export default function Course(props) {
                         <CourseMenu course={props.course} />
 
                         <Switch>
+
+                            <Route path={`/courses/${props.course.course_code}/question/create`}>
+                                <CreateQuestion course={props.course} token={props.token} />
+                            </Route>
 
                             <Route path={`/courses/${props.course.course_code}/assignments/:assignmentID`}>
                                 <Assignment token={props.token} userId={props.userId} role={props.role} course={props.course}/>
