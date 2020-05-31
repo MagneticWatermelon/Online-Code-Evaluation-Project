@@ -1,9 +1,7 @@
 import React, {useEffect}from 'react';
-import { Grid, Typography, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, List, Divider, ListItem, ListItemText } from '@material-ui/core';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import { Grid, Typography } from '@material-ui/core';
 import { makeStyles} from '@material-ui/core/styles';
 import { Link as RouterLink} from 'react-router-dom';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import moment from 'moment';
 import axios from 'axios';
 
@@ -14,7 +12,6 @@ export default function Assignment(props) {
     const [questions, setQuestions] = React.useState([]);
     const [assignment, setAssignment] = React.useState({});
     const [subms, setSubms] = React.useState([]);
-    const [submsLoaded, setSubmsLoaded] = React.useState(false);
 
 
     const transformDate =(date) => {
@@ -43,25 +40,11 @@ export default function Assignment(props) {
     useEffect(() => {
         let url = window.location.pathname;
         let id = url.split('/').pop();
-        let temp = [];
         axios.get(`http://localhost:8080/assignment/check-submissions/${id}/${props.userId}`, {headers: {"Authorization" : `Bearer ${props.token}`}}).
         then((response) => {
-            response.data.map((q) => {
-                axios.all(q.submissions.map((subm) => {
-                        return axios.get(`http://localhost:8080/submission/get/${subm}`, {headers: {"Authorization" : `Bearer ${props.token}`}})
-                })).then((responseArr) => {
-                    responseArr.map((response) => {
-                        temp.push(response.data);
-                    })
-                }) 
-            });
-            setSubms(temp);   
+            console.log(response.data);
         })
     }, []);
-
-    useEffect(() => {
-        setSubmsLoaded(true);
-    }, [])
 
     const useStyles = makeStyles((theme) => ({
         root: {
@@ -88,7 +71,7 @@ export default function Assignment(props) {
                     {assignment.title}
                 </Typography>
             </div>
-            {submsLoaded && <div>
+            <div>
                 <Grid
                     alignItems='flex-start'
                     direction='column'
@@ -97,51 +80,29 @@ export default function Assignment(props) {
                     {questions.map(q => {
                         return(
                             <Grid item className={styles.content}>
-                                <ExpansionPanel>
-                                    <ExpansionPanelSummary
-                                        expandIcon={<ExpandMoreIcon />}
-                                    >
-                                        <Typography
-                                            variant='h5'
-                                            gutterBottom={true}
-                                            component={RouterLink} 
-                                            to={`/question/${q._id}`}
-                                        >
-                                            {q.title}
-                                        </Typography>
-                                    </ExpansionPanelSummary>
-                                    <ExpansionPanelDetails>
-                                        <List>
-                                            {subms.map((sub, index) => {
-                                                console.log(sub);
-                                                return (
-                                                    q._id == sub.question_id
-                                                    ?
-                                                    <div>
-                                                        {index > 0 ? <div></div> : <Divider />}
-                                                        <ListItem 
-                                                            component={RouterLink} 
-                                                            to={`/submission/${sub._id}`}
-                                                        >
-                                                            <ListItemText
-                                                                primary={`Id: ${sub._id}`}
-                                                                secondary={`Score: ${sub.score}`}
-                                                            />
-                                                        </ListItem>
-                                                        <Divider />
-                                                    </div>
-                                                    :
-                                                    <div></div>
-                                                )
-                                            })}
-                                        </List>
-                                    </ExpansionPanelDetails>
-                                </ExpansionPanel>
+                                <Typography
+                                    variant='h5'
+                                    gutterBottom={true}
+                                    component={RouterLink} 
+                                    to={`/question/${q._id}`}
+                                >
+                                    {q.title}
+                                </Typography>
+                                <Typography
+                                    variant='body2'
+                                    gutterBottom={true}
+                                    noWrap={true}
+                                >
+                                    {q.explanation}
+                                </Typography>
                             </Grid>
                         )
                     })}
                 </Grid>
-            </div>}
+                <div>
+
+                </div>
+            </div>
         </div>
     )
 }
