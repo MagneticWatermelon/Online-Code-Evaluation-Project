@@ -12,6 +12,7 @@ import CourseGrades from '../CourseGrades/CourseGrades';
 import CourseFiles from '../CourseFiles/CourseFiles';
 import axios from 'axios';
 import Announcement from '../Announcement/Announcement';
+import CreateAnnouncement from '../CreateAnnouncement/CreateAnnouncement'
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 
@@ -130,12 +131,20 @@ export default function Course(props) {
 
                         <Switch>
 
+                            <Route path={`/courses/${props.course.course_code}/assignment/create`}>
+                                Hello
+                            </Route>
+
+                            <Route path={`/courses/${props.course.course_code}/announcement/create`}>
+                                <CreateAnnouncement />
+                            </Route>
+
                             <Route path={'/courses/:courseCode/announcements/:announcementID'}>
                                 <Announcement course={props.course} announcements={announcements} />
                             </Route>
 
                             <Route path={`/courses/${props.course.course_code}/announcements`}>
-                                <CourseAnnouncements course={props.course} announcements={announcements}/>
+                                <CourseAnnouncements course={props.course} announcements={announcements} role={props.role}/>
                             </Route>
 
                             <Route path={`/courses/${props.course.course_code}/submissions`}>
@@ -156,12 +165,20 @@ export default function Course(props) {
 
                             <Route path={`/courses/${props.course.course_code}`}>
                                 <CourseSummary announceList={announcements} course={props.course} assignments={assignments}/>
-                                {submLoaded ? 
-                                    (<RightBar todos={rightBarAssign} courseCode={props.course.course_code} grades={submissions}/>)
-                                :
-                                    (<div className={styles.progress}><CircularProgress /></div>)
+                                {(() => {
+                                    if (submLoaded) {
+                                    if(props.role == 0) {
+                                        return (<RightBar todos={rightBarAssign} courseCode={props.course.course_code} grades={submissions}/>);
+                                    }
+                                    }
+                                    else {
+                                    return (<div className={styles.progress}><CircularProgress /></div>)
+                                    }
+                                })()
                                 }
                             </Route>
+
+                            
                         </Switch>
                     </div>
                     

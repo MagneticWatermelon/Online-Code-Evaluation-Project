@@ -10,6 +10,7 @@ import Typography from '@material-ui/core/Typography';
 import { Link as RouterLink} from 'react-router-dom';
 import Link from '@material-ui/core/Link';
 import moment from 'moment';
+import { Button } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -44,6 +45,18 @@ export default function CourseAnnouncements(props) {
 
     return(
         <div className={classes.root}>
+            {props.role == 1 ? 
+                (<Button
+                    variant='contained'
+                    color='primary'
+                    component={RouterLink}
+                    to={`/courses/${props.course.course_code}/announcement/create`}
+                >
+                    Create New Announcement
+                </Button>)
+            :
+                (<div></div>)
+            }
             <List className={classes.list}>
                 {props.announcements.map((val) => {
                     return(

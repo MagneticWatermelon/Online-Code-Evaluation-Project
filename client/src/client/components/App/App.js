@@ -70,7 +70,7 @@ function App() {
         />}
       </Route>
       <Route exact path="/dashboard">
-        <Dashboard userId={userID} token={token}/>
+        <Dashboard userId={userID} role={1} token={token}/>
       </Route>
     </Router>
   );

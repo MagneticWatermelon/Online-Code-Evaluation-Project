@@ -358,10 +358,16 @@ export default function Dashboard(props) {
                           :
                           (<div className={classes.progress}><CircularProgress /></div>)
                           }
-                          {submLoaded ? 
-                            (<RightBar todos={assignments} grades={submissions}/>)
-                          :
-                          (<div className={classes.progress}><CircularProgress /></div>)
+                          {(() => {
+                            if (submLoaded) {
+                              if(props.role == 0) {
+                                return (<RightBar todos={assignments} grades={submissions}/>);
+                              }
+                            }
+                            else {
+                              return (<div className={classes.progress}><CircularProgress /></div>)
+                            }
+                           })()
                           }
                           
                         </Route>
@@ -369,7 +375,7 @@ export default function Dashboard(props) {
                         {courseList.map((course) => {
                           return(
                               <Route path={`/courses/${course.course_code}`}>
-                                  <Course course={course} token={props.token} userId={props.userId}/>
+                                  <Course course={course} token={props.token} userId={props.userId} role={props.role}/>
                               </Route>
                         )})
                         }

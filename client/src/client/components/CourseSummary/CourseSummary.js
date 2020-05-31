@@ -10,6 +10,9 @@ export default function CourseSummary(props) {
         root: {
             width: '100%',
         },
+        panel: {
+            maxWidth: 500,
+        },
         header: {
           marginBottom: 10,
         }
@@ -26,7 +29,7 @@ export default function CourseSummary(props) {
             >
                 Recent Activity
             </Typography>
-            <ExpansionPanel>
+            <ExpansionPanel className={styles.panel}>
                 <ExpansionPanelSummary
                     expandIcon={<ExpandMoreIcon />}
 
@@ -57,7 +60,7 @@ export default function CourseSummary(props) {
                     </List>
                 </ExpansionPanelDetails>
             </ExpansionPanel>
-            <ExpansionPanel>
+            <ExpansionPanel className={styles.panel}>
                 <ExpansionPanelSummary
                     expandIcon={<ExpandMoreIcon />}
 
