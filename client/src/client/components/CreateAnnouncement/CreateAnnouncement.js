@@ -1,42 +1,44 @@
 import React from 'react';
 import { makeStyles} from '@material-ui/core/styles';
+import { Link as RouterLink} from 'react-router-dom';
 import { Editor } from '@tinymce/tinymce-react'; 
+import { Button, TextField } from '@material-ui/core';
+import axios from 'axios';
 
 const useStyles = makeStyles((theme) => ({
     root: {
         width: '100%',
     },
-    list: {
-      width: '100%',
-      backgroundColor: theme.palette.background.paper,
-    },
-    instructor: {
-        display: 'inline',
-        marginBottom: 10,
-    },
-    date: {
-        float: 'right',
-        marginRight: 30,
-    },
-    body: {
-        marginTop: 5,
-        maxWidth: 600,
-    },
   }));
 
 export default function CreateAnnouncement(props) {
 
+    const [announcement, setAnnouncement] = React.useState({title: '', explanation: ''});
+
     const classes = useStyles();
 
+    const handleTitleChange = (e) => {
+        announcement.title = e.target.value;
+    }
+
     const handleEditorChange = (e) => {
-        console.log(
-          'Content was updated:',
-          e.target.getContent()
-        );
-      }
+        let str = e.target.getContent();
+        announcement.explanation = str;
+    }
+
+    const handleSubmit = (e) => {
+        axios.post(`http://localhost:8080/announcement/create/${props.course._id}`, announcement, {headers: {"Authorization" : `Bearer ${props.token}`}}).
+        then(function (response) {
+            console.log(response);
+            })
+            .catch(function (error) {
+            console.log(error);
+        });
+    }
 
     return (
         <div className={classes.root}>
+            <TextField id="title" label="Title" variant='outlined' onChange={handleTitleChange}/>
             <Editor
                 initialValue="<p>Initial content</p>"
                 init={{
@@ -51,6 +53,15 @@ export default function CreateAnnouncement(props) {
                 }}
                 onChange={handleEditorChange}
             />
+            <Button 
+                variant='contained' 
+                color='primary'
+                component={RouterLink}
+                to={`/courses/${props.course.course_code}/announcements`}
+                onClick={handleSubmit}
+            >
+                Submit
+            </Button>
         </div>
     );
 }

@@ -58,8 +58,8 @@ export default function Announcement(props) {
                 </div>
 
             </div>
-            <div className={styles.content}>
-                {announcement.explanation}
+            <div className={styles.content} dangerouslySetInnerHTML={{__html: announcement.explanation}}>
+                
             </div>
         </div>
     )

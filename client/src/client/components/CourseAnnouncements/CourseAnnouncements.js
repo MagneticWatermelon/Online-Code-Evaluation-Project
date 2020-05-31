@@ -50,7 +50,7 @@ export default function CourseAnnouncements(props) {
                     variant='contained'
                     color='primary'
                     component={RouterLink}
-                    to={`/courses/${props.course.course_code}/announcement/create`}
+                    to={`/courses/announcement/create`}
                 >
                     Create New Announcement
                 </Button>)
@@ -84,15 +84,6 @@ export default function CourseAnnouncements(props) {
                                                 color="textSecondary"
                                             >
                                                 {transformDate(val.createdAt)}
-                                        </Typography>
-                                            <Typography
-                                                component="p"
-                                                variant="body2"
-                                                className={classes.body}
-                                                color="textSecondary"
-                                                noWrap={true}
-                                            >
-                                                {val.explanation}
                                         </Typography>
                                         </React.Fragment>
                                     }

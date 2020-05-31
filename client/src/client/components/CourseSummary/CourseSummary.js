@@ -50,7 +50,6 @@ export default function CourseSummary(props) {
                                     >
                                         <ListItemText
                                             primary={ann.title}
-                                            secondary={ann.explanation}
                                         />
                                     </ListItem>
                                     <Divider />
