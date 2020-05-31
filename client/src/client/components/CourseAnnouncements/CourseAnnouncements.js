@@ -50,7 +50,7 @@ export default function CourseAnnouncements(props) {
                     variant='contained'
                     color='primary'
                     component={RouterLink}
-                    to={`/courses/announcement/create`}
+                    to={`/courses/${props.course.course_code}/announcement/create`}
                 >
                     Create New Announcement
                 </Button>)
