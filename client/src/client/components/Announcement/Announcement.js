@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react'
 import { makeStyles } from '@material-ui/core/styles';
-import { Avatar, Typography } from '@material-ui/core';
-
+import { Avatar, Typography, Button } from '@material-ui/core';
+import { Link as RouterLink} from 'react-router-dom';
+import axios from 'axios';
 
 
 export default function Announcement(props) {
@@ -18,6 +19,16 @@ export default function Announcement(props) {
             }
         })
     }, [])
+
+    const handleDelete = (e) => {
+        axios.delete(`http://localhost:8080/announcement/delete/${props.course._id}`, {headers: {"Authorization" : `Bearer ${props.token}`}}).
+        then(function (response) {
+            console.log(response);
+            })
+            .catch(function (error) {
+            console.log(error);
+        });
+    }
 
     const useStyles = makeStyles((theme) => ({
         root: {
@@ -39,6 +50,27 @@ export default function Announcement(props) {
 
     return(
         <div className={styles.root}>
+            {props.role == 1  && 
+            (<div>
+                <Button
+                    variant='contained'
+                    color='primary'
+                    component={RouterLink}
+                    to={`/courses/${props.course.course_code}/announcement/update`}
+                >
+                    Update
+                </Button>
+                <Button
+                    variant='contained'
+                    color='secondary'
+                    component={RouterLink}
+                    to={`/courses/${props.course.course_code}/announcements`}
+                    onClick={handleDelete}
+                >
+                    Delete
+                </Button>
+            </div>)
+            }
             <div className={styles.header}>
                 <Avatar />
                 <div className={styles.header_title}>

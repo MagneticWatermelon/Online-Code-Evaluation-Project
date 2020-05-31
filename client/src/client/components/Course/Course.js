@@ -14,6 +14,7 @@ import axios from 'axios';
 import Announcement from '../Announcement/Announcement';
 import CreateAnnouncement from '../CreateAnnouncement/CreateAnnouncement'
 import CircularProgress from '@material-ui/core/CircularProgress';
+import UpdateAnnouncement from '../UpdateAnnouncement/UpdateAnnouncement';
 
 
 
@@ -135,12 +136,16 @@ export default function Course(props) {
                                 Hello
                             </Route>
 
+                            <Route path={`/courses/${props.course.course_code}/announcement/update`}>
+                                <UpdateAnnouncement course={props.course} token={props.token}/>
+                            </Route>
+
                             <Route path={`/courses/${props.course.course_code}/announcement/create`}>
                                 <CreateAnnouncement course={props.course} token={props.token}/>
                             </Route>
 
                             <Route path={'/courses/:courseCode/announcements/:announcementID'}>
-                                <Announcement course={props.course} announcements={announcements} />
+                                <Announcement course={props.course} token={props.token} role={props.role} announcements={announcements} />
                             </Route>
 
                             <Route path={`/courses/${props.course.course_code}/announcements`}>
