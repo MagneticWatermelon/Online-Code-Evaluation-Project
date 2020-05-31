@@ -1,7 +1,7 @@
 import React from 'react';
 import MUIDataTable from 'mui-datatables';
 import { makeStyles } from '@material-ui/core/styles';
-import { Link } from '@material-ui/core';
+import { Link, Button } from '@material-ui/core';
 import { Link as RouterLink} from 'react-router-dom';
 import moment from 'moment';
 
@@ -58,6 +58,15 @@ export default function CourseAssignments(props) {
 
     return(
         <div className={styles.root}>
+            {props.role == 1 && 
+            (<Button
+                variant='contained'
+                color='primary'
+                component={RouterLink}
+                to={`/courses/${props.course.course_code}/assignment/create`}
+            >
+                Create Assignment
+            </Button>)}
             <MUIDataTable
                 title={"Assignments"}
                 data={props.assignments}

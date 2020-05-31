@@ -17,6 +17,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import UpdateAnnouncement from '../UpdateAnnouncement/UpdateAnnouncement';
 import CreateAssignment from '../CreateAssignment/CreateAssignment';
 import Assignment from '../Assignment/Assignment'
+import UpdateAssignment from '../UpdateAssignment/UpdateAssignment';
 
 
 
@@ -138,6 +139,10 @@ export default function Course(props) {
                                 <Assignment token={props.token} userId={props.userId} role={props.role} course={props.course}/>
                             </Route>
 
+                            <Route path={`/courses/${props.course.course_code}/assignment/update`}>
+                                <UpdateAssignment course={props.course} token={props.token} />
+                            </Route>
+
                             <Route path={`/courses/${props.course.course_code}/assignment/create`}>
                                 <CreateAssignment course={props.course} token={props.token} />
                             </Route>
@@ -163,7 +168,7 @@ export default function Course(props) {
                             </Route>
 
                             <Route path={`/courses/${props.course.course_code}/assignments`}>
-                                <CourseAssignments course={props.course} assignments={assignments} />
+                                <CourseAssignments course={props.course} role={props.role} assignments={assignments} />
                             </Route>
 
                             <Route path={`/courses/${props.course.course_code}/grades`}>

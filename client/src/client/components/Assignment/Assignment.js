@@ -19,6 +19,18 @@ export default function Assignment(props) {
         return newDate;
     }
 
+    const handleDelete = (e) => {
+        let url = window.location.pathname;
+        let id = url.split('/').pop();
+        axios.delete(`http://localhost:8080/assignment/delete/${id}`, {headers: {"Authorization" : `Bearer ${props.token}`}}).
+        then(function (response) {
+            console.log(response);
+            })
+            .catch(function (error) {
+            console.log(error);
+        });
+    }
+
     useEffect(() => {
         let url = window.location.pathname;
         let id = url.split('/').pop();
@@ -63,14 +75,27 @@ export default function Assignment(props) {
     return(
         <div className={styles.root}>
             {props.role == 1 && 
-            (<Button
+            (
+            <div>
+                <Button
                 variant='contained'
                 color='primary'
                 component={RouterLink}
-                to={`/courses/${props.course.course_code}/assignment/create`}
-            >
-                Create Assignment
-            </Button>)}
+                to={`/courses/${props.course.course_code}/assignment/update`}
+                >
+                    Update
+                </Button>
+                <Button
+                variant='contained'
+                color='secondary'
+                component={RouterLink}
+                onClick={handleDelete}
+                to={`/courses/${props.course.course_code}/assignments`}
+                >
+                    Delete
+                </Button>
+            </div>
+            )}
             <div>
                 <Typography 
                     align='center'
