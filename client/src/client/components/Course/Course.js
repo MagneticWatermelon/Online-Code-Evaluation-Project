@@ -136,7 +136,7 @@ export default function Course(props) {
 
                         <Switch>
 
-                            <Route path={`/courses/${props.course.course_code}/question/create`}>
+                            <Route path={`/courses/${props.course.course_code}/question/create/:assignmentID`}>
                                 <CreateQuestion course={props.course} token={props.token} />
                             </Route>
 
@@ -144,7 +144,7 @@ export default function Course(props) {
                                 <Assignment token={props.token} userId={props.userId} role={props.role} course={props.course}/>
                             </Route>
 
-                            <Route path={`/courses/${props.course.course_code}/assignment/update`}>
+                            <Route path={`/courses/${props.course.course_code}/assignment/update/:assignmentID`}>
                                 <UpdateAssignment course={props.course} token={props.token} />
                             </Route>
 
@@ -152,7 +152,7 @@ export default function Course(props) {
                                 <CreateAssignment course={props.course} token={props.token} />
                             </Route>
 
-                            <Route path={`/courses/${props.course.course_code}/announcement/update`}>
+                            <Route path={`/courses/${props.course.course_code}/announcement/update/:announcementID`}>
                                 <UpdateAnnouncement course={props.course} token={props.token}/>
                             </Route>
 

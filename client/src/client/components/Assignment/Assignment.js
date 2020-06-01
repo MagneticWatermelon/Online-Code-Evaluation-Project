@@ -11,8 +11,11 @@ export default function Assignment(props) {
 
     const [questions, setQuestions] = React.useState([]);
     const [assignment, setAssignment] = React.useState({});
-    const [subms, setSubms] = React.useState([]);
-
+    const [id, setId] = React.useState(() => {
+        let url = window.location.pathname;
+        let id = url.split('/').pop();
+        return id;
+    })
 
     const transformDate =(date) => {
         let newDate = moment.utc(date).format('MMMM Do [At] HH[:]mm');
@@ -49,15 +52,6 @@ export default function Assignment(props) {
         })
     }, []);
 
-    useEffect(() => {
-        let url = window.location.pathname;
-        let id = url.split('/').pop();
-        axios.get(`http://localhost:8080/assignment/check-submissions/${id}/${props.userId}`, {headers: {"Authorization" : `Bearer ${props.token}`}}).
-        then((response) => {
-            console.log(response.data);
-        })
-    }, []);
-
     const useStyles = makeStyles((theme) => ({
         root: {
             width: '100%',
@@ -81,7 +75,7 @@ export default function Assignment(props) {
                 variant='contained'
                 color='primary'
                 component={RouterLink}
-                to={`/courses/${props.course.course_code}/assignment/update`}
+                to={`/courses/${props.course.course_code}/assignment/update/${id}`}
                 >
                     Update
                 </Button>
@@ -98,8 +92,7 @@ export default function Assignment(props) {
                 variant='contained'
                 color='primary'
                 component={RouterLink}
-                onClick={handleDelete}
-                to={`/courses/${props.course.course_code}/question/create`}
+                to={`/courses/${props.course.course_code}/question/create/${id}`}
                 >
                     Add Question
                 </Button>

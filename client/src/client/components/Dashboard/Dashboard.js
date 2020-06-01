@@ -31,9 +31,10 @@ import CoursesAll from '../CoursesAll/CoursesAll';
 import AssignmentsAll from '../AssignmentsAll/AssignmentsAll';
 import SubmissionsAll from '../SubmissionsAll/SubmissionsAll';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import Assignment from '../Assignment/Assignment';
 import axios from 'axios';
 import Profile from '../Profile/Profile';
+import Question from '../Question/Question';
+import UpdateQuestion from '../UpdateQuestion/UpdateQuestion'
 
 
 const drawerWidth = 240;
@@ -392,16 +393,22 @@ export default function Dashboard(props) {
                           <AssignmentsAll assignments={assignments}/>
                         </Route>
 
-                        <Route exact path="/submissions/:submId">
-                            <Sandbox token={props.token} userId={props.userId} readOnly={true}/>
-                        </Route>
-
                         <Route path="/submissions" >
                           <SubmissionsAll />
                         </Route>
 
-                        <Route exact path="/question/:questionId">
-                            <Sandbox token={props.token} userId={props.userId} readOnly={false}/>
+                        <Route path="/question/update/:questionId" >
+                          <UpdateQuestion token={props.token} />
+                        </Route>
+
+                        <Route path="/question/:questionId">
+                          {
+                            props.role == 1
+                            ?
+                            (<Question token={props.token}/>)
+                            :
+                            (<Sandbox token={props.token} userId={props.userId} readOnly={false}/>)
+                          } 
                         </Route>
 
                     </Switch>

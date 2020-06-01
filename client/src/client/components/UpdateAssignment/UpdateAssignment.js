@@ -49,7 +49,6 @@ export default function UpdateAssignment(props) {
         let id = url.split('/').pop();
         let obj = assignment;
         obj.release_date = moment().format(moment.HTML5_FMT.DATETIME_LOCAL);
-        console.log(obj);
         axios.post(`http://localhost:8080/assignment/update/${id}`, obj, {headers: {"Authorization" : `Bearer ${props.token}`}}).
         then(function (response) {
             console.log(response);

@@ -27,7 +27,9 @@ export default function UpdateAnnouncement(props) {
     }
 
     const handleSubmit = (e) => {
-        axios.post(`http://localhost:8080/announcement/update/${props.course._id}`, announcement, {headers: {"Authorization" : `Bearer ${props.token}`}}).
+        let url = window.location.pathname;
+        let id = url.split('/').pop();
+        axios.post(`http://localhost:8080/announcement/update/${id}`, announcement, {headers: {"Authorization" : `Bearer ${props.token}`}}).
         then(function (response) {
             console.log(response);
             })

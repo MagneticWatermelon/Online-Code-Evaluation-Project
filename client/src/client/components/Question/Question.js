@@ -5,28 +5,36 @@ import { Link as RouterLink} from 'react-router-dom';
 import axios from 'axios';
 
 
-export default function Announcement(props) {
+export default function Question(props) {
 
-    const [announcement, setAnnouncement] = React.useState({title: '', instructor: {name: ''}, explanation: ''});
-    const [id, setId] = React.useState(() => {
+    const [question, setQuestion] = React.useState({
+        inputs: [],
+        outputs: [],
+        title: "",
+        explanation: " ",
+        submission_limit: '',
+        points: '',
+    });
+
+    const [qid, setQId] = React.useState(() => {
         let url = window.location.pathname;
         let id = url.split('/').pop();
         return id;
     })
 
     useEffect(() => {
-        let arr = props.announcements;
         let url = window.location.pathname;
-        let hash = url.split('/').pop();
-        arr.map((ann) => {
-            if(ann._id == hash) {
-                setAnnouncement(ann);
-            }
+        let id = url.split('/').pop();
+        axios.get(`http://localhost:8080/question/get/${id}`, {headers: {"Authorization" : `Bearer ${props.token}`}}).
+        then((response) => {
+            setQuestion(response.data);
         })
     }, [])
 
     const handleDelete = (e) => {
-        axios.delete(`http://localhost:8080/announcement/delete/${props.course._id}`, {headers: {"Authorization" : `Bearer ${props.token}`}}).
+        let url = window.location.pathname;
+        let id = url.split('/').pop();
+        axios.delete(`http://localhost:8080/question/delete/${id}`, {headers: {"Authorization" : `Bearer ${props.token}`}}).
         then(function (response) {
             console.log(response);
             })
@@ -54,14 +62,13 @@ export default function Announcement(props) {
     const styles = useStyles();
 
     return(
-        <div className={styles.root}>
-            {props.role == 1  && 
-            (<div>
+        <div className={styles.root}> 
+            <div>
                 <Button
                     variant='contained'
                     color='primary'
                     component={RouterLink}
-                    to={`/courses/${props.course.course_code}/announcement/update/${id}`}
+                    to={`/question/update/${qid}`}
                 >
                     Update
                 </Button>
@@ -69,33 +76,38 @@ export default function Announcement(props) {
                     variant='contained'
                     color='secondary'
                     component={RouterLink}
-                    to={`/courses/${props.course.course_code}/announcements`}
+                    to={`/dashboard`}
                     onClick={handleDelete}
                 >
                     Delete
                 </Button>
-            </div>)
-            }
+            </div>
             <div className={styles.header}>
-                <Avatar />
                 <div className={styles.header_title}>
                     <Typography
                         variant='h5'
                         noWrap
                     >
-                        {announcement.title}
+                        {`Question Title: ${question.title}`}
                     </Typography>
                     <Typography
                         variant='body2'
                         noWrap
                         gutterBottom
                     >
-                        {announcement.instructor.name}
+                        {`Points: ${question.points}`}
+                    </Typography>
+                    <Typography
+                        variant='body2'
+                        noWrap
+                        gutterBottom
+                    >
+                        {`Submission Limit: ${question.submission_limit}`}
                     </Typography>
                 </div>
 
             </div>
-            <div className={styles.content} dangerouslySetInnerHTML={{__html: announcement.explanation}}>
+            <div className={styles.content} dangerouslySetInnerHTML={{__html: question.explanation}}>
                 
             </div>
         </div>

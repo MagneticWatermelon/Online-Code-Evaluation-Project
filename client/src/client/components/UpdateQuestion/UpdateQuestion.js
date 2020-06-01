@@ -2,11 +2,10 @@ import React from 'react';
 import { makeStyles} from '@material-ui/core/styles';
 import { Link as RouterLink} from 'react-router-dom';
 import { Editor } from '@tinymce/tinymce-react'; 
-import { Button, TextField, Typography, Slider, IconButton } from '@material-ui/core';
+import { Button, TextField, Typography, Slider,} from '@material-ui/core';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
-import AddIcon from '@material-ui/icons/Add';
 import axios from 'axios';
 
 const useStyles = makeStyles((theme) => ({
@@ -34,15 +33,11 @@ const useStyles = makeStyles((theme) => ({
     },
   }));
 
-export default function CreateQuestion(props) {
+export default function UpdateQuestion(props) {
 
     const [question, setQuestion] = React.useState({title: '', explanation: '', submission_limit: 1, points: 10, languages: []});
     const [sliderValPoint, setValPoint] = React.useState(20);
     const [sliderValLimit, setValLimit] = React.useState(5);
-    const [testInputs, setTestInputs] = React.useState([]);
-    const [testOutputs, setTestOutputs] = React.useState([]);
-    const [cases, setCases] = React.useState([]);
-    const [changed, setChanged] = React.useState(false);
     const [langs, setLangs] = React.useState({
         'java:8': false,
         'c++': false,
@@ -75,48 +70,6 @@ export default function CreateQuestion(props) {
         setLangs({ ...langs, [event.target.name]: event.target.checked });
     };    
 
-    const handleTestInputChange = (e) => {
-        let index = e.target.id.split('_').pop();
-        let val = e.target.value;
-        let temp = testInputs;
-        temp[index] = val;
-        let promise = new Promise(resolve => {
-            resolve(setTestInputs(temp));
-        })
-        promise.then(() => {
-            setChanged(!changed);
-        })
-    }
-
-    const handleTestOutputChange = (e) => {
-        let index = e.target.id.split('_').pop();
-        let val = e.target.value;
-        let temp = testOutputs;
-        temp[index] = val;
-        let promise = new Promise(resolve => {
-            resolve(setTestOutputs(temp));
-        })
-        promise.then(() => {
-            setChanged(!changed);
-        })
-    }
-
-    const handleCaseAdd = (e) => {
-        let temp = cases;
-        let index = temp.length + 1;
-        temp.push(index);
-        
-        let promise = new Promise(resolve => {
-            resolve(setCases(temp));
-            resolve(testInputs.push(''));
-            resolve(testOutputs.push(''));
-        })
-
-        promise.then(() => {
-            setChanged(!changed);
-        })
-    }
-
     const handleSubmit = (e) => {
         let languages = [];
         for (const key in langs) {
@@ -126,15 +79,13 @@ export default function CreateQuestion(props) {
         }
         let obj = {};
         obj.title = question.title;
-        obj.explanation = question.explanation;        
-        obj.inputs = testInputs;        
-        obj.outputs = testOutputs;        
+        obj.explanation = question.explanation;               
         obj.submission_limit = question.submission_limit;        
         obj.points = question.points;        
         obj.languages = languages;
         let url = window.location.pathname;
         let id = url.split('/').pop();
-        axios.post(`http://localhost:8080/question/create/${id}`, obj, {headers: {"Authorization" : `Bearer ${props.token}`}}).
+        axios.post(`http://localhost:8080/question/update/${id}`, obj, {headers: {"Authorization" : `Bearer ${props.token}`}}).
         then(function (response) {
             console.log(response);
             })
@@ -145,12 +96,12 @@ export default function CreateQuestion(props) {
 
     return (
         <div className={classes.root}>
-            <TextField id="title" label="Title" variant='outlined' onChange={handleTitleChange}/>
+            <TextField id="title" label="New Title" variant='outlined' onChange={handleTitleChange}/>
             <div className={classes.slider}>
                 <Typography
                     id="discrete-slider" gutterBottom
                 >
-                    Submission Limit
+                    New Submission Limit
                 </Typography>
                 <Slider
                     value={sliderValLimit}
@@ -167,7 +118,7 @@ export default function CreateQuestion(props) {
                 <Typography
                     id="discrete-slider" gutterBottom
                 >
-                    Points
+                    New Points
                 </Typography>
                 <Slider
                     value={sliderValPoint}
@@ -201,44 +152,8 @@ export default function CreateQuestion(props) {
                     label="JavaScript"
                 />   
             </FormGroup>
-            <div>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    startIcon={<AddIcon />}
-                    className={classes.addButton}
-                    onClick={handleCaseAdd}
-                >
-                    Add Test Case
-                </Button>
-                {cases.map((val, index) => {
-                    return (
-                        <div className={classes.testCase}>
-                            <TextField
-                            id={`input_${index}`}
-                            label={`Test Input ${index}`}
-                            multiline
-                            rowsMax={4}
-                            value={testInputs[index]}
-                            onChange={handleTestInputChange}
-                            variant="outlined"
-                            className={classes.testInput}
-                            />
-                            <TextField
-                            id={`output_${index}`}
-                            label={`Test Output ${index}`}
-                            multiline
-                            rowsMax={4}
-                            value={testOutputs[index]}
-                            onChange={handleTestOutputChange}
-                            variant="outlined"
-                            />  
-                        </div>
-                    )
-                })}
-            </div>
             <Editor
-                initialValue="<p>Problem Definition</p>"
+                initialValue="<p>New Problem Definition</p>"
                 init={{
                 height: 500,
                 apiKey:"gi18zjjrosyk60q3hkidkjbxg84ejt4s81wrhoarci6vom6k",
@@ -255,10 +170,10 @@ export default function CreateQuestion(props) {
                 variant='contained' 
                 color='primary'
                 component={RouterLink}
-                to={`/courses/${props.course.course_code}/assignments`}
+                to={`/dashboard`}
                 onClick={handleSubmit}
             >
-                Submit
+                Update
             </Button>
         </div>
     );
