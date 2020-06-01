@@ -76,7 +76,7 @@ export default function CourseSummary(props) {
                                     {index > 0 ? <div></div> : <Divider />}
                                     <ListItem
                                         component={RouterLink} 
-                                        to={`/assignments/${assign._id}`}
+                                        to={`/courses/${props.course.course_code}/assignments/${assign._id}`}
                                     >
                                         <ListItemText
                                             primary={assign.title}

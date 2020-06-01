@@ -17,6 +17,7 @@ const useStyles = makeStyles((theme) => ({
     },
     slider: {
         marginTop: 10,
+        width: 500,
     },
   }));
 
