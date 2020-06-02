@@ -54,6 +54,17 @@ module.exports.deleteCourse = (req, res, next)=>{
     })
 }
 
+module.exports.deleteAll = (req,res,next)=>{
+    let courses = req.body.courses
+
+    for(course of courses){
+        courseModel.deleteCourse(course,(err)=>{
+            if(err){console.log(err)}
+        })
+    }
+    return res.status(200).json({message:'Operation successfull'})
+}
+
 module.exports.addPeople = (req, res, next)=>{
     let courseID = req.params.courseID;
     let people   = req.body.people;

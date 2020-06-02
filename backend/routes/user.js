@@ -31,6 +31,12 @@ router.delete(
     isAdmin, 
     userController.deleteUser)
 
+router.delete(
+    '/delete',
+    isAuth,
+    isAdmin,
+    userController.deleteAll)
+
 router.post(
     '/updatePassword/:id',
     isAuth,
