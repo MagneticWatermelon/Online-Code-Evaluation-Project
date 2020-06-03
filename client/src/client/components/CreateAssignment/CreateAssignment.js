@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function CreateAssignment(props) {
 
-    const [assignment, setAssignment] = React.useState({title: '', explanation: '', due_date: '', weight: '', release_date: ''});
+    const [assignment, setAssignment] = React.useState({instructor_id: props.id, title: '', explanation: '', due_date: '', weight: '', release_date: ''});
     const [sliderVal, setVal] = React.useState(20);
     const classes = useStyles();
 

@@ -26,7 +26,7 @@ export default function Announcement(props) {
     }, [])
 
     const handleDelete = (e) => {
-        axios.delete(`http://localhost:8080/announcement/delete/${props.course._id}`, {headers: {"Authorization" : `Bearer ${props.token}`}}).
+        axios.delete(`http://localhost:8080/announcement/delete/${id}`, {headers: {"Authorization" : `Bearer ${props.token}`}}).
         then(function (response) {
             console.log(response);
             })
