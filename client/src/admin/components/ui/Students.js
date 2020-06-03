@@ -267,11 +267,15 @@ export default function Students(props) {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = rows.map((n) => n.id);
+      const newSelecteds = []
+      rows.map((n) => {
+        newSelecteds.push(n._id);
+      })
       setSelected(newSelecteds);
+      console.log(selected);
       return;
     }
-    setSelected([]);
+    
   };
 
   const handleClick = (event, id) => {

@@ -49,6 +49,11 @@ const useStyles = makeStyles((theme) => ({
   formControl: {
     margin: theme.spacing(2),
   },
+  mainTitle: {
+    height: 50,
+    color: "red",
+    marginTop: "80px"
+  }
 }));
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -116,14 +121,16 @@ export default function CreateUser(props) {
         onClose={handleClose}
         aria-labelledby="form-dialog-title"
       >
-        <DialogTitle id="form-dialog-title">Create User</DialogTitle>
+        <DialogTitle className={classes.mainTitle} id="form-dialog-title">Create User</DialogTitle>
         <DialogContent>
-          <DialogContentText>Create User</DialogContentText>
+        
           <TextField
             autoFocus
-            margin="dense"
             id="name"
             label="User Name"
+            variant="outlined"
+            margin="normal"
+            required
             fullWidth
             type="email"
             value={name}
@@ -131,10 +138,15 @@ export default function CreateUser(props) {
           />
           <Box m={2} />
           <TextField
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            label="Email Address"
+            name="email"
+            autoComplete="email"
             autoFocus
-            margin="dense"
             id="name"
-            label="User E-mail"
             type="email"
             fullWidth
             value={mail}
@@ -143,11 +155,13 @@ export default function CreateUser(props) {
           <Box m={2} />
           <TextField
             autoFocus
-            margin="dense"
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
             id="name"
             label="User Password"
             type="email"
-            fullWidth
             value={password}
             onChange={(event) => setPassword(event.target.value)}
           />
@@ -210,7 +224,7 @@ export default function CreateUser(props) {
             onClick={handleCreate}
             color="primary"
             token={props.token}
-           // disabled={()=> {this.name === ""}}
+            // disabled={()=> {this.name === ""}}
           >
             Create User
           </Button>

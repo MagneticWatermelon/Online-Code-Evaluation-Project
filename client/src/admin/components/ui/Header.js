@@ -97,8 +97,8 @@ const useStyles = makeStyles((theme) => ({
   },
   drawerItemSelected: {
     "& .MuiListItemText-root": {
-      opacity: 1
-    }
+      opacity: 1,
+    },
   },
   appbar: {
     zIndex: theme.zIndex.modal + 1,
@@ -114,7 +114,6 @@ export default function Header(props) {
   const handleChange = (e, newValue) => {
     setValue(newValue);
   };
-
 
   const routes = [
     { name: "Courses", link: "/courses", activeIndex: 0 },
@@ -160,10 +159,11 @@ export default function Header(props) {
           />
         ))}
       </Tabs>
-      <Button>Logout and sm</Button>
+      <Button className={classes.button} variant="contained" color="secondary">
+        Logout
+      </Button>
     </React.Fragment>
   );
-
 
   return (
     <React.Fragment>
@@ -176,9 +176,7 @@ export default function Header(props) {
               className={classes.logoContainer}
               onClick={() => setValue(0)}
               disableRipple
-            >
-             
-            </Button>
+            ></Button>
             {tabs}
           </Toolbar>
         </AppBar>

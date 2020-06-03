@@ -227,16 +227,17 @@ export default function Courses(props) {
   const handleDelete = () => {
     console.log("in delete");
     console.log(props.token);
+    console.log(selected);
     let body = {
-      courses: selected
-    }
+      courses:  ["5ed6f39fcd7b9401d9ce0e68", "5ed6f28fcd7b9401d9ce0e66"]
+    };
     axios
-      .delete(`http://localhost:8080/course/delete/`, body, {
+      .delete("http://localhost:8080/course/delete", { courses: ["5ed6f39fcd7b9401d9ce0e68", "5ed6f28fcd7b9401d9ce0e66"] },{
         headers: { Authorization: `Bearer ${props.token}` },
-      })
+      }, {withCredentials:true})
       .then(function (response) {
         console.log(response);
-        setLoadPage(true);
+        setLoadPage(!loadPage);
       })
       .catch(function (response) {
         console.log(response);
@@ -359,15 +360,7 @@ export default function Courses(props) {
             </TableBody>
           </Table>
         </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onChangePage={handleChangePage}
-          onChangeRowsPerPage={handleChangeRowsPerPage}
-        />
+       
       </Paper>
       <FormControlLabel
         control={<Switch checked={dense} onChange={handleChangeDense} />}

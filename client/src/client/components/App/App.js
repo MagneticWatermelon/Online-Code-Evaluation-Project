@@ -5,6 +5,7 @@ import SignIn from '../SignIn/SignIn';
 import { makeStyles } from '@material-ui/core/styles';
 import Dashboard from '../Dashboard/Dashboard';
 import CssBaseline from '@material-ui/core/CssBaseline';
+import AdminPage from "../../../admin/components/App";
 
 Object.defineProperty(String.prototype, 'hashCode', {
   value: function() {
@@ -62,15 +63,15 @@ function App() {
     <Router>
       <CssBaseline />
       <Route exact path="/">
-        {authed ? <Redirect push to="/dashboard" /> : 
+        {authed ? <Redirect push to="/courses" /> : 
         <SignIn 
           tokenize={(token) => {setToken(token)}} 
           id={(id) => {setUserID(id)}}
           role={(role) => {setUserRole(role)}}
         />}
       </Route>
-      <Route exact path="/dashboard">
-        <Dashboard userId={userID} role={userRole} token={token}/>
+      <Route exact path="/courses">
+        <AdminPage userID={userID} role={userRole} token={token}/>
       </Route>
     </Router>
   );
