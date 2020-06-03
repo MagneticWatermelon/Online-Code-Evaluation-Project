@@ -38,6 +38,12 @@ router.delete(
     isAdmin,
     courseController.deleteCourse)
 
+router.delete(
+    '/delete',
+    isAuth,
+    isAdmin,
+    courseController.deleteAll)
+
 router.post(
     '/register/:courseID',
     isAuth,

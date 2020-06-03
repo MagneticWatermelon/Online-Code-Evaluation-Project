@@ -22,6 +22,18 @@ module.exports.deleteUser = (req,res,next)=>{
     })
 }
 
+module.exports.deleteAll = (req,res,next)=>{
+    let users = req.body.users
+
+    for(user of users){
+        userModel.deleteUser(user,(err)=>{
+            if(err){console.log(err)}
+        })
+    }
+
+    return res.status(200).json({message:'Operation successfull'})
+}
+
 module.exports.getAllUsers = (req,res,next)=>{
     userModel.getAllUsers((err,users)=>{
         if(err){return res.status(404).json({message:err})}

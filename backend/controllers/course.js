@@ -4,11 +4,11 @@ const notificationController    = require('../controllers/notification')
 
 module.exports.createCourse = (req, res, next)=>{
 
-    let {code, name, instructor, term, year} = req.body
+    let {course_code, course_name, instructor_id, term, year} = req.body
 
-    courseModel.createCourse(code,year,term,name, (err,course_id)=>{
+    courseModel.createCourse(course_code,year,term,course_name, (err,course_id)=>{
         if(err){return res.status(500).json({message:err})}
-        courseModel.addPeople(course_id,[instructor],(err)=>{
+        courseModel.addPeople(course_id,[instructor_id],(err)=>{
             if(err){return res.status(500).json({message:err})}
 
             return res.status(201).json({
@@ -52,6 +52,17 @@ module.exports.deleteCourse = (req, res, next)=>{
         if(err){return res.status(500).json({message:err})}
         return res.status(200).json({message:'Course deleted'})
     })
+}
+
+module.exports.deleteAll = (req,res,next)=>{
+    let courses = req.body.courses
+
+    for(course of courses){
+        courseModel.deleteCourse(course,(err)=>{
+            if(err){console.log(err)}
+        })
+    }
+    return res.status(200).json({message:'Operation successfull'})
 }
 
 module.exports.addPeople = (req, res, next)=>{
