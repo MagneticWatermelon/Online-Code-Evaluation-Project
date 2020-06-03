@@ -63,15 +63,15 @@ function App() {
     <Router>
       <CssBaseline />
       <Route exact path="/">
-        {authed ? <Redirect push to="/courses" /> : 
+        {authed ? <Redirect push to="/dashboard" /> : 
         <SignIn 
           tokenize={(token) => {setToken(token)}} 
           id={(id) => {setUserID(id)}}
           role={(role) => {setUserRole(role)}}
         />}
       </Route>
-      <Route exact path="/courses">
-        <AdminPage userID={userID} role={userRole} token={token}/>
+      <Route exact path="/dashboard">
+        <Dashboard userId={userID} role={userRole} token={token}/>
       </Route>
     </Router>
   );
