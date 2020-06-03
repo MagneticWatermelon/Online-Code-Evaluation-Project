@@ -4,11 +4,11 @@ const notificationController    = require('../controllers/notification')
 
 module.exports.createCourse = (req, res, next)=>{
 
-    let {code, name, instructor, term, year} = req.body
+    let {course_code, course_name, instructor_id, term, year} = req.body
 
-    courseModel.createCourse(code,year,term,name, (err,course_id)=>{
+    courseModel.createCourse(course_code,year,term,course_name, (err,course_id)=>{
         if(err){return res.status(500).json({message:err})}
-        courseModel.addPeople(course_id,[instructor],(err)=>{
+        courseModel.addPeople(course_id,[instructor_id],(err)=>{
             if(err){return res.status(500).json({message:err})}
 
             return res.status(201).json({
