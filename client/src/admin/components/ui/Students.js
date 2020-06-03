@@ -146,9 +146,14 @@ export default function Students(props) {
               variant="contained"
               color="secondary"
             >
-                Update
+              Update
             </Button>
-              <UpdateUser token={props.token} userId={selected[0]} open={updating} onClose={handleCloseUpdating}></UpdateUser>
+            <UpdateUser
+              token={props.token}
+              userId={selected[0]}
+              open={updating}
+              onClose={handleCloseUpdating}
+            ></UpdateUser>
           </React.Fragment>
         ) : (
           <div></div>
@@ -212,11 +217,11 @@ export default function Students(props) {
         headers: { Authorization: `Bearer ${props.token}` },
       })
       .then((responseArr) => {
-        let myArr = (responseArr.data);
+        let myArr = responseArr.data;
         let studentArr = [];
         myArr.map((student) => {
           if (student.user_role === 0) studentArr.push(student);
-        })
+        });
         setRows(studentArr);
       });
   }, [loadPage]);
@@ -230,12 +235,15 @@ export default function Students(props) {
       myAr.push(i);
     }
     let body = {
-      users: myAr
+      users: myAr,
     };
     console.log(body);
     async function deleteStudent() {
       await axios
-        .delete(`http://localhost:8080/user/delete`,  body,{ headers: { Authorization: `Bearer ${props.token}` },})
+        .delete(`http://localhost:8080/user/delete`, {
+          headers: { Authorization: `Bearer ${props.token}` },
+          data: body,
+        })
         .then(function (response) {
           console.log(response);
           setLoadPage(true);
@@ -258,7 +266,7 @@ export default function Students(props) {
 
   const handleCloseUpdating = () => {
     setUpdating(false);
-  }
+  };
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
@@ -267,15 +275,14 @@ export default function Students(props) {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = []
+      const newSelecteds = [];
       rows.map((n) => {
         newSelecteds.push(n._id);
-      })
+      });
       setSelected(newSelecteds);
       console.log(selected);
       return;
     }
-    
   };
 
   const handleClick = (event, id) => {

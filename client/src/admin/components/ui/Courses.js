@@ -229,12 +229,13 @@ export default function Courses(props) {
     console.log(props.token);
     console.log(selected);
     let body = {
-      courses:  ["5ed6f39fcd7b9401d9ce0e68", "5ed6f28fcd7b9401d9ce0e66"]
+      courses: selected
     };
     axios
-      .delete("http://localhost:8080/course/delete", { courses: ["5ed6f39fcd7b9401d9ce0e68", "5ed6f28fcd7b9401d9ce0e66"] },{
+      .delete("http://localhost:8080/course/delete", {
         headers: { Authorization: `Bearer ${props.token}` },
-      }, {withCredentials:true})
+        data: body
+      })
       .then(function (response) {
         console.log(response);
         setLoadPage(!loadPage);

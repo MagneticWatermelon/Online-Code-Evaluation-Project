@@ -69,7 +69,6 @@ export default function CreateUser(props) {
 
   const [state, setState] = React.useState({
     student: true,
-    ta: false,
     instructure: false,
     admin: false,
   });
@@ -78,7 +77,7 @@ export default function CreateUser(props) {
     setState({ [event.target.name]: event.target.checked });
   };
 
-  const { student, ta, instructure, admin } = state;
+  const { student, instructure, admin } = state;
 
   const handleClose = () => {
     setOpen(false);
@@ -89,9 +88,8 @@ export default function CreateUser(props) {
     console.log(name, mail, password);
     let role;
     if (student) role = 0;
-    if (ta) role = 1;
-    if (instructure) role = 2;
-    if (admin) role = 3;
+    if (instructure) role = 1;
+    if (admin) role = 2;
     event.preventDefault();
     let body = {
       name: name,
@@ -179,12 +177,6 @@ export default function CreateUser(props) {
                   />
                 }
                 label="Student"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox checked={ta} onChange={handleChange} name="ta" />
-                }
-                label="Teaching Assistant"
               />
               <FormControlLabel
                 control={

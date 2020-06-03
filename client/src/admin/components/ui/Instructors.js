@@ -25,8 +25,18 @@ import UpdateUser from "./UpdateUser";
 
 export default function Instructors(props) {
   const headCells = [
-    { id: "name", numeric: false, disablePadding: true, label: "Instructor Name" },
-    { id: "mail", numeric: true, disablePadding: false, label: "Instructor Mail" },
+    {
+      id: "name",
+      numeric: false,
+      disablePadding: true,
+      label: "Instructor Name",
+    },
+    {
+      id: "mail",
+      numeric: true,
+      disablePadding: false,
+      label: "Instructor Mail",
+    },
     { id: "_id", numeric: true, disablePadding: false },
   ];
 
@@ -127,7 +137,7 @@ export default function Instructors(props) {
           </Typography>
         )}
 
-{numSelected > 1 ? (
+        {numSelected > 1 ? (
           <Tooltip title="Delete">
             <IconButton aria-label="delete" onClick={handleDelete}>
               <DeleteIcon />
@@ -146,9 +156,14 @@ export default function Instructors(props) {
               variant="contained"
               color="secondary"
             >
-                Update
+              Update
             </Button>
-              <UpdateUser token={props.token} userId={selected[0]} open={updating} onClose={handleCloseUpdating}></UpdateUser>
+            <UpdateUser
+              token={props.token}
+              userId={selected[0]}
+              open={updating}
+              onClose={handleCloseUpdating}
+            ></UpdateUser>
           </React.Fragment>
         ) : (
           <div></div>
@@ -209,7 +224,7 @@ export default function Instructors(props) {
 
   const handleCloseUpdating = () => {
     setUpdating(false);
-  }
+  };
 
   const handleRefreshSelected = () => {
     setSelected([]);
@@ -226,36 +241,25 @@ export default function Instructors(props) {
           if (user.user_role === 1) {
             instAr.push(user);
           }
-        })
+        });
         setRows(instAr);
       });
   }, [loadPage]);
 
-  useEffect(() => {
-    console.log("in delete");
-
-    let deleteId = selected[0];
-    console.log(deleteId);
-    console.log(`http://localhost:8080/user/delete/${deleteId}`);
-
-    async function deleteStudent() {
-      await axios
-        .delete(`http://localhost:8080/user/delete/${deleteId}`, {
-          headers: { Authorization: `Bearer ${props.token}` },
-        })
-        .then(function (response) {
-          console.log(response);
-          setLoadPage(true);
-        })
-        .catch(function (response) {
-          console.log(response);
-        });
-    }
-    deleteStudent();
-    handleRefreshSelected();
-  }, [deleteClicked]);
-
   const handleDelete = () => {
+    console.log(selected);
+    axios
+      .delete(`http://localhost:8080/user/delete`, {
+        headers: { Authorization: `Bearer ${props.token}` },
+        data: { users: selected },
+      })
+      .then(function (response) {
+        console.log(response);
+        setLoadPage(!loadPage);
+      })
+      .catch(function (response) {
+        console.log(response);
+      });
     setDeleteClicked(!deleteClicked);
   };
 
@@ -306,6 +310,11 @@ export default function Instructors(props) {
   const handleChangeDense = (event) => {
     setDense(event.target.checked);
   };
+
+  const handleRole = (role) => {
+    if (role === 1) return "TA";
+    else return "Teacher";
+  }
 
   const isSelected = (name) => selected.indexOf(name) !== -1;
 
@@ -362,7 +371,6 @@ export default function Instructors(props) {
                       {row.name}
                     </TableCell>
                     <TableCell align="right">{row.mail}</TableCell>
-                    
                   </TableRow>
                 );
               })}
