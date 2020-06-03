@@ -20,7 +20,8 @@
   },
   "scripts": {
     "test": "nodemon app.js",
-    "code_execution_demo": "node ./evaluator/demo.js"
+    "code_execution_demo": "node ./evaluator/demo.js",
+    "start": "node app.js"
   },
   "author": "nazmi yilmaz",
   "license": "ISC"
