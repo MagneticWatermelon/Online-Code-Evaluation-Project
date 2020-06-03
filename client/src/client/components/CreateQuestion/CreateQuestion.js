@@ -126,12 +126,21 @@ export default function CreateQuestion(props) {
         }
         let obj = {};
         obj.title = question.title;
-        obj.explanation = question.explanation;        
-        obj.inputs = testInputs;        
-        obj.outputs = testOutputs;        
+        obj.explanation = question.explanation;
+        let tempInp = [];
+        testInputs.map((val) => {
+            tempInp.push(val.split(' '));
+        })      
+        obj.inputs = tempInp;
+        let tempOut = [];
+        testOutputs.map((val) => {
+            tempOut.push(val.split(' '));
+        })       
+        obj.outputs = tempOut;        
         obj.submission_limit = question.submission_limit;        
         obj.points = question.points;        
         obj.languages = languages;
+        console.log(obj);
         let url = window.location.pathname;
         let id = url.split('/').pop();
         axios.post(`http://localhost:8080/question/create/${id}`, obj, {headers: {"Authorization" : `Bearer ${props.token}`}}).
