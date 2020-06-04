@@ -149,7 +149,7 @@ export default function Course(props) {
                             </Route>
 
                             <Route path={`/courses/${props.course.course_code}/assignment/create`}>
-                                <CreateAssignment course={props.course} token={props.token} />
+                                <CreateAssignment course={props.course} token={props.token} id={props.userId}/>
                             </Route>
 
                             <Route path={`/courses/${props.course.course_code}/announcement/update/:announcementID`}>

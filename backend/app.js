@@ -17,6 +17,8 @@ const resourceRoutes    = require('./routes/resource')
 
 const database      = require('./util/database')
 
+const port = process.env.PORT || 8080
+
 app.use(express.urlencoded({extended:true}))
 app.use(express.json())
 app.use(cors())
@@ -35,6 +37,6 @@ app.use('/resource', resourceRoutes)
 
 database.connectToDB((result)=>{
     console.log('Connectted to DB, starting server...')
-    app.listen(8080)
+    app.listen(port)
 })
 

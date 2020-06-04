@@ -6,6 +6,7 @@ import { Button, TextField, Typography, Slider,} from '@material-ui/core';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
+import { useSnackbar } from 'notistack';
 import axios from 'axios';
 
 const useStyles = makeStyles((theme) => ({
@@ -36,8 +37,10 @@ const useStyles = makeStyles((theme) => ({
 export default function UpdateQuestion(props) {
 
     const [question, setQuestion] = React.useState({title: '', explanation: '', submission_limit: 1, points: 10, languages: []});
-    const [sliderValPoint, setValPoint] = React.useState(20);
-    const [sliderValLimit, setValLimit] = React.useState(5);
+    const [sliderValPoint, setValPoint] = React.useState(10);
+    const [sliderValLimit, setValLimit] = React.useState(1);
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+
     const [langs, setLangs] = React.useState({
         'java:8': false,
         'c++': false,
@@ -79,18 +82,28 @@ export default function UpdateQuestion(props) {
         }
         let obj = {};
         obj.title = question.title;
+        if(obj.title == '') {
+            enqueueSnackbar('Enter a title', {variant: 'warning'});
+            e.preventDefault();
+            return;
+        }
         obj.explanation = question.explanation;               
         obj.submission_limit = question.submission_limit;        
         obj.points = question.points;        
         obj.languages = languages;
+        if(languages < 1) {
+            enqueueSnackbar('Choose allowed languages', {variant: 'warning'});
+            e.preventDefault();
+            return;
+        }
         let url = window.location.pathname;
         let id = url.split('/').pop();
         axios.post(`http://localhost:8080/question/update/${id}`, obj, {headers: {"Authorization" : `Bearer ${props.token}`}}).
         then(function (response) {
-            console.log(response);
+            enqueueSnackbar('Question updated successfully!', {variant: 'success'});
             })
-            .catch(function (error) {
-            console.log(error);
+        .catch(function (error) {
+            enqueueSnackbar('Something went wrong!', {variant: 'error'});
         });
     }
 

@@ -147,7 +147,51 @@ const cTemplate = {
                     ['8'],
                     ['83']
                 ],
-} 
+}
+
+const jsTemplate = {
+    lang    : 'node:14',
+    files   : [
+        {
+            name: 'main.js',
+            content:
+            `var readline = require('readline');
+
+            var reader = readline.createInterface({
+                input: process.stdin,
+                output: process.stdout
+            });
+            
+            reader.question('',(num1)=>{
+                reader.question('',(num2)=>{
+                    console.log(Number.parseInt(num1)+Number.parseInt(num2));
+                    process.exit();
+                })
+            })
+            
+            `
+        }
+    ],
+
+    inputs  : [
+                ['1','2'],
+                ['5','5'],
+                ['9','3'],
+                ['3','6'],
+                ['7','0'],
+                ['8','3']
+              ],
+    
+    outputs : [
+                ['3'],
+                ['10'],
+                ['12'],
+                ['9'],
+                ['7'],
+                ['11']
+              ],
+    
+}
 
 const exerciseTemplate = {
     
@@ -178,3 +222,4 @@ module.exports.cppTemplate  = cppTemplate;
 module.exports.pythonTemplate= pythonTemplate;
 module.exports.cTemplate    = cTemplate;
 module.exports.exerciseTemplate = exerciseTemplate;
+module.exports.jsTemplate       = jsTemplate;
