@@ -17,11 +17,12 @@ import Checkbox from "@material-ui/core/Checkbox";
 import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Switch from "@material-ui/core/Switch";
 import DeleteIcon from "@material-ui/icons/Delete";
 import axios from "axios";
 import Button from "@material-ui/core/Button";
-import UpdateUser from "./UpdateUser";
+import { Link, BrowserRouter, Route, Switch } from "react-router-dom";
+import { Container } from "@material-ui/core";
+import UpdateCourse from "./UpdateCourse"
 
 export default function Courses(props) {
   const headCells = [
@@ -54,7 +55,7 @@ export default function Courses(props) {
               padding={headCell.disablePadding ? "none" : "default"}
               sortDirection={orderBy === headCell.id ? order : false}
             >
-              {headCell.label}
+              {    headCell.label}
             </TableCell>
           ))}
         </TableRow>
@@ -118,7 +119,7 @@ export default function Courses(props) {
             id="tableTitle"
             component="div"
           >
-            Students
+            Courses
           </Typography>
         )}
 
@@ -140,15 +141,11 @@ export default function Courses(props) {
               className={classes.button}
               variant="contained"
               color="secondary"
+              to="/updatecourse"
+              component={Link}
             >
               Update
             </Button>
-            <UpdateUser
-              token={props.token}
-              userId={selected[0]}
-              open={updating}
-              onClose={handleCloseUpdating}
-            ></UpdateUser>
           </React.Fragment>
         ) : (
           <div></div>
@@ -204,16 +201,12 @@ export default function Courses(props) {
   const [updating, setUpdating] = React.useState(false);
 
   const handleUpdate = () => {
-    setUpdating(true);
+  
   };
 
-  const handleCloseUpdating = () => {
-    setUpdating(false);
-  };
+  
 
-  const handleRefreshSelected = () => {
-    setSelected([]);
-  };
+ 
   useEffect(() => {
     axios
       .get(`http://localhost:8080/course/get/all`, {
@@ -229,16 +222,17 @@ export default function Courses(props) {
     console.log(props.token);
     console.log(selected);
     let body = {
-      courses: selected
+      courses: selected,
     };
     axios
       .delete("http://localhost:8080/course/delete", {
         headers: { Authorization: `Bearer ${props.token}` },
-        data: body
+        data: body,
       })
       .then(function (response) {
         console.log(response);
         setLoadPage(!loadPage);
+        setSelected([]);
       })
       .catch(function (response) {
         console.log(response);
@@ -299,74 +293,90 @@ export default function Courses(props) {
     rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
   return (
-    <div className={classes.root}>
-      <Paper className={classes.paper}>
-        <EnhancedTableToolbar numSelected={selected.length} />
-        <TableContainer>
-          <Table
-            className={classes.table}
-            aria-labelledby="tableTitle"
-            size={dense ? "small" : "medium"}
-            aria-label="enhanced table"
-          >
-            <EnhancedTableHead
-              classes={classes}
-              numSelected={selected.length}
-              order={order}
-              orderBy={orderBy}
-              onSelectAllClick={handleSelectAllClick}
-              onRequestSort={handleRequestSort}
-              rowCount={rows.length}
-            />
-            <TableBody>
-              {rows.map((row, index) => {
-                const isItemSelected = isSelected(row._id);
-                const labelId = `enhanced-table-checkbox-${index}`;
+    <BrowserRouter>
+      <div className={classes.root}>
+        <Paper className={classes.paper}>
+          <EnhancedTableToolbar numSelected={selected.length} />
+          <TableContainer>
+            <Table
+              className={classes.table}
+              aria-labelledby="tableTitle"
+              size={dense ? "small" : "medium"}
+              aria-label="enhanced table"
+            >
+              <EnhancedTableHead
+                classes={classes}
+                numSelected={selected.length}
+                order={order}
+                orderBy={orderBy}
+                onSelectAllClick={handleSelectAllClick}
+                onRequestSort={handleRequestSort}
+                rowCount={rows.length}
+              />
+              <TableBody>
+                {rows.map((row, index) => {
+                  const isItemSelected = isSelected(row._id);
+                  const labelId = `enhanced-table-checkbox-${index}`;
 
-                return (
-                  <TableRow
-                    hover
-                    role="checkbox"
-                    aria-checked={isItemSelected}
-                    tabIndex={-1}
-                    key={row._id}
-                    selected={isItemSelected}
-                  >
-                    <TableCell padding="checkbox">
-                      <Checkbox
-                        onClick={(event) => handleClick(event, row._id)}
-                        checked={isItemSelected}
-                        inputProps={{ "aria-labelledby": labelId }}
-                      />
-                    </TableCell>
-                    <TableCell
-                      component="th"
-                      id={labelId}
-                      scope="row"
-                      padding="none"
+                  return (
+                    <TableRow
+                      hover
+                      role="checkbox"
+                      aria-checked={isItemSelected}
+                      tabIndex={-1}
+                      key={row._id}
+                      selected={isItemSelected}
                     >
-                      {row.name}
-                    </TableCell>
-                    <TableCell align="right">{row.course_code}</TableCell>
-                    <TableCell align="right">{row.year}</TableCell>
-                    <TableCell align="right">{row.term}</TableCell>
+                      <TableCell padding="checkbox">
+                        <Checkbox
+                          onClick={(event) => handleClick(event, row._id)}
+                          checked={isItemSelected}
+                          inputProps={{ "aria-labelledby": labelId }}
+                        />
+                      </TableCell>
+                      <TableCell
+                        component="th"
+                        id={labelId}
+                        scope="row"
+                        padding="none"
+                      >
+                        {row.name}
+                      </TableCell>
+                      <TableCell align="right">{row.course_code}</TableCell>
+                      <TableCell align="right">{row.year}</TableCell>
+                      <TableCell align="right">{row.term}</TableCell>
+                    </TableRow>
+                  );
+                })}
+                {emptyRows > 0 && (
+                  <TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
+                    <TableCell colSpan={6} />
                   </TableRow>
-                );
-              })}
-              {emptyRows > 0 && (
-                <TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-       
-      </Paper>
-      <FormControlLabel
-        control={<Switch checked={dense} onChange={handleChangeDense} />}
-        label="Dense padding"
-      />
-    </div>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Paper>        
+      </div>  
+      <Container>       
+        <Switch>
+        <Route
+            exact
+            path="/updatecourse"
+            component={() => (
+              <div style={{ height: "600px" }}>
+                console.log(selected[0]);
+                <UpdateCourse
+                  idOfCourse={selected[0]}
+                  roleOfUser={"0"}
+                  token={props.token}
+                  userID={props.userID}
+                />
+              </div>
+            )}
+          />
+         </Switch>
+      </Container>
+    </BrowserRouter>
   );
 }

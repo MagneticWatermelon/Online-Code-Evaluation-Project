@@ -6,7 +6,7 @@ import { makeStyles } from "@material-ui/styles";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Button from "@material-ui/core/Button";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import useMeadieQuery from "@material-ui/core/useMediaQuery";
 import { useTheme } from "@material-ui/core/styles";
 import SwipeableDrawer from "@material-ui/core/SwipeableDrawer";
@@ -106,6 +106,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Header(props) {
+  let history = useHistory();
   const classes = useStyles();
 
   const [value, setValue] = useState(0);
@@ -115,6 +116,10 @@ export default function Header(props) {
     setValue(newValue);
   };
 
+  const handleLogout = () => {
+    history.push('/');
+    window.location.reload();
+  }
   const routes = [
     { name: "Courses", link: "/courses", activeIndex: 0 },
     { name: "Create Course", link: "/createcourse", activeIndex: 1 },
@@ -159,7 +164,7 @@ export default function Header(props) {
           />
         ))}
       </Tabs>
-      <Button className={classes.button} variant="contained" color="secondary">
+      <Button onClick={handleLogout} className={classes.button} variant="contained" color="secondary">
         Logout
       </Button>
     </React.Fragment>

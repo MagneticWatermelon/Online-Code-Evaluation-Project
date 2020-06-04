@@ -9,6 +9,7 @@ import CreateCourse from "./ui/CreateCourse";
 import Instructors from "./ui/Instructors";
 import CreateUser from "./ui/CreateUser";
 
+
 function App(props) {
   return (
     <ThemeProvider theme={theme}>
@@ -71,7 +72,8 @@ function App(props) {
                   <CreateUser token={props.token} userID={props.userID} />
                 </div>
               )}
-            />
+          />
+        
           </Switch>
       
       </BrowserRouter>

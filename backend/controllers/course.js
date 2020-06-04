@@ -35,6 +35,7 @@ module.exports.getAllCourses = (req,res,next)=>{
     })
 }
 
+
 module.exports.updateCourse = (req, res, next)=>{
 
     let {code, name, term, year} = req.body

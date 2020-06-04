@@ -59,8 +59,8 @@ const useStyles = makeStyles((theme) => ({
   mainTitle: {
     height: 50,
     color: "red",
-    marginTop: "80px"
-  }
+    marginTop: "80px",
+  },
 }));
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -74,8 +74,10 @@ export default function CreateCourse(props) {
   const [courseCode, setCourseCode] = useState("");
   const [courseYear, setCourseYear] = useState("");
   const [instructors, setInstructors] = useState([]);
+  const [students, setStudents] = useState([]);
   const [courseCreateClicked, setCourseCreateClicked] = useState(false);
   const [checked, setChecked] = React.useState([]);
+  const [checkedStdnt, setCheckedStdnt] = React.useState([]);
   const [fall, setFall] = useState(true);
   const [spring, setSpring] = useState(false);
 
@@ -97,10 +99,20 @@ export default function CreateCourse(props) {
     setChecked(newChecked);
   };
 
-  console.log(checked);
-  const handleClose = () => {
-    setOpen(false);
+  const handleStdntToggle = (value) => () => {
+    const currentIndex = checkedStdnt.indexOf(value);
+    const newChecked = [...checkedStdnt];
+
+    if (currentIndex === -1) {
+      newChecked.push(value);
+    } else {
+      newChecked.splice(currentIndex, 1);
+    }
+
+    setCheckedStdnt(newChecked);
   };
+  console.log(checked);
+  const handleClose = () => {};
 
   useEffect(() => {
     axios
@@ -110,15 +122,18 @@ export default function CreateCourse(props) {
       .then((responseArr) => {
         let myArr = responseArr.data;
         let instArray = [];
+        let stdAr = [];
         myArr.map((user) => {
           if (user.user_role === 1) instArray.push(user);
+          if (user.user_role === 0) stdAr.push(user);
+
         });
         setInstructors(instArray);
+        setStudents(stdAr);
       });
   }, []);
 
   const handleCourseCreate = (event) => {
-    event.preventDefault();
     let courseTerm;
     if (fall && !spring) courseTerm = "Fall";
     if (!fall && spring) courseTerm = "Spring";
@@ -135,13 +150,19 @@ export default function CreateCourse(props) {
       })
       .then(function (response) {
         console.log(response);
-
-        if (checked.length > 1) {
+        checked.splice(0, 1);
+        let allUsers = [];
+        checked.map((user) => {
+          allUsers.push(user);
+        })
+        checkedStdnt.map((user) => {
+          allUsers.push(user);
+        })
+        if (allUsers.length > 0) {
           console.log("eklemem");
-          let course_id = response.data.course_id;
-          checked.splice(0, 1);
+          let course_id = response.data.course_id;          
           let body = {
-            people: checked,
+            people: allUsers,
           };
           axios
             .post(`http://localhost:8080/course/register/${course_id}`, body, {
@@ -173,9 +194,15 @@ export default function CreateCourse(props) {
         onClose={handleClose}
         aria-labelledby="form-dialog-title"
       >
-        <DialogTitle component="h3" variant="h5" className={classes.mainTitle} id="form-dialog-title">Create Course</DialogTitle>
+        <DialogTitle
+          component="h3"
+          variant="h5"
+          className={classes.mainTitle}
+          id="form-dialog-title"
+        >
+          Create Course
+        </DialogTitle>
         <DialogContent>
-       
           <TextField
             autoFocus
             variant="outlined"
@@ -245,32 +272,66 @@ export default function CreateCourse(props) {
             </FormGroup>
           </FormControl>
           <Box m={2} />
-          <Typography variant="h6">Select Instructors</Typography>
-          <List dense className={classes.root}>
-            {instructors.map((value) => {
-              const labelId = `checkbox-list-secondary-label-${value._id}`;
-              return (
-                <ListItem key={value} button>
-                  <FormControlLabel
-                    id={value._id}
-                    value={value}
-                    control={
-                      <Checkbox
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={6}>
+              <Typography variant="h6">Select Instructors</Typography>
+              <List dense className={classes.root}>
+                {instructors.map((value) => {
+                  const labelId = `checkbox-list-secondary-label-${value._id}`;
+                  return (
+                    <ListItem key={value} button>
+                      <FormControlLabel
                         id={value._id}
-                        edge="end"
-                        onChange={handleToggle(value._id)}
-                        checked={checked.indexOf(value._id) !== -1}
-                        inputProps={{ "aria-labelledby": labelId }}
+                        value={value}
+                        control={
+                          <Checkbox
+                            id={value._id}
+                            edge="end"
+                            onChange={handleToggle(value._id)}
+                            checked={checked.indexOf(value._id) !== -1}
+                            inputProps={{ "aria-labelledby": labelId }}
+                          />
+                        }
+                        label={value.name}
+                        labelPlacement="end"
+                        id={labelId}
                       />
-                    }
-                    label={value.name}
-                    labelPlacement="end"
-                    id={labelId}
-                  />
-                </ListItem>
-              );
-            })}
-          </List>
+                      <Typography>{value.mail}</Typography>
+                    </ListItem>
+                  );
+                })}
+              </List>
+            </Grid>
+            <Grid item xs={15} sm={6}>
+              <Typography variant="h6">Select Students</Typography>
+              <List dense className={classes.root}>
+                {students.map((value) => {
+                  const labelId = `checkbox-list-secondary-label-${value._id}`;
+                  return (
+                    <ListItem key={value} button>
+                      <FormControlLabel
+                        id={value._id}
+                        value={value}
+                        control={
+                          <Checkbox
+                            id={value._id}
+                            edge="end"
+                            onChange={handleStdntToggle(value._id)}
+                            checked={checkedStdnt.indexOf(value._id) !== -1}
+                            inputProps={{ "aria-labelledby": labelId }}
+                          />
+                        }
+                        label={value.name}
+                        labelPlacement="end"
+                        id={labelId}
+                      />
+                      <Typography>{value.mail}</Typography>
+                    </ListItem>
+                  );
+                })}
+              </List>
+            </Grid>
+          </Grid>
         </DialogContent>
         <DialogActions>
           <Button
@@ -286,6 +347,7 @@ export default function CreateCourse(props) {
             to="/courses"
             onClick={handleCourseCreate}
             color="primary"
+            disabled={(courseName == "" || courseCode == "" || courseYear == "" ) || (!fall && !spring) || checked.length==0 }
           >
             Create Course
           </Button>

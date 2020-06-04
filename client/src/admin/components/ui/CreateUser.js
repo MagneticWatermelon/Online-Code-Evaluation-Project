@@ -80,17 +80,18 @@ export default function CreateUser(props) {
   const { student, instructure, admin } = state;
 
   const handleClose = () => {
-    setOpen(false);
+   
   };
   const handleCreate = (event) => {
     console.log("creating user");
     console.log(props.token);
-    console.log(name, mail, password);
+   
     let role;
     if (student) role = 0;
     if (instructure) role = 1;
     if (admin) role = 2;
-    event.preventDefault();
+    console.log(name, mail, password, role);
+    //event.preventDefault();
     let body = {
       name: name,
       mail: mail,
@@ -107,7 +108,7 @@ export default function CreateUser(props) {
       })
       .catch(function (response) {
         console.log(response);
-        handleClose();
+      handleClose();
       });
   };
 
@@ -204,9 +205,10 @@ export default function CreateUser(props) {
         <DialogActions>
           <Button
             component={Link}
-            to="courses"
+            to="/students"
             color="primary"
             token={props.token}
+
           >
             Cancel
           </Button>
@@ -216,10 +218,11 @@ export default function CreateUser(props) {
             onClick={handleCreate}
             color="primary"
             token={props.token}
-            // disabled={()=> {this.name === ""}}
+            disabled={(name == "" || mail == "" || password == "" ) || (!state.student && !state.admin && !state.instructure) }
           >
             Create User
           </Button>
+
         </DialogActions>
       </Dialog>
     </div>
