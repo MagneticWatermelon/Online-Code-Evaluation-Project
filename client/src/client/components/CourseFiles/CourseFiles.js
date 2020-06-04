@@ -162,18 +162,20 @@ export default function CourseFiles(props) {
                     columns={columns}
                     options={options}
                 />
-                <div className={styles.dragZone}>
-                <DropzoneArea
-                    onChange={onFileChange}
-                />
-                </div>
-                <Button
-                    onClick={handleUpload}
-                    color='primary'
-                    variant='contained'
-                >
-                    Upload
-                </Button>
+                {props.role == 1 && (
+                    <div className={styles.dragZone}>
+                        <DropzoneArea
+                            onChange={onFileChange}
+                        />
+                        <Button
+                            onClick={handleUpload}
+                            color='primary'
+                            variant='contained'
+                        >
+                            Upload
+                        </Button>
+                    </div>
+                )}
             </div>
             
 
