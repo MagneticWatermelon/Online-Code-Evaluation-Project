@@ -34,6 +34,7 @@ async function buildImage(bundle, options){
         return success;
     }
     catch(e){
+        console.log(e)
         return false;
     }
 }
@@ -56,8 +57,8 @@ async function testInput(imagename, testcase){
         let container = await createContainer(imagename,hostConfigs);
         
         await attachToContainer(container,testcase)
-        
-        await container.start();
+
+        await container.start(); 
         
         let output = []
         
@@ -132,6 +133,7 @@ async function attachToContainer(container, inputs){
     if(inputs==null || container == null){return}
 
     let inputs_fixed    = [].concat(...inputs.map(e => [e, '\n']))
+    console.log(inputs_fixed)
     let inputstream     = Readable.from(inputs_fixed)
     
     await new Promise((resolve,reject)=>{

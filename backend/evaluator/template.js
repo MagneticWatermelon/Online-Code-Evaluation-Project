@@ -147,7 +147,46 @@ const cTemplate = {
                     ['8'],
                     ['83']
                 ],
-} 
+}
+
+const jsTemplate = {
+    lang    : 'node:14',
+    files   : [
+        {
+            name: 'main.js',
+            content:
+            `let numbers = []
+
+            process.stdin.on('data',data=>{
+                numbers.push(data)
+                console.log(data.toString())
+                console.log(numbers.length)
+                if(numbers.length==2){
+                    console.log('got two numbers')
+                    //console.log(numbers.map(a=>Number.parseInt(a.toString())).reduce((a,b)=>(a+b)));
+                    process.exit();
+                }
+            })
+            
+            `
+        }
+    ],
+
+    inputs  : [
+                ['1','2'],
+                ['5','5'],
+                ['9','3'],
+                ['3','6']
+              ],
+    
+    outputs : [
+                ['3'],
+                ['10'],
+                ['12'],
+                ['9']
+              ],
+    
+}
 
 const exerciseTemplate = {
     
@@ -178,3 +217,4 @@ module.exports.cppTemplate  = cppTemplate;
 module.exports.pythonTemplate= pythonTemplate;
 module.exports.cTemplate    = cTemplate;
 module.exports.exerciseTemplate = exerciseTemplate;
+module.exports.jsTemplate       = jsTemplate;

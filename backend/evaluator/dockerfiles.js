@@ -8,6 +8,11 @@ const dockerfiles = {
                         RUN         javac main.java
                         CMD         ["java","main"]
                        `,
+    
+    'node:14':         `FROM        node:14.4
+                        COPY        . /
+                        CMD         ["node","./main.js"]
+                       `,
 
     'python:3':        `FROM        python:3-slim
                         COPY        . /
