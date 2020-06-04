@@ -7,15 +7,14 @@ const runner = require('./runner')
 async function getOutputs(bundle, imageName){
     
     let start = Date.now()
-    console.log('build starting...')
+    
     let buildsuccess = await runner.buildImage(bundle,
     {t:imageName,
      forcerm:true
     })
 
     let duration = (Date.now()-start)/1000
-    console.log('build finished.')
-    console.log('it took ' + duration + ' seconds')
+    console.log(`build finished in ${duration} seconds`)
     
     if(!buildsuccess){throw 'Compilation Error'}
         

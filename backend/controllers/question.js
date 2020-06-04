@@ -71,6 +71,7 @@ module.exports.executeBundle = (userID, bundle, callback)=>{
     evaluator.evaluate(userID, bundle, (err, score, evaluation)=>{
         if(err){return callback(err,null)}
         return callback(null,{
+            message :'Code executed successfully',
             score   :Number.parseInt((score*100).toPrecision(3)),
             results :evaluation
         })

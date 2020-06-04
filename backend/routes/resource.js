@@ -18,8 +18,8 @@ router.post(
 
 router.get(
     '/get/:id',
-    isAuth,
-    resourceController.validateUser,
+    //isAuth,
+    //resourceController.validateUser,
     resourceController.getResource)
 
 router.delete(

@@ -5,8 +5,11 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import TreeItem from '@material-ui/lab/TreeItem';
 import { makeStyles } from '@material-ui/core/styles';
 import MUIDataTable from 'mui-datatables';
-import { Typography } from '@material-ui/core';
+import { Typography, IconButton, Button } from '@material-ui/core';
 import { Link } from '@material-ui/core';
+import { DropzoneArea } from 'material-ui-dropzone';
+import { useSnackbar } from 'notistack';
+import axios from 'axios';
 import moment from 'moment';
 
 
@@ -14,22 +17,45 @@ import moment from 'moment';
 
 export default function CourseFiles(props) {
 
+    const [files, setFiles] = React.useState([]);
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+
+
     const transformDate =(date) => {
         let newDate = moment.utc(date).format('MMMM Do [At] HH[:]mm');
         return newDate;
+    }
+
+    const onFileChange = (files) => {
+        setFiles(files);
+    }
+
+    const handleUpload = () => {
+        const formData = new FormData();
+        formData.append('file',files[0]);
+        axios.post(`http://localhost:8080/resource/upload/${props.course._id}`, formData, {headers: {"Authorization" : `Bearer ${props.token}`}}).
+        then(function (response) {
+            enqueueSnackbar('File uploaded successfully!', {variant: 'success'});
+            })
+        .catch(function (error) {
+            enqueueSnackbar('Something went wrong!', {variant: 'error'});
+        });
+    }
+
+
+    const handleFileDownload = (rowData) => {
+        let id = rowData[4];
+        console.log(id);
+        let url = `localhost:8080/resource/get/${id}`
+        var win = window.open(`//localhost:8080/resource/get/${id}`, '_blank');
+        win.focus();
+
     }
 
     const columns = [
         {label :"Name", name: 'file_name', options: {
             filter: false,
             sort: true,
-            customBodyRender: (value, tableData, updateValue) => {
-                return (
-                    <Link>
-                        {value}
-                    </Link>
-                )
-            }
            }}, 
         {label :"Created At", name: 'createdAt',  options: {
             filter: false,
@@ -56,6 +82,8 @@ export default function CourseFiles(props) {
                 )
             }
            }},
+        {name: '_id', options: {display: 'false', filter: false, sort: false,}
+        },
     ];
 
     const options = {
@@ -69,6 +97,7 @@ export default function CourseFiles(props) {
         print: false,
         download: false,
         viewColumns: false,
+        onRowClick: handleFileDownload,
     };
 
     const useStyles = makeStyles((theme) => ({
@@ -85,6 +114,9 @@ export default function CourseFiles(props) {
             paddingLeft: 10,
             marginRight: 10,
             borderRadius: 7,
+        },
+        dragZone: {
+            width: 250,
         },
         treeroot: {
             flex: 1,
@@ -130,7 +162,22 @@ export default function CourseFiles(props) {
                     columns={columns}
                     options={options}
                 />
+                {props.role == 1 && (
+                    <div className={styles.dragZone}>
+                        <DropzoneArea
+                            onChange={onFileChange}
+                        />
+                        <Button
+                            onClick={handleUpload}
+                            color='primary'
+                            variant='contained'
+                        >
+                            Upload
+                        </Button>
+                    </div>
+                )}
             </div>
+            
 
         </div>
     );
