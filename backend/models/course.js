@@ -236,6 +236,7 @@ const getAssignmentsWithGrades = (course_id, student_id, callback) => {
  */
 const getInstructors = (course_id, callback) => {
    CourseGiven
+      .model
       .find({ course_id: course_id })
       .select({ instructor_id: 1 })
       .then(result => {
@@ -254,8 +255,8 @@ const getInstructors = (course_id, callback) => {
     example callback(err, arrayOfStudentIDs)
  */
 const getStudents = async (course_id, callback) => {
-
    CourseTaken
+      .model
       .find({ course_id: course_id })
       .select({ student_id: 1 })
       .then(result => {
