@@ -46,6 +46,24 @@ export default function OutputArea(props) {
         <div className="oArea">
             {result ? 
                 (<div>
+                    <Typography 
+                        component='p'
+                        variant='h5'
+                        className={styles.inputEx}
+
+                    >
+                        {`Message : ${result.message}`}
+                    </Typography>
+                    {result.error && 
+                        <Typography 
+                        component='p'
+                        variant='h5'
+                        className={styles.inputEx}
+
+                    >
+                        {`Error: ${result.error}`}
+                    </Typography>
+                    }
                     {result.results && result.results.map((testCase) => {
                         if(testCase.status == 'correct') {
                             return(
@@ -119,7 +137,7 @@ export default function OutputArea(props) {
                         }
                     })}
                     <Typography 
-                        component='span'
+                        component='p'
                         variant='h5'
                         className={styles.inputEx}
 

@@ -30,7 +30,7 @@ export default function ProblemArea(props) {
             {isQuestionLoaded ? 
                 (<div>
                     <h1>{question.title}</h1>
-                    <p>{question.explanation}</p>
+                    <div dangerouslySetInnerHTML={{__html: question.explanation}} />
                 </div>)
                 :
                 (<div className={styles.progress}><CircularProgress/></div>)

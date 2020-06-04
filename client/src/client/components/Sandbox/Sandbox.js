@@ -43,7 +43,7 @@ function determineLang(extension) {
         case 'py' :
             return 'python:3';
         default:
-            return 'java:8';      
+            return 'node:14';      
     }
 };
 
@@ -79,7 +79,7 @@ export default function Sandbox(props) {
     const [fileTabs , setFileTabs] = React.useState([]);
     const [question, setQuestion] = React.useState({});
     const [isQuestionLoaded, loadedQuestion] = React.useState(false);
-    const [results, setResults] = React.useState({});
+    const [results, setResults] = React.useState({message: 'No message', score: 'Not scored yet'});
     const [loadedResults, loadResults] = React.useState(true);
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
