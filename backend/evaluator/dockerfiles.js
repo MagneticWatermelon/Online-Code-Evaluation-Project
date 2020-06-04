@@ -9,7 +9,7 @@ const dockerfiles = {
                         CMD         ["java","main"]
                        `,
     
-    'node:14':         `FROM        node:14.4
+    'node:14':         `FROM        node:14-slim
                         COPY        . /
                         CMD         ["node","./main.js"]
                        `,

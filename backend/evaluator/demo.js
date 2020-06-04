@@ -4,6 +4,8 @@ const templates = require('./template')
 
 async function demo(jsonBundle){
 
+    console.log(`starting remote execution test for ${jsonBundle.lang}`)
+
     let start = Date.now()
     let {lang, files, inputs, outputs} = jsonBundle;
     let bundle = new Bundle(lang, inputs, outputs)
@@ -24,8 +26,8 @@ async function demo(jsonBundle){
     });
 }
 
- demo(templates.cTemplate);
- demo(templates.cppTemplate);
- demo(templates.javaTemplate);
- demo(templates.pythonTemplate);
- demo(templates.jsTemplate);
+//  demo(templates.cTemplate);
+//  demo(templates.cppTemplate);
+//  demo(templates.javaTemplate);
+//  demo(templates.pythonTemplate);
+demo(templates.jsTemplate);
