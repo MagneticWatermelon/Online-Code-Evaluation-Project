@@ -11,7 +11,7 @@ const Readable      = require('stream').Readable;
 
 const targenerator  = require('./tar-generator')
 
-const attachOptions =   {logs:true,stream: true, stdin: true, stdout: true, stderr: true};
+const attachOptions =   {detachKey:'\n',logs:true,stream: true, stdin: true, stdout: true, stderr: true};
 
 const hostConfigs   =   {}
 
@@ -56,9 +56,11 @@ async function testInput(imagename, testcase){
 
         let container = await createContainer(imagename,hostConfigs);
         
-        await attachToContainer(container,testcase)
-
         await container.start(); 
+
+        for(input of testcase){
+            await attachToContainer(container,input)
+        }
         
         let output = []
         
@@ -129,12 +131,10 @@ function removeImage(imagename){
 
 /*function for attaching inputs to the container
 */
-async function attachToContainer(container, inputs){
-    if(inputs==null || container == null){return}
+async function attachToContainer(container, input){
+    if(!input || !container){return}
 
-    let inputs_fixed    = [].concat(...inputs.map(e => [e, '\n']))
-    console.log(inputs_fixed)
-    let inputstream     = Readable.from(inputs_fixed)
+    let inputstream     = Readable.from([input,'\n'])
     
     await new Promise((resolve,reject)=>{
         container.attach(attachOptions)

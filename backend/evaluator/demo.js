@@ -24,8 +24,8 @@ async function demo(jsonBundle){
     });
 }
 
-// demo(templates.cTemplate);
-// demo(templates.cppTemplate);
-// demo(templates.javaTemplate);
-// demo(templates.pythonTemplate);
-demo(templates.jsTemplate);
+ demo(templates.cTemplate);
+ demo(templates.cppTemplate);
+ demo(templates.javaTemplate);
+ demo(templates.pythonTemplate);
+ demo(templates.jsTemplate);

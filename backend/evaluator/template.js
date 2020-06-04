@@ -155,17 +155,18 @@ const jsTemplate = {
         {
             name: 'main.js',
             content:
-            `let numbers = []
+            `var readline = require('readline');
 
-            process.stdin.on('data',data=>{
-                numbers.push(data)
-                console.log(data.toString())
-                console.log(numbers.length)
-                if(numbers.length==2){
-                    console.log('got two numbers')
-                    //console.log(numbers.map(a=>Number.parseInt(a.toString())).reduce((a,b)=>(a+b)));
+            var reader = readline.createInterface({
+                input: process.stdin,
+                output: process.stdout
+            });
+            
+            reader.question('',(num1)=>{
+                reader.question('',(num2)=>{
+                    console.log(Number.parseInt(num1)+Number.parseInt(num2));
                     process.exit();
-                }
+                })
             })
             
             `
@@ -176,14 +177,18 @@ const jsTemplate = {
                 ['1','2'],
                 ['5','5'],
                 ['9','3'],
-                ['3','6']
+                ['3','6'],
+                ['7','0'],
+                ['8','3']
               ],
     
     outputs : [
                 ['3'],
                 ['10'],
                 ['12'],
-                ['9']
+                ['9'],
+                ['7'],
+                ['11']
               ],
     
 }
