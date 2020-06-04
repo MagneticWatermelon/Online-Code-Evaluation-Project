@@ -23,6 +23,7 @@ import Button from "@material-ui/core/Button";
 import UpdateUser from "./UpdateUser";
 import { Link, BrowserRouter, Route, Switch } from "react-router-dom";
 import { Container } from "@material-ui/core";
+import { useSnackbar } from "notistack";
 
 export default function Instructors(props) {
   const headCells = [
@@ -214,6 +215,7 @@ export default function Instructors(props) {
   const [deleteClicked, setDeleteClicked] = React.useState(false);
   const [loadPage, setLoadPage] = React.useState(false);
   const [updating, setUpdating] = React.useState(false);
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   const handleUpdate = () => {
     setUpdating(true);
@@ -240,6 +242,7 @@ export default function Instructors(props) {
   }, [loadPage, deleteClicked]);
 
   const handleDelete = () => {
+    let myBol = false;
     console.log(selected);
     axios
       .delete(`http://localhost:8080/user/delete`, {
@@ -252,8 +255,14 @@ export default function Instructors(props) {
         setDeleteClicked(!deleteClicked);
       })
       .catch(function (response) {
+        myBol = true;
         console.log(response);
       });
+      if (myBol) {
+        enqueueSnackbar("An Error Occured While Deleting", { variant: "error" });
+      } else {
+        enqueueSnackbar("Deleted Successfully", { variant: "success" });
+      }
     setSelected([]);
   };
 

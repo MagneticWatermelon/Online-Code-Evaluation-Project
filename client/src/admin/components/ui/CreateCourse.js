@@ -25,7 +25,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
 import FormGroup from "@material-ui/core/FormGroup";
 import Courses from "./Courses";
-
+import { useSnackbar } from "notistack";
 const useStyles = makeStyles((theme) => ({
   appBar: {
     position: "relative",
@@ -69,6 +69,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 export default function CreateCourse(props) {
   const classes = useStyles();
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [open, setOpen] = useState(true);
   const [courseName, setCourseName] = useState("");
   const [courseCode, setCourseCode] = useState("");
@@ -134,6 +135,7 @@ export default function CreateCourse(props) {
   }, []);
 
   const handleCourseCreate = (event) => {
+    let myBol = false;
     let courseTerm;
     if (fall && !spring) courseTerm = "Fall";
     if (!fall && spring) courseTerm = "Spring";
@@ -172,16 +174,23 @@ export default function CreateCourse(props) {
               console.log(response);
             })
             .catch(function (response) {
+              myBol = true;
               console.log(response);
             });
         }
         handleClose();
       })
       .catch(function (response) {
+        myBol = true;
         console.log(response);
         handleClose();
       });
 
+    if (myBol) {
+      enqueueSnackbar("An Error Occured", { variant: "error" });
+    } else {
+      enqueueSnackbar("Course is Created Successfully", { variant: "success" });
+    }
     setCourseCreateClicked(!courseCreateClicked);
     //handleClose();
   };

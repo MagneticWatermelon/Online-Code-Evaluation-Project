@@ -23,6 +23,7 @@ import Button from "@material-ui/core/Button";
 import { Link, BrowserRouter, Route, Switch } from "react-router-dom";
 import { Container } from "@material-ui/core";
 import UpdateCourse from "./UpdateCourse";
+import { useSnackbar } from "notistack";
 
 export default function Courses(props) {
   const headCells = [
@@ -189,6 +190,7 @@ export default function Courses(props) {
   }));
 
   const classes = useStyles();
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("calories");
   const [selected, setSelected] = useState([]);
@@ -217,7 +219,7 @@ export default function Courses(props) {
     console.log(props.token);
     console.log(selected);
     
-
+    let myBol = false;
     let courseInst = [];
     let courseStdnt = [];
     //get instructors of course
@@ -273,20 +275,29 @@ export default function Courses(props) {
                     setSelected([]);
                   })
                   .catch(function (response) {
+                    myBol = true;
                     console.log(response);
                   });
               })
               .catch((err) => {
+                myBol = true;
                 console.log(err);
               });
           })
           .catch((err) => {
+            myBol = true;
             console.log(err);
           });
       })
       .catch((err) => {
+        myBol = true;
         console.log(err);
       });
+      if (myBol) {
+        enqueueSnackbar("An Error Occured While Deleting", { variant: "error" });
+      } else {
+        enqueueSnackbar("Deleted Successfully", { variant: "success" });
+      }
   };
 
   const handleRequestSort = (event, property) => {

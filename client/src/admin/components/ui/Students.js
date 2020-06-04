@@ -22,6 +22,7 @@ import Button from "@material-ui/core/Button";
 import { Link, BrowserRouter, Route, Switch } from "react-router-dom";
 import { Container } from "@material-ui/core";
 import UpdateUser from "./UpdateUser";
+import { useSnackbar } from "notistack";
 
 export default function Students(props) {
   const headCells = [
@@ -192,6 +193,7 @@ export default function Students(props) {
   }));
 
   const classes = useStyles();
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("calories");
   const [selected, setSelected] = React.useState([]);
@@ -220,6 +222,7 @@ export default function Students(props) {
   }, [loadPage, deleteClicked]);
 
   const handleDelete = () => {
+    let myBol = false;
     console.log("in delete");
     console.log(selected);
     let body = {
@@ -238,8 +241,15 @@ export default function Students(props) {
         setSelected([]);
       })
       .catch(function (response) {
+        myBol = true;
         console.log(response);
       });
+    
+    if (myBol) {
+      enqueueSnackbar("An Error Occured While Deleting", { variant: "error" });
+    } else {
+      enqueueSnackbar("Deleted Successfully", { variant: "success" });
+    }
   };
 
   const handleUpdate = () => {
