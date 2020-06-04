@@ -3,6 +3,8 @@ import { makeStyles} from '@material-ui/core/styles';
 import { Link as RouterLink} from 'react-router-dom';
 import { Editor } from '@tinymce/tinymce-react'; 
 import { Button, TextField } from '@material-ui/core';
+import { useSnackbar } from 'notistack';
+
 import axios from 'axios';
 
 const useStyles = makeStyles((theme) => ({
@@ -14,6 +16,7 @@ const useStyles = makeStyles((theme) => ({
 export default function UpdateAnnouncement(props) {
 
     const [announcement, setAnnouncement] = React.useState({title: '', explanation: ''});
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
     const classes = useStyles();
 
@@ -31,10 +34,10 @@ export default function UpdateAnnouncement(props) {
         let id = url.split('/').pop();
         axios.post(`http://localhost:8080/announcement/update/${id}`, announcement, {headers: {"Authorization" : `Bearer ${props.token}`}}).
         then(function (response) {
-            console.log(response);
+            enqueueSnackbar('Announcement updated successfully!', {variant: 'success'});
             })
-            .catch(function (error) {
-            console.log(error);
+        .catch(function (error) {
+            enqueueSnackbar('Something went wrong!', {variant: 'error'});
         });
     }
 

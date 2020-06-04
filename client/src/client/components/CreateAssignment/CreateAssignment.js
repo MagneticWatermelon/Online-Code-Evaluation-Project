@@ -3,6 +3,7 @@ import { makeStyles} from '@material-ui/core/styles';
 import { Link as RouterLink} from 'react-router-dom';
 import { Editor } from '@tinymce/tinymce-react'; 
 import { Button, TextField, Typography, Slider } from '@material-ui/core';
+import { useSnackbar } from 'notistack';
 import axios from 'axios';
 import moment from 'moment'
 
@@ -25,6 +26,8 @@ export default function CreateAssignment(props) {
 
     const [assignment, setAssignment] = React.useState({instructor_id: props.id, title: '', explanation: '', due_date: '', weight: '', release_date: ''});
     const [sliderVal, setVal] = React.useState(20);
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+
     const classes = useStyles();
 
     const handleTitleChange = (e) => {
@@ -51,10 +54,10 @@ export default function CreateAssignment(props) {
         console.log(obj);
         axios.post(`http://localhost:8080/assignment/create/${props.course._id}`, obj, {headers: {"Authorization" : `Bearer ${props.token}`}}).
         then(function (response) {
-            console.log(response);
+            enqueueSnackbar('Assigment created successfully!', {variant: 'success'});
             })
-            .catch(function (error) {
-            console.log(error);
+        .catch(function (error) {
+            enqueueSnackbar('Something went wrong!', {variant: 'error'});
         });
     }
 

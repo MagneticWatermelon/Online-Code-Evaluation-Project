@@ -2,12 +2,16 @@ import React, { useEffect } from 'react'
 import { makeStyles } from '@material-ui/core/styles';
 import { Avatar, Typography, Button } from '@material-ui/core';
 import { Link as RouterLink} from 'react-router-dom';
+import { useSnackbar } from 'notistack';
+
 import axios from 'axios';
 
 
 export default function Announcement(props) {
 
     const [announcement, setAnnouncement] = React.useState({title: '', instructor: {name: ''}, explanation: ''});
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+
     const [id, setId] = React.useState(() => {
         let url = window.location.pathname;
         let id = url.split('/').pop();
@@ -28,10 +32,10 @@ export default function Announcement(props) {
     const handleDelete = (e) => {
         axios.delete(`http://localhost:8080/announcement/delete/${id}`, {headers: {"Authorization" : `Bearer ${props.token}`}}).
         then(function (response) {
-            console.log(response);
+            enqueueSnackbar('Announcement deleted successfully!', {variant: 'success'});
             })
-            .catch(function (error) {
-            console.log(error);
+        .catch(function (error) {
+            enqueueSnackbar('Something went wrong!', {variant: 'error'});
         });
     }
 

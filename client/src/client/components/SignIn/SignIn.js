@@ -12,6 +12,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles, createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { Link as RouterLink } from 'react-router-dom';
+import { useSnackbar } from 'notistack';
 import axios from 'axios';
 
 
@@ -47,6 +48,8 @@ export default function SignIn(props) {
 
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+
 
   const handleEmailChange = (event) => {
     setEmail(event.target.value)
@@ -66,9 +69,11 @@ export default function SignIn(props) {
       props.tokenize(response.data.token);
       props.id(response.data.user_id);
       props.role(response.data.user_role);
+      enqueueSnackbar('Success!', {variant: 'success'});
+
     })
     .catch(function (error) {
-      console.log(error);
+      enqueueSnackbar('Something went wrong!', {variant: 'error'});
     });
   }
 

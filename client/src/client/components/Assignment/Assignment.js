@@ -3,6 +3,7 @@ import { Grid, Typography, Button, IconButton, Menu, MenuItem, Link } from '@mat
 import { makeStyles} from '@material-ui/core/styles';
 import { Link as RouterLink} from 'react-router-dom';
 import SettingsIcon from '@material-ui/icons/Settings';
+import { useSnackbar } from 'notistack';
 import moment from 'moment';
 import axios from 'axios';
 
@@ -13,6 +14,8 @@ export default function Assignment(props) {
     const [questions, setQuestions] = React.useState([]);
     const [assignment, setAssignment] = React.useState({});
     const [anchorEl, setAnchorEl] = React.useState(null);
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+
 
     const [id, setId] = React.useState(() => {
         let url = window.location.pathname;
@@ -38,10 +41,11 @@ export default function Assignment(props) {
         let id = url.split('/').pop();
         axios.delete(`http://localhost:8080/assignment/delete/${id}`, {headers: {"Authorization" : `Bearer ${props.token}`}}).
         then(function (response) {
-            console.log(response);
-            })
-            .catch(function (error) {
-            console.log(error);
+            enqueueSnackbar('Assigment deleted successfully!', {variant: 'success'});
+
+        })
+        .catch(function (error) {
+            enqueueSnackbar('Something went wrong!', {variant: 'error'});
         });
     }
 
