@@ -21,6 +21,9 @@ import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import Checkbox from "@material-ui/core/Checkbox";
+import Snackbar from "@material-ui/core/Snackbar";
+import Alert from "@material-ui/lab/Alert";
+import { useSnackbar } from "notistack";
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -52,8 +55,8 @@ const useStyles = makeStyles((theme) => ({
   mainTitle: {
     height: 50,
     color: "red",
-    marginTop: "80px"
-  }
+    marginTop: "80px",
+  },
 }));
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -61,8 +64,11 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 export default function CreateUser(props) {
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const classes = useStyles();
-  const [open, setOpen] = React.useState(true);
+  const [success, setSuccess] = useState(false);
+  const [createClicked, setCreateClicked] = useState(false);
+  const [open, setOpen] = useState(true);
   const [name, setName] = useState("");
   const [mail, setMail] = useState("");
   const [password, setPassword] = useState("");
@@ -79,13 +85,11 @@ export default function CreateUser(props) {
 
   const { student, instructure, admin } = state;
 
-  const handleClose = () => {
-   
-  };
+  const handleClose = () => {};
   const handleCreate = (event) => {
     console.log("creating user");
     console.log(props.token);
-   
+
     let role;
     if (student) role = 0;
     if (instructure) role = 1;
@@ -104,11 +108,13 @@ export default function CreateUser(props) {
       })
       .then(function (response) {
         console.log(response);
+        enqueueSnackbar("User Created Successfully", { variant: "success" });
+        setSuccess(true);
         handleClose();
       })
       .catch(function (response) {
-        console.log(response);
-      handleClose();
+        enqueueSnackbar("An Error Occured", { variant: "error" });
+        handleClose();
       });
   };
 
@@ -120,9 +126,10 @@ export default function CreateUser(props) {
         onClose={handleClose}
         aria-labelledby="form-dialog-title"
       >
-        <DialogTitle className={classes.mainTitle} id="form-dialog-title">Create User</DialogTitle>
+        <DialogTitle className={classes.mainTitle} id="form-dialog-title">
+          Create User
+        </DialogTitle>
         <DialogContent>
-        
           <TextField
             autoFocus
             id="name"
@@ -208,7 +215,6 @@ export default function CreateUser(props) {
             to="/students"
             color="primary"
             token={props.token}
-
           >
             Cancel
           </Button>
@@ -218,11 +224,22 @@ export default function CreateUser(props) {
             onClick={handleCreate}
             color="primary"
             token={props.token}
-            disabled={(name == "" || mail == "" || password == "" ) || (!state.student && !state.admin && !state.instructure) }
+            disabled={
+              name == "" ||
+              mail == "" ||
+              password == "" ||
+              (!state.student && !state.admin && !state.instructure)
+            }
           >
             Create User
           </Button>
-
+          <Snackbar
+            key={"bottom" + "left"}
+            open={createClicked}
+            autoHideDuration={6000}
+          >
+            <Alert severity={success ? "success" : "error"}>message</Alert>
+          </Snackbar>
         </DialogActions>
       </Dialog>
     </div>

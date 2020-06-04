@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import clsx from "clsx";
 import { lighten, makeStyles } from "@material-ui/core/styles";
@@ -22,7 +22,7 @@ import axios from "axios";
 import Button from "@material-ui/core/Button";
 import { Link, BrowserRouter, Route, Switch } from "react-router-dom";
 import { Container } from "@material-ui/core";
-import UpdateCourse from "./UpdateCourse"
+import UpdateCourse from "./UpdateCourse";
 
 export default function Courses(props) {
   const headCells = [
@@ -55,7 +55,7 @@ export default function Courses(props) {
               padding={headCell.disablePadding ? "none" : "default"}
               sortDirection={orderBy === headCell.id ? order : false}
             >
-              {    headCell.label}
+              {headCell.label}
             </TableCell>
           ))}
         </TableRow>
@@ -189,24 +189,19 @@ export default function Courses(props) {
   }));
 
   const classes = useStyles();
-  const [order, setOrder] = React.useState("asc");
-  const [orderBy, setOrderBy] = React.useState("calories");
-  const [selected, setSelected] = React.useState([]);
-  const [page, setPage] = React.useState(0);
-  const [dense, setDense] = React.useState(false);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [rows, setRows] = React.useState([]);
-  const [deleteClicked, setDeleteClicked] = React.useState(false);
-  const [loadPage, setLoadPage] = React.useState(false);
-  const [updating, setUpdating] = React.useState(false);
+  const [order, setOrder] = useState("asc");
+  const [orderBy, setOrderBy] = useState("calories");
+  const [selected, setSelected] = useState([]);
+  const [page, setPage] = useState(0);
+  const [dense, setDense] = useState(false);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rows, setRows] = useState([]);
+  const [deleteClicked, setDeleteClicked] = useState(false);
+  const [loadPage, setLoadPage] = useState(false);
+  const [updating, setUpdating] = useState(false);
 
-  const handleUpdate = () => {
-  
-  };
+  const handleUpdate = () => {};
 
-  
-
- 
   useEffect(() => {
     axios
       .get(`http://localhost:8080/course/get/all`, {
@@ -221,21 +216,76 @@ export default function Courses(props) {
     console.log("in delete");
     console.log(props.token);
     console.log(selected);
-    let body = {
-      courses: selected,
-    };
+    
+
+    let courseInst = [];
+    let courseStdnt = [];
+    //get instructors of course
     axios
-      .delete("http://localhost:8080/course/delete", {
+      .get(`http://localhost:8080/course/instructors/${selected[0]}`, {
         headers: { Authorization: `Bearer ${props.token}` },
-        data: body,
       })
-      .then(function (response) {
-        console.log(response);
-        setLoadPage(!loadPage);
-        setSelected([]);
+      .then((res) => {
+        let resIns = res.data;
+        resIns.map((ins) => {
+          courseInst.push(ins.instructor_id);
+        });
+        console.log("Instructors");
+        console.log(courseInst);
+
+        axios
+          .get(`http://localhost:8080/course/students/${selected[0]}`, {
+            headers: { Authorization: `Bearer ${props.token}` },
+          })
+          .then((res) => {
+            let resIns = res.data;
+            resIns.map((student) => {
+              courseStdnt.push(student.student_id);
+            });
+            console.log("Students");
+            console.log(courseStdnt);
+            let allUsers = courseStdnt.concat(courseInst);
+            let body = {
+              people: allUsers
+            }
+            axios
+              .delete(
+                `http://localhost:8080/course/deregister/${selected[0]}`,
+                {
+                  headers: { Authorization: `Bearer ${props.token}` },
+                  data: body,
+                }
+              )
+              .then((res) => {
+                console.log(res);
+
+                let body = {
+                  courses: selected,
+                };
+                axios
+                  .delete("http://localhost:8080/course/delete", {
+                    headers: { Authorization: `Bearer ${props.token}` },
+                    data: body,
+                  })
+                  .then(function (response) {
+                    console.log(response);
+                    setLoadPage(!loadPage);
+                    setSelected([]);
+                  })
+                  .catch(function (response) {
+                    console.log(response);
+                  });
+              })
+              .catch((err) => {
+                console.log(err);
+              });
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       })
-      .catch(function (response) {
-        console.log(response);
+      .catch((err) => {
+        console.log(err);
       });
   };
 
@@ -247,8 +297,11 @@ export default function Courses(props) {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = rows.map((n) => n.id);
-      setSelected(newSelecteds);
+      setSelected([]);
+      let ar = [];
+      ar = rows.map((n) => n._id);
+      setSelected(ar);
+      console.log(ar);
       return;
     }
     setSelected([]);
@@ -272,19 +325,6 @@ export default function Courses(props) {
     }
 
     setSelected(newSelected);
-  };
-
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-
-  const handleChangeDense = (event) => {
-    setDense(event.target.checked);
   };
 
   const isSelected = (name) => selected.indexOf(name) !== -1;
@@ -356,11 +396,11 @@ export default function Courses(props) {
               </TableBody>
             </Table>
           </TableContainer>
-        </Paper>        
-      </div>  
-      <Container>       
+        </Paper>
+      </div>
+      <Container>
         <Switch>
-        <Route
+          <Route
             exact
             path="/updatecourse"
             component={() => (
@@ -375,7 +415,7 @@ export default function Courses(props) {
               </div>
             )}
           />
-         </Switch>
+        </Switch>
       </Container>
     </BrowserRouter>
   );

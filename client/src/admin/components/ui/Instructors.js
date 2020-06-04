@@ -265,8 +265,11 @@ export default function Instructors(props) {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = rows.map((n) => n.id);
+      setSelected([]);
+      let newSelecteds = [];
+      newSelecteds = rows.map((n) => n._id);
       setSelected(newSelecteds);
+      console.log(newSelecteds);
       return;
     }
     setSelected([]);

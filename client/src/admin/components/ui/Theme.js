@@ -18,8 +18,9 @@ export default createMuiTheme({
   },
   typography: {
     tab: {
-      fontFamily: "RaleWay",
+      fontFamily: "Courier New",
       textTransform: "none",
+      color: "white",
       fontWeight: 700,
       fontSize: "1rem",
     },

@@ -135,6 +135,7 @@ export default function UpdateUser(props) {
               }
               setSelectedCourses(deneme);
             })();
+            setLoaded(true);
             
           })
           .catch((error) => {
