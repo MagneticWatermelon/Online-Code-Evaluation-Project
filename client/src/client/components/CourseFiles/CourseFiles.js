@@ -46,13 +46,10 @@ export default function CourseFiles(props) {
     const handleFileDownload = (rowData) => {
         let id = rowData[4];
         console.log(id);
-        axios.get(`http://localhost:8080/resource/get/${id}`, {headers: {"Authorization" : `Bearer ${props.token}`}}).
-        then(function (response) {
-            console.log(response)
-        })
-        .catch(function (error) {
-            console.log(error)
-        });
+        let url = `localhost:8080/resource/get/${id}`
+        var win = window.open(`//localhost:8080/resource/get/${id}`, '_blank');
+        win.focus();
+
     }
 
     const columns = [
