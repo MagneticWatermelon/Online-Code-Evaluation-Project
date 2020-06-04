@@ -181,7 +181,7 @@ export default function Course(props) {
                             </Route>
 
                             <Route path={`/courses/${props.course.course_code}/files`}>
-                                <CourseFiles course={props.course} resources={resources} />
+                                <CourseFiles course={props.course} resources={resources} token={props.token}/>
                             </Route>
 
                             <Route path={`/courses/${props.course.course_code}`}>
