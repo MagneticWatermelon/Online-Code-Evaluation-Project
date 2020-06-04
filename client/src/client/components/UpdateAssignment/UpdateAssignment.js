@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function UpdateAssignment(props) {
 
-    const [assignment, setAssignment] = React.useState({title: '', explanation: '', due_date: '', weight: '', release_date: ''});
+    const [assignment, setAssignment] = React.useState({title: '', explanation: '', due_date: '', weight: '20', release_date: ''});
     const [sliderVal, setVal] = React.useState(20);
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
@@ -52,6 +52,16 @@ export default function UpdateAssignment(props) {
         let url = window.location.pathname;
         let id = url.split('/').pop();
         let obj = assignment;
+        if(obj.title == '') {
+            enqueueSnackbar('Enter a title', {variant: 'warning'});
+            e.preventDefault();
+            return;
+        }
+        if(obj.due_date == '') {
+            enqueueSnackbar('Enter deadline date', {variant: 'warning'});
+            e.preventDefault();
+            return;
+        }
         obj.release_date = moment().format(moment.HTML5_FMT.DATETIME_LOCAL);
         axios.post(`http://localhost:8080/assignment/update/${id}`, obj, {headers: {"Authorization" : `Bearer ${props.token}`}}).
         then(function (response) {

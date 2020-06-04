@@ -32,6 +32,11 @@ export default function UpdateAnnouncement(props) {
     const handleSubmit = (e) => {
         let url = window.location.pathname;
         let id = url.split('/').pop();
+        if(announcement.title == '') {
+            enqueueSnackbar('Enter a title', {variant: 'warning'});
+            e.preventDefault();
+            return;
+        }
         axios.post(`http://localhost:8080/announcement/update/${id}`, announcement, {headers: {"Authorization" : `Bearer ${props.token}`}}).
         then(function (response) {
             enqueueSnackbar('Announcement updated successfully!', {variant: 'success'});

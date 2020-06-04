@@ -7,6 +7,7 @@ import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import AddIcon from '@material-ui/icons/Add';
+import { useSnackbar } from 'notistack';
 import axios from 'axios';
 
 const useStyles = makeStyles((theme) => ({
@@ -37,10 +38,11 @@ const useStyles = makeStyles((theme) => ({
 export default function CreateQuestion(props) {
 
     const [question, setQuestion] = React.useState({title: '', explanation: '', submission_limit: 1, points: 10, languages: []});
-    const [sliderValPoint, setValPoint] = React.useState(20);
-    const [sliderValLimit, setValLimit] = React.useState(5);
+    const [sliderValPoint, setValPoint] = React.useState(10);
+    const [sliderValLimit, setValLimit] = React.useState(1);
     const [testInputs, setTestInputs] = React.useState([]);
     const [testOutputs, setTestOutputs] = React.useState([]);
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
     const [cases, setCases] = React.useState([]);
     const [changed, setChanged] = React.useState(false);
     const [langs, setLangs] = React.useState({
@@ -126,6 +128,11 @@ export default function CreateQuestion(props) {
         }
         let obj = {};
         obj.title = question.title;
+        if(obj.title == '') {
+            enqueueSnackbar('Enter a title', {variant: 'warning'});
+            e.preventDefault();
+            return;
+        }
         obj.explanation = question.explanation;
         let tempInp = [];
         testInputs.map((val) => {
@@ -138,17 +145,22 @@ export default function CreateQuestion(props) {
         })       
         obj.outputs = tempOut;        
         obj.submission_limit = question.submission_limit;        
-        obj.points = question.points;        
+        obj.points = question.points;
+        if(languages < 1) {
+            enqueueSnackbar('Choose allowed languages', {variant: 'warning'});
+            e.preventDefault();
+            return;
+        }       
         obj.languages = languages;
         console.log(obj);
         let url = window.location.pathname;
         let id = url.split('/').pop();
         axios.post(`http://localhost:8080/question/create/${id}`, obj, {headers: {"Authorization" : `Bearer ${props.token}`}}).
         then(function (response) {
-            console.log(response);
+            enqueueSnackbar('Question added successfully!', {variant: 'success'});
             })
-            .catch(function (error) {
-            console.log(error);
+        .catch(function (error) {
+            enqueueSnackbar('Something went wrong!', {variant: 'error'});
         });
     }
 

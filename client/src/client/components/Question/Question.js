@@ -2,6 +2,8 @@ import React, { useEffect } from 'react'
 import { makeStyles } from '@material-ui/core/styles';
 import { Avatar, Typography, Button } from '@material-ui/core';
 import { Link as RouterLink} from 'react-router-dom';
+import { useSnackbar } from 'notistack';
+
 import axios from 'axios';
 
 
@@ -22,6 +24,9 @@ export default function Question(props) {
         return id;
     })
 
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+
+
     useEffect(() => {
         let url = window.location.pathname;
         let id = url.split('/').pop();
@@ -36,10 +41,10 @@ export default function Question(props) {
         let id = url.split('/').pop();
         axios.delete(`http://localhost:8080/question/delete/${id}`, {headers: {"Authorization" : `Bearer ${props.token}`}}).
         then(function (response) {
-            console.log(response);
+            enqueueSnackbar('Question deleted successfully!', {variant: 'success'});
             })
-            .catch(function (error) {
-            console.log(error);
+        .catch(function (error) {
+            enqueueSnackbar('Something went wrong!', {variant: 'error'});
         });
     }
 

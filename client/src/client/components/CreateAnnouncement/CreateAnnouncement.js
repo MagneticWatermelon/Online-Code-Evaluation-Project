@@ -30,6 +30,11 @@ export default function CreateAnnouncement(props) {
     }
 
     const handleSubmit = (e) => {
+        if(announcement.title == '') {
+            enqueueSnackbar('Enter a title', {variant: 'warning'});
+            e.preventDefault();
+            return;
+        }
         axios.post(`http://localhost:8080/announcement/create/${props.course._id}`, announcement, {headers: {"Authorization" : `Bearer ${props.token}`}}).
         then(function (response) {
             enqueueSnackbar('Announcement created successfully!', {variant: 'success'});
